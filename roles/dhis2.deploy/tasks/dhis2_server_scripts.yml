@@ -1,0 +1,13 @@
+---
+- name: Clone server scripts into dhis2 home directory.
+  file:
+    path: /home/{{ dhis2_user }}/server-setup
+    state: absent
+
+# - name: set server scripts environment
+#   blockinfile:
+#     path:  /home/{{ dhis2_user }}/server-setup/play/scripts/env.sh
+#     block: |
+#       export TMP_DIR=/home/{{ dhis2_user }}
+#       export BASE_DIR='{{ storage }}/instances/'
+#       export BASE_URL=https://{{ inventory_hostname }}

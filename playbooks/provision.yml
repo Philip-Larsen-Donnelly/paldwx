@@ -1,0 +1,38 @@
+---
+- hosts: qateam
+  become: yes
+
+  vars_files:
+    # include the standard dhis2 beats config for logging to the ELK server
+    - vars/logging.yml
+
+  pre_tasks:
+    # Create a new primary partition
+    # - parted:
+    #     device: "{{ storage_device }}"
+    #     number: 1
+    #     state: present
+    #   when: storage_device is defined
+
+    # Create a ext4 filesystem on storage device and check disk blocks.
+    - filesystem:
+        fstype: ext4
+        dev: "{{ storage_device }}"
+      when: storage_device is defined
+
+    - name: add mount point if necessary
+      mount:
+        path: "{{ storage_path }}"
+        src: "{{ storage_device }}"
+        fstype: ext4
+        opts: defaults
+        state: mounted
+      when: storage_device is defined
+
+  roles:
+    - geerlingguy.java
+    - nginxinc.nginx
+    - geerlingguy.git
+    - geerlingguy.docker
+    - geerlingguy.filebeat
+    - kharkevich.elastic_metricbeat

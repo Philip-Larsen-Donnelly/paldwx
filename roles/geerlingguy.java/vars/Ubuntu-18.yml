@@ -1,0 +1,9 @@
+---
+# JDK version options include:
+#   - java
+#   - openjdk-11-jdk
+java_packages:
+  # - oracle-java8-installer
+  # - ca-certificates
+  # - oracle-java8-set-default
+  - openjdk-8-jdk

@@ -1,0 +1,36 @@
+# Module: http
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-http.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "http") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "http") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: http
+  #metricsets:
+  #  - json
+  period: 10s
+  hosts: ["localhost:80"]
+  namespace: "json_namespace"
+  path: "/"
+  #body: ""
+  #method: "GET"
+  #username: "user"
+  #password: "secret"
+  #request.enabled: false
+  #response.enabled: false
+  #json.is_array: false
+  #dedot.enabled: false
+
+- module: http
+  #metricsets:
+  #  - server
+  host: "localhost"
+  port: "8080"
+  enabled: false
+  #paths:
+  #  - path: "/foo"
+  #    namespace: "foo"
+  #    fields: # added to the the response in root. overwrites existing fields
+  #      key: "value"
+{% endif %}

@@ -1,0 +1,7 @@
+---
+# handlers file for dhis2.deploy
+- name: reload nginx
+  service: name=nginx state=reloaded
+
+- name: restart filebeat
+  service: name=filebeat state=restarted

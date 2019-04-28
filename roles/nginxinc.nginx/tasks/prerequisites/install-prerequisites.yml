@@ -1,0 +1,6 @@
+---
+- debug:
+    msg: "ansible_os_family  {{ ansible_os_family }} "
+
+- import_tasks: setup-debian.yml
+  when: ansible_os_family == "Debian"

@@ -1,0 +1,31 @@
+# Systemd unit file for tomcat {{ instance.name }}
+[Unit]
+Description={{ instance.name }} Web Application
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+# Tomcat variables
+Environment='DHIS2_HOME={{ storage }}/instances/{{ instance.name }}/home'
+# Environment='JAVA_HOME=/usr/lib/jvm/java-openjdk'
+Environment='CATALINA_PID=/var/run/tomcat/{{ instance.name }}.pid'
+Environment='CATALINA_HOME={{ storage }}/instances/{{ instance.name }}/tomcat'
+Environment='CATALINA_BASE={{ storage }}/instances/{{ instance.name }}/tomcat'
+Environment='CATALINA_OPTS=-Xms1024M -Xmx2048M -XX:+UseParallelGC -server'
+# Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+# Needed to make use of Tomcat Native Library
+Environment='LD_LIBRARY_PATH={{ storage }}/instances/{{ instance.name }}/tomcat/lib'
+
+ExecStart={{ storage }}/instances/{{ instance.name }}/tomcat/bin/startup.sh
+ExecStop=/bin/kill -15 $MAINPID
+
+User={{ dhis2_user }}
+Group={{ dhis2_user }}
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

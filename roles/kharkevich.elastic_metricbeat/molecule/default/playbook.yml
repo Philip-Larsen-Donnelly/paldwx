@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    metricbeat_index_name: customindex
+  roles:
+    - role: ansible-elastic-metricbeat

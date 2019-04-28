@@ -1,0 +1,98 @@
+---
+- name: ensure that the ssl config is complete
+  command: "openssl dhparam -out dhparam.pem 4096"
+  args:
+    chdir: "/etc/ssl/certs"
+    creates: "/etc/ssl/certs/dhparam.pem"
+
+- name: Check whether /etc/nginx/conf.d/default.conf contains "# END DHIS2-INSTANCES:"
+  command: grep -Fxq "# END DHIS2-INSTANCES:" /etc/nginx/conf.d/default.conf
+  register: checknginxconf
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+
+- name: configure nginx
+  template:
+    src: "nginx.dhis.conf.j2"
+    dest: "/etc/nginx/conf.d/default.conf"
+    mode: 0644
+    force: yes
+  notify: reload nginx
+  when: checknginxconf.rc != 0
+
+
+- name: add DHIS 2 instances to nginx config
+  blockinfile:
+    path: "/etc/nginx/conf.d/default.conf"
+    block: |
+        location /{{ instance.name }} {
+            proxy_pass                http://127.0.0.1:{{ instance.tomcat_port }}/{{ instance.name }};
+            proxy_redirect            off;
+            proxy_set_header          Host               $host;
+            proxy_set_header          X-Real-IP          $remote_addr;
+            proxy_set_header          X-Forwarded-For    $proxy_add_x_forwarded_for;
+            proxy_set_header          X-Forwarded-Proto  https;
+            #proxy_cache               dhis;
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
+    insertbefore: "# END DHIS2-INSTANCES:"
+    state: "{{ instance.state }}"
+  notify: reload nginx
+
+- name: add landing page
+  template:
+    src: "index.html.j2"
+    dest: "/usr/share/nginx/html/index.html"
+    mode: 0644
+    force: no
+
+- name: create resources directory
+  file:
+    path: /usr/share/nginx/html/resources
+    state: directory
+
+- name: add favicon
+  get_url:
+    url: "https://github.com/dhis2/dhis2-identity/raw/master/web/favicon_package/favicon.ico"
+    dest: "/usr/share/nginx/html/resources/favicon.ico"
+    mode: 0644
+
+- name: get icon
+  get_url:
+    url: "https://github.com/dhis2/dhis2-identity/raw/master/web/Icon%20only/Default/dhis2-icon-rgb-positive.png"
+    dest: "/usr/share/nginx/html/resources/dhis2-icon-rgb-positive.png"
+    mode: 0644
+
+- name: get master logo
+  get_url:
+    url: "https://github.com/dhis2/dhis2-identity/raw/master/web/Logo/Default/dhis2-logo-rgb-positive.png"
+    dest: "/usr/share/nginx/html/resources/dhis2-logo-rgb-positive.png"
+    mode: 0644
+
+- name: update landing page
+  blockinfile:
+    path: "/usr/share/nginx/html/index.html"
+    block: |
+      <tr>
+        <td><img src="resources/dhis2-icon-rgb-positive.png" style="width:30px;margin-left:5px;"></td>
+        <td><a href="https://{{ inventory_hostname }}/{{ instance.name }}">{{ instance.name }} demo</a></td>
+        <td>Demo of {{ instance.description }}</td>
+        <td>
+          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name : {{ inventory_hostname.split(".")[0] | lower }} and log.file.path : {{ storage }}/instances/{{ instance.name }}/tomcat/logs/catalina.out',kind:kuery)">catalina.out</a>
+          </br>
+          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name : {{ inventory_hostname.split(".")[0] | lower }} and log.file.path : *nginx*  and message : /{{ instance.name }}',kind:kuery)">nginx</a>
+        </td>
+      </tr>
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK {{ instance.name }} -->"
+    insertbefore: "<!-- END DHIS2-INSTANCES -->"
+    state: "{{ instance.state }}"
+
+- name: add maintenance pages
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/share/nginx/html/{{ item }}"
+    mode: 0644
+  with_items:
+    - restore_db.html
+    - deploy_war.html

@@ -1,0 +1,29 @@
+# Module: docker
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-docker.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "docker") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "docker") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: docker
+  #metricsets:
+  #  - container
+  #  - cpu
+  #  - diskio
+  #  - healthcheck
+  #  - info
+  #  - memory
+  #  - network
+  period: 10s
+  hosts: ["unix:///var/run/docker.sock"]
+
+  # If set to true, replace dots in labels with `_`.
+  #labels.dedot: false
+
+  # To connect to Docker over TLS you must specify a client and CA certificate.
+  #ssl:
+    #certificate_authority: "/etc/pki/root/ca.pem"
+    #certificate:           "/etc/pki/client/cert.pem"
+    #key:                   "/etc/pki/client/cert.key"
+{% endif %}

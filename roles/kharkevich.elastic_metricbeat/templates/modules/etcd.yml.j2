@@ -1,0 +1,18 @@
+# Module: etcd
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-etcd.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "etcd") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "etcd") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: etcd
+  #metricsets:
+  #  - leader
+  #  - self
+  #  - store
+  period: 10s
+  hosts: ["localhost:2379"]
+  #username: "user"
+  #password: "secret"
+{% endif %}

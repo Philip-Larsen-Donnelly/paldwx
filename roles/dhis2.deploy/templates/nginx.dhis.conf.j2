@@ -1,0 +1,76 @@
+server {
+    listen       80;
+    server_name  {{ inventory_hostname }};
+    rewrite      ^ https://{{ inventory_hostname }}$request_uri? permanent;
+}
+
+server {
+
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name           {{ inventory_hostname }};
+    client_max_body_size  100M;
+
+    # SSL
+    ssl   on;
+    ssl_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem; # managed by Certbot
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
+
+    #ssl_protocols              TLSv1 TLSv1.1 TLSv1.2;
+    ssl_protocols TLSv1.2;
+    #ssl_ciphers                RC4:HIGH:!aNULL:!MD5;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_prefer_server_ciphers  on;
+    ssl_trusted_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+    add_header Strict-Transport-Security max-age=15768000;
+    resolver 8.8.8.8;
+
+    proxy_buffer_size         128k;
+    proxy_buffers             8 128k;
+    proxy_busy_buffers_size   256k;
+
+
+
+    # play.dhis2.org
+
+    # Rate limit for analytics on dev
+
+    # location ~ ^/dev/api/(\d+/)?analytics(.*)$ {
+    #     limit_req                 zone=dhis_limit burst=20;
+    #     proxy_pass                http://127.0.0.1:8081/dev/api/$1analytics$2$is_args$args;
+    #
+    #     proxy_redirect            off;
+    #     proxy_set_header          Host               $host;
+    #     proxy_set_header          X-Real-IP          $remote_addr;
+    #     proxy_set_header          X-Forwarded-For    $proxy_add_x_forwarded_for;
+    #     proxy_set_header          X-Forwarded-Proto  https;
+    # }
+
+
+# BEGIN DHIS2-INSTANCES:
+# END DHIS2-INSTANCES:
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+
+}

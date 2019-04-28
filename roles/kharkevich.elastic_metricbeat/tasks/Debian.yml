@@ -1,0 +1,25 @@
+---
+- name: ensure that apt-transport-https presented
+  package:
+    name: apt-transport-https
+    state: present
+  tags:
+    - install-packages
+  become: True
+
+- name: add Elastic signing key
+  apt_key:
+    url: https://packages.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  tags:
+    - install-packages
+  become: True
+
+- name: add Elastic repository
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/{{ elastic_version }}/apt stable main"
+    state: present
+    filename: "elastic-{{ elastic_version }}"
+  tags:
+    - install-packages
+  become: True

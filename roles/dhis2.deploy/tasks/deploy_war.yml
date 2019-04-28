@@ -1,0 +1,46 @@
+---
+# Deploy in parallel on tomcat - not entirely sure we want to do this as it could cause corruption due to flyway changes?!
+
+# - name: get next version for war file
+#   shell: "version=`find {{ storage }}/instances/{{ instance.name }}/tomcat/webapps/ -maxdepth 1 -name '{{ instance.name }}##*.war' | sort | tail -n1 | sed -n 's/.*##0*\\(.*\\)\\.war/\\1/p'` ;   printf %04d $((version+1))"
+#   register: next_instance_version
+#
+# - name: deploy war file as next version
+#   get_url:
+#     url: "{{ instance.war_file }}"
+#     dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}##{{ next_instance_version.stdout }}.war"
+#     mode: 0644
+
+
+- name: add redirect to nginx config
+  blockinfile:
+    path: "/etc/nginx/conf.d/default.conf"
+    block: |
+        location /{{ instance.name }} {
+            rewrite ^ /{{ instance.name }}_deploy_war/ ;
+        }
+        location /{{ instance.name }}_deploy_war {
+            alias /usr/share/nginx/html;
+            index deploy_war.html break;
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
+    insertbefore: "# END DHIS2-INSTANCES:"
+    state: "{{ instance.state }}"
+  notify: reload nginx
+
+- name: reload nginx
+  systemd:
+    state: reloaded
+    name: nginx
+
+- name: stop the instance
+  systemd:
+    state: stopped
+    name: dhis2-{{ instance.name }}
+
+# Simple version overwrites any current war file
+- name: deploy war file as next version
+  get_url:
+    url: "{{ instance.war_file }}"
+    dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+    mode: 0644

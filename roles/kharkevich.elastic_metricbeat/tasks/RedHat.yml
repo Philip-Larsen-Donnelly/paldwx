@@ -1,0 +1,19 @@
+---
+- name: add Elastic signing key
+  rpm_key:
+    key: https://packages.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  tags:
+    - install-packages
+  become: True
+
+- name: add Elastic repository
+  yum_repository:
+    name: "elastic-{{ elastic_version }}"
+    description: "Elasticsearch repository for {{ elastic_version }} packages"
+    baseurl: "https://artifacts.elastic.co/packages/{{ elastic_version }}/yum"
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    gpgcheck: True
+  tags:
+    - install-packages
+  become: True

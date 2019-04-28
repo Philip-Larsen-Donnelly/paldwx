@@ -1,0 +1,18 @@
+# Module: php_fpm
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-php_fpm.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "php_fpm") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "php_fpm") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: php_fpm
+  #metricsets:
+  #  - pool
+  #  - process
+  period: 10s
+  hosts: ["localhost:8080"]
+  status_path: "/status"
+  #username: "user"
+  #password: "secret"
+{% endif %}

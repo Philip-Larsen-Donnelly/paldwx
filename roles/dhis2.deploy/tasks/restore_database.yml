@@ -1,0 +1,82 @@
+---
+# download the demo db (if not empty param)
+- name: fetch demo db file for {{ instance.name }}
+  get_url:
+    url: "{{ instance.db_demo }}"
+    dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+    mode: 0644
+  when: instance.db_demo is defined
+
+- name: unzip the demo db
+  command: gunzip -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz
+  when: instance.db_demo is defined
+
+
+- name: add redirect to nginx config
+  blockinfile:
+    path: "/etc/nginx/conf.d/default.conf"
+    block: |
+        location /{{ instance.name }} {
+            rewrite ^ /{{ instance.name }}_restore_db/ ;
+        }
+        location /{{ instance.name }}_restore_db {
+            alias /usr/share/nginx/html;
+            index restore_db.html break;
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
+    insertbefore: "# END DHIS2-INSTANCES:"
+    state: "{{ instance.state }}"
+  notify: reload nginx
+
+- name: reload nginx
+  systemd:
+    state: reloaded
+    name: nginx
+
+- name: stop the instance
+  systemd:
+    state: stopped
+    name: dhis2-{{ instance.name }}
+
+- name: remove db {{ instance.name }}
+  include_role:
+    name: geerlingguy.postgresql
+    tasks_from: databases.yml
+  vars:
+    postgresql_databases:
+      - name: "{{ instance.db_name }}"
+        owner: "{{ instance.db_owner | default('dhis') }}"
+        state: absent
+
+- name: create db {{ instance.name }}
+  include_role:
+    name: geerlingguy.postgresql
+    tasks_from: databases.yml
+  vars:
+    postgresql_databases:
+      - name: "{{ instance.db_name }}"
+        owner: "{{ instance.db_owner | default('dhis') }}"
+        state: "{{ instance.state | default('present')  }}"
+
+
+- name: Execute sql script
+  shell: "psql -d {{ instance.db_name }} -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  when: instance.db_demo is defined
+
+
+- name: remove temporary demo db file
+  file:
+    path: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql"
+    state: absent
+
+
+# - name: wait for instance to start in order to run analytics
+#   uri:
+#     url: "https://{{ inventory_hostname }}/{{ instance.name }}"
+#     status_code: 200
+#   register: result
+#   until: result.status == 200
+#   retries: 90
+#   delay: 10

@@ -1,0 +1,14 @@
+# Module: kvm
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-kvm.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "kvm") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "kvm") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: kvm
+  #metricsets:
+  #  - dommemstat
+  period: 10s
+  hosts: ["unix:///var/run/libvirt/libvirt-sock"]
+{% endif %}

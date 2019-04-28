@@ -1,0 +1,10 @@
+*.egg-info/
+*.py[cod]
+*.retry
+.bundle/
+.cache/
+.coverage
+.coverage.*
+.eggs/
+.tox/
+.vagrant/

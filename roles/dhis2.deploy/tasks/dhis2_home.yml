@@ -1,0 +1,112 @@
+---
+# add users
+- group:
+    name: "{{ dhis2_user }}"
+    state: present
+
+- user:
+    name: "{{ dhis2_user }}"
+    group: "{{ dhis2_user }}"
+    shell: /bin/bash
+
+- user:
+    name: ubuntu
+    groups: "{{ dhis2_user }}"
+
+
+- name: set the instance locations
+  set_fact:
+    storage: "{{ storage_path | default('/var/lib') }}"
+    fs_type: "{{ dhis2_filestore.type }}"
+
+# deploy standalone tomcat instance for each dhis2 instance
+- name: download tomcat
+  unarchive:
+    src: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.27/bin/apache-tomcat-8.5.27.tar.gz
+    dest: /tmp
+    remote_src: yes
+  args:
+    creates: /tmp/apache-tomcat-8.5.27
+
+# create a directory if it doesn't exist
+- file:
+    path: "{{ storage }}/instances/{{ instance.name }}/home"
+    state: directory
+    mode: 0755
+
+- command: cp -r /tmp/apache-tomcat-8.5.27 {{ storage }}/instances/{{ instance.name }}/tomcat
+  args:
+    creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
+
+- name: remove bundled webapps
+  shell: /bin/rm -rf {{ storage }}/instances/{{ instance.name }}/tomcat/webapps/*
+
+
+- name: Configure host based authentication (if entries are configured).
+  template:
+    src: "dhis.conf.j2"
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/dhis.conf"
+    owner: "{{ dhis2_user }}"
+    group: "{{ dhis2_user }}"
+    mode: 0600
+    #notify: restart tomcat
+
+- name: Configure tomcat ports.
+  template:
+    src: "server.xml.j2"
+    dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/conf/server.xml"
+    owner: "{{ dhis2_user }}"
+    group: "{{ dhis2_user }}"
+    mode: 0600
+    #notify: restart tomcat
+
+- name: set tomcat environment
+  blockinfile:
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/setclasspath.sh"
+    block: |
+      export DHIS2_HOME='{{ storage }}/instances/{{ instance.name }}/home'
+      export JAVA_OPTS='-Xmx1500m -Xms1000m'
+      export CATALINA_PID='/var/run/tomcat/{{ instance.name }}.pid'
+
+- file:
+    path: "/var/run/tomcat"
+    group: "{{ dhis2_user }}"
+    owner: "{{ dhis2_user }}"
+    recurse: yes
+
+
+- name: set up tomcat as a systemd service
+  template:
+    src: "dhis2.service.j2"
+    dest: "/etc/systemd/system/dhis2-{{ instance.name }}.service"
+    mode: 0777
+    #notify: restart tomcat
+
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- file:
+    path: "{{ storage }}/instances/{{ instance.name }}"
+    group: "{{ dhis2_user }}"
+    owner: "{{ dhis2_user }}"
+    recurse: yes
+
+- name: add google auth
+  copy:
+    src: dhis-google-auth.json
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/dhis-google-auth.json"
+    mode: 0644
+
+
+- name: add the instance tomcat logs to filebeat
+  replace:
+    path: /etc/filebeat/filebeat.yml
+    regexp: 'CATALINA-PLACEHOLDER.out'
+    replace: '{{ storage }}/instances/*/tomcat/logs/catalina.out'
+  notify: restart filebeat
+
+# remove the webapps directory
+# - file:
+#     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps"
+#     state: absent

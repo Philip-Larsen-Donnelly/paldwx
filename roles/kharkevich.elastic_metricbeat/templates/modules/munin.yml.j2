@@ -1,0 +1,15 @@
+# Module: munin
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-munin.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "munin") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "munin") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: munin
+  #metricsets:
+  #  - node
+  period: 10s
+  hosts: ["localhost:4949"]
+  node.namespace: node
+{% endif %}

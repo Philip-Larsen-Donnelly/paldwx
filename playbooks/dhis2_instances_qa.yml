@@ -1,0 +1,9 @@
+---
+- hosts: qateam
+  strategy: free
+  become: yes
+
+  roles:
+    #
+    - geerlingguy.certbot
+    - dhis2.deploy

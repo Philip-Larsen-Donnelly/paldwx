@@ -1,0 +1,48 @@
+---
+# nginx_user: www-data
+# nginx_worker_connections: 1024
+# nginx_remove_default_vhost: true
+
+nginx_http_template_enable: true
+nginx_http_template:
+  default:
+    template_file: http/elk_default.conf.j2
+    conf_file_name: default.conf
+    conf_file_location: /etc/nginx/conf.d/
+
+elasticsearch_network_host: '0.0.0.0'
+elasticsearch_http_port: 9200
+
+kibana_server_name: logs.dhis2.org
+kibana_username: kibana
+kibana_password: !vault |
+          $ANSIBLE_VAULT;1.2;AES256;dev
+          30343266303163343131363665306137353339383135663339353365653633636431386335346264
+          3139323836333661383439643665383637643131393536650a643162336438343866343639366264
+          62373666356636623132303235633463373539386462643339383464343434643938393638353965
+          3663656634396339350a303163643361663461323065353637336230353434323066323462356662
+          6161
+
+
+# kibana/elk users:
+kibana_elasticsearch_username: "kibana"
+kibana_elasticsearch_password: !vault |
+          $ANSIBLE_VAULT;1.2;AES256;dev
+          62633162636665373562653462386261346662373036333965663961396637656433356436303037
+          3163336466346137346534303538383937326462366531300a326233666234383866616666643837
+          63303833336662643937306364376462363337303732616632343639306361653138313562643933
+          6630346432333530350a313236383365396431323639653563353562326166393735383637306232
+          6663
+
+# Parameters used when creating new Certbot certs.
+certbot_create_if_missing: true
+certbot_create_method: standalone
+certbot_admin_email: phil@dhis2.org
+certbot_certs:
+  - email: phil@dhis2.org
+    domains:
+      - "{{ inventory_hostname }}"
+certbot_create_command: >-
+  certbot --standalone certonly --noninteractive --agree-tos
+  --email {{ certbot_admin_email }}
+  -d {{ inventory_hostname }}

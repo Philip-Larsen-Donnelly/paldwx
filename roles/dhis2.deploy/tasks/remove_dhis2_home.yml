@@ -1,0 +1,15 @@
+---
+# remove instance directory if it exists
+- file:
+    path: "{{ storage }}/instances/{{ instance.name }}"
+    state: absent
+
+# remove the systemd tomcat services
+- name: remove tomcat as a systemd service
+  file:
+    path: "/etc/systemd/system/dhis2-{{ instance.name }}.service"
+    state: absent
+
+- name: force systemd to reread configs
+  systemd:
+  daemon_reload: yes

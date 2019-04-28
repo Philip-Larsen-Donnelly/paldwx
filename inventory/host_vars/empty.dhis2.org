@@ -1,0 +1,51 @@
+---
+# DHIS 2 Instances to host on server
+dhis2_instances:
+  - name: dev
+    description: latest development version
+    state: 'present' # set to 'absent' to remove
+    war_file: 'https://releases.dhis2.org/dev/dhis.war'
+    db_name: dev
+    tomcat_port: 8100
+    filestore:
+      type: aws-s3  # filesystem (default) or aws-s3
+      location: eu-west-1
+      identity: !vault |
+        $ANSIBLE_VAULT;1.2;AES256;dev
+        32333065643531353436393230633162636135356632653339643664356364613962646238393433
+        6434363238303333326439353965336139313366326561650a663734366132303938663565373666
+        38346137303062353431613333663938646265643339323338313736643231636263383235313861
+        3465323130343262320a393838386465613432353339636136663231643636376130333165393733
+        32636138653631386437366337666135633836363036623438623765626566346531
+      secret: !vault |
+        $ANSIBLE_VAULT;1.2;AES256;dev
+        64313737353034346537303933363235346161333662373165626666636565623866326334313934
+        3731643264663563653034326161323635613231383234640a363265333633653938383036646561
+        37646337666231343764643066396239396532626534326462316538386663333031613337366235
+        6164613462303366660a643463656463373330643031636163366632353433653765333265353937
+        33386131363439376631343630636638363065346333366537306533333065353461616335303730
+        3135653261363234333962323334623466313162613662383031
+
+  - name: 2.31dev
+    description: 2.31 development version
+    state: 'present' # set to 'absent' to remove
+    war_file: 'https://releases.dhis2.org/2.31/dhis.war'
+    db_name: 2-31-dev
+    tomcat_port: 8101
+
+  - name: 2.32dev
+    description: 2.32 development pre-release
+    state: 'present' # set to 'absent' to remove
+    war_file: 'https://releases.dhis2.org/2.32/dhis.war'
+    db_name: 2-32-dev
+    tomcat_port: 8102
+
+  - name: 2.31.3
+    description: 2.31.3 patch version released 5 April 2019
+    state: 'present' # set to 'absent' to remove
+    war_file: 'https://releases.dhis2.org/2.31/2.31.3/dhis.war'
+    db_name: 2-31-1
+    tomcat_port: 8104
+
+# storage_path is where the instances will be installed
+storage_path: "/var/opt"

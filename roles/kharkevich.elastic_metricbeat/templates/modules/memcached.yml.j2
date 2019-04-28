@@ -1,0 +1,13 @@
+# Module: memcached
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-memcached.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "memcached") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "memcached") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: memcached
+#  metricsets: ["stats"]
+  period: 10s
+  hosts: ["localhost:11211"]
+{% endif %}

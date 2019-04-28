@@ -1,0 +1,14 @@
+# Module: zookeeper
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-zookeeper.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "zookeeper") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "zookeeper") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: zookeeper
+  #metricsets:
+  #  - mntr
+  period: 10s
+  hosts: ["localhost:2181"]
+{% endif %}

@@ -1,0 +1,17 @@
+# Module: elasticsearch
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-elasticsearch.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "elasticsearch") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "elasticsearch") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: elasticsearch
+  #metricsets:
+  #  - node
+  #  - node_stats
+  period: 10s
+  hosts: ["http://localhost:9200"]
+  #username: "user"
+  #password: "secret"
+{% endif %}

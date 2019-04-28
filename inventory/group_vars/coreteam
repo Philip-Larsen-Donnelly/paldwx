@@ -1,0 +1,25 @@
+---
+dhis2_db_role_attr_flags: CREATEDB,NOSUPERUSER
+dhis2_db_encrypted: True
+dhis2_db_owner_default: dhis
+dhis2_db_owner_password_default: !vault |
+        $ANSIBLE_VAULT;1.2;AES256;dev
+        39616134633931333433643833353330336334623437323062663239633664356235643933666133
+        6531346232323534636636323230643731386465646162360a363465646462383930356236346134
+        39396138646136636664316661303231386562316665613838393963363039306637376163633163
+        3863393132323561320a316365383730633635646133616636613665343138393839323335386263
+        66373530323939663931613230616235376431376365396633383764316364613738
+
+
+# Parameters used when creating new Certbot certs.
+certbot_create_if_missing: true
+certbot_create_method: standalone
+certbot_admin_email: phil@dhis2.org
+certbot_certs:
+  - email: phil@dhis2.org
+    domains:
+      - "{{ inventory_hostname }}"
+certbot_create_command: >-
+  certbot --standalone certonly --noninteractive --agree-tos
+  --email {{ certbot_admin_email }}
+  -d {{ inventory_hostname }}

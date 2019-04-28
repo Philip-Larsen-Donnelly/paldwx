@@ -1,0 +1,35 @@
+---
+- hosts: awx
+  become: yes
+
+  roles:
+    - nginxinc.nginx
+    - geerlingguy.certbot
+    - geerlingguy.git
+    - geerlingguy.ansible
+    - geerlingguy.docker
+    - geerlingguy.pip
+    - geerlingguy.nodejs
+    - geerlingguy.awx
+  vars:
+    nodejs_version: "8.x"
+    pip_install_packages:
+      - name: docker-compose
+    nginx_http_template_enable: true
+    nginx_http_template:
+      default:
+        template_file: http/awx_default.conf.j2
+        conf_file_name: default.conf
+        conf_file_location: /etc/nginx/conf.d/
+    # Parameters used when creating new Certbot certs.
+    certbot_create_if_missing: true
+    certbot_create_method: nginx
+    certbot_admin_email: phil@dhis2.org
+    certbot_certs:
+      - email: phil@dhis2.org
+        domains:
+          - "awx.dhis2.org"
+    certbot_create_command: >-
+      certbot --nginx --noninteractive --agree-tos
+      --email {{ certbot_admin_email }}
+      -d awx.dhis2.org

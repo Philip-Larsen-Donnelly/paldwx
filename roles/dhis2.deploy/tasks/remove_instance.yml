@@ -1,0 +1,27 @@
+---
+# === Stop instance ==========
+# stop the instance if running
+- name: stop the instance
+  systemd:
+    state: stopped
+    name: dhis2-{{ instance.name }}
+  ignore_errors: yes
+
+# === DHIS 2 home =========
+- file:
+    path: "{{ storage }}/instances/{{ instance.name }}"
+    state: absent
+
+- include: nginx_config.yml
+
+# === Remove DB ==============
+- name: remove db {{ instance.name }}
+  include_role:
+    name: geerlingguy.postgresql
+    tasks_from: databases.yml
+  vars:
+    postgresql_databases:
+      - name: "{{ instance.db_name }}"
+        owner: "{{ instance.db_owner | default('dhis') }}"
+        state: absent
+# =========================

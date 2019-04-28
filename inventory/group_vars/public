@@ -1,0 +1,88 @@
+---
+
+# Databases to ensure exist.
+dhis2_instances:
+  - name: dev
+    state: 'present' # set to 'absent' to remove
+    war_file: 'https://releases.dhis2.org/dev/dhis.war'
+    db_name: dev
+    db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+    tomcat_port: 8100
+  - name: 2.31.1
+    state: 'present' # set to 'absent' to remove
+    war_file: 'https://releases.dhis2.org/2.31/2.31.1/dhis.war'
+    db_name: 2-31-1
+    db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
+    tomcat_port: 8101
+
+
+dhis2_db_role_attr_flags: CREATEDB,NOSUPERUSER
+dhis2_db_encrypted: True
+
+
+postgresql_unix_socket_directories:
+  - "'/var/run/postgresql'"
+
+#filebeat vars
+filebeat_prospectors:
+  - input_type: log
+    paths:
+      - "/var/log/*.log"
+      - "/var/log/nginx/*.log"
+
+filebeat_output_elasticsearch_enabled: false
+filebeat_output_elasticsearch_hosts:
+  - "logs.dhis2.org:9200"
+
+filebeat_output_logstash_enabled: true
+filebeat_output_logstash_hosts:
+  - "logs.dhis2.org:5044"
+
+
+# metricbeats vars
+kibana_host: "http://logs.dhis2.org:5601"
+elasticsearch_hosts:
+  - "logs.dhis2.org:9200"
+logstash_hosts:
+  - "logs.dhis2.org:5044"
+
+metricbeat_xpack_monitoring_enabled: True
+metricbeat_setup_dashboards: True
+
+metricbeat_modules:
+  - system
+  - docker
+  - nginx
+  - postgresql
+  # - aerospike
+  # - apache
+  # - ceph
+  # - couchbase
+  # - dropwizard
+  # - elasticsearch
+  # - envoyproxy
+  # - etcd
+  # - golang
+  # - graphite
+  # - haproxy
+  # - http
+  # - jolokia
+  # - kafka
+  # - kibana
+  # - kubernetes
+  # - kvm
+  # - logstash
+  # - memcached
+  # - modules_names.txt
+  # - mongodb
+  # - munin
+  # - mysql
+  # - php_fpm
+  # - prometheus
+  # - rabbitmq
+  # - redis
+  # - traefik
+  # - uwsgi
+  # - vsphere
+  # - windows
+  # - zookeeper

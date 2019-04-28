@@ -1,0 +1,17 @@
+# Module: kibana
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-kibana.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "kibana") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "kibana") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: kibana
+  #metricsets:
+  #  - status
+  period: 10s
+  hosts: ["localhost:5601"]
+  #basepath: ""
+  #username: "user"
+  #password: "secret"
+{% endif %}

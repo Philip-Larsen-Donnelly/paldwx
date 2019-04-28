@@ -1,0 +1,24 @@
+---
+postgresql_version: "10"
+postgresql_packages:
+  - postgresql-{{ postgresql_version }}
+  - postgresql-contrib
+  - libpq-dev
+  - postgis
+
+
+local_filestore:
+  type: filesystem
+  location: ''
+  identity: ''
+  secret: ''
+
+dhis2_admin_user: admin
+dhis2_admin_user_password: district
+dhis2_db_owner_default: dhis
+dhis2_db_owner_password_default: dhis24ever
+
+# dhis2_scripts
+dhis2_scripts_repo: https://github.com/dhis2/dhis2-server-setup.git
+dhis2_scripts_version: master
+dhis2_scripts_keep_updated: true

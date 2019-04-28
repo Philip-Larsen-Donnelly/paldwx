@@ -1,0 +1,14 @@
+# Module: uwsgi
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-uwsgi.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "uwsgi") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "uwsgi") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: uwsgi
+  #metricsets:
+  #  - status
+  period: 10s
+  hosts: ["tcp://127.0.0.1:9191"]
+{% endif %}

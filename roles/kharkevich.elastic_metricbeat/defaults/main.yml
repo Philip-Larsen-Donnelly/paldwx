@@ -1,0 +1,88 @@
+---
+# defaults file for ansible-elastic-metricbeat
+elastic_version: 6.x
+# kibana_host: "http://localhost:5601"
+elasticsearch_hosts:
+  - localhost:9200
+
+logstash_hosts:
+  - localhost:5044
+
+# metricbeat_fields:
+#  - logstash_token: "AUTH_TOKEN"
+#  - logzio_codec: json
+# metricbeat_fields_under_root: True
+# metricbeat_logstash_cert: "/foo/bar.crt"
+
+# valid values: elasticsearch, logstash
+metricbeat_output: elasticsearch
+
+# custom index name for metricbeat
+# metricbeat_index_name: metricbeat
+
+elasticsearch_protocol: http
+
+metricbeat_modules:
+  - system
+  # - aerospike
+  # - apache
+  # - ceph
+  # - couchbase
+  # - docker
+  # - dropwizard
+  # - elasticsearch
+  # - envoyproxy
+  # - etcd
+  # - golang
+  # - graphite
+  # - haproxy
+  # - http
+  # - jolokia
+  # - kafka
+  # - kibana
+  # - kubernetes
+  # - kvm
+  # - logstash
+  # - memcached
+  # - modules_names.txt
+  # - mongodb
+  # - munin
+  # - mysql
+  # - nginx
+  # - php_fpm
+  # - postgresql
+  # - prometheus
+  # - rabbitmq
+  # - redis
+  # - traefik
+  # - uwsgi
+  # - vsphere
+  # - windows
+  # - zookeeper
+
+metricbeat_modules_exclude: []
+
+# authentication if needed
+# elasticsearch_username: elastic
+# elasticsearch_password: password
+
+# Available log levels are: error, warning, info, debug
+log_level: info
+
+metricbeat_xpack_monitoring_enabled: False
+
+metricbeat_name: "{{ ansible_fqdn }}"
+metricbeat_tags: []
+#  - service-X
+#  - web-tier
+
+# These settings control loading the sample dashboards to the Kibana index. Loading
+# the dashboards is disabled by default and can be enabled either by setting the
+# options here, or by using the `-setup` CLI flag or the `setup` command.
+metricbeat_setup_dashboards: False
+
+# The URL from where to download the dashboards archive. By default this URL
+# has a value which is computed based on the Beat name and version. For released
+# versions, this URL points to the dashboard archive on the artifacts.elastic.co
+# website.
+# metricbeat_dashboards_url:

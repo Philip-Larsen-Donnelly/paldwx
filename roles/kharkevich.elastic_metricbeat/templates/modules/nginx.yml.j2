@@ -1,0 +1,22 @@
+# Module: nginx
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-nginx.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "nginx") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "nginx") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: nginx
+  #metricsets:
+  #  - stubstatus
+  period: 10s
+
+  # Nginx hosts
+  hosts: ["http://127.0.0.1"]
+
+  # Path to server status. Default server-status
+  #server_status_path: "server-status"
+
+  #username: "user"
+  #password: "secret"
+{% endif %}

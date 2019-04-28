@@ -1,0 +1,71 @@
+---
+#filebeat vars
+filebeat_prospectors:
+  - input_type: log
+    paths:
+      - "/var/log/*.log"
+      - "/var/log/nginx/*.log"
+  - input_type: log
+    paths:
+      - "CATALINA-PLACEHOLDER.out"
+    multiline.pattern: '^([0-9]{2}-|\*)'
+    multiline.negate: true
+    multiline.match: after
+
+
+filebeat_output_elasticsearch_enabled: false
+filebeat_output_elasticsearch_hosts:
+  - "logs.dhis2.org/elasticsearch"
+
+filebeat_output_logstash_enabled: true
+filebeat_output_logstash_hosts:
+  - "logs.dhis2.org/logstash"
+
+
+# metricbeats vars
+kibana_host: "http://logs.dhis2.org"
+elasticsearch_hosts:
+  - "logs.dhis2.org/elasticsearch"
+logstash_hosts:
+  - "logs.dhis2.org/logstash"
+
+metricbeat_xpack_monitoring_enabled: True
+metricbeat_setup_dashboards: True
+
+metricbeat_modules:
+  - system
+  - docker
+  - nginx
+  - postgresql
+  # - aerospike
+  # - apache
+  # - ceph
+  # - couchbase
+  # - dropwizard
+  # - elasticsearch
+  # - envoyproxy
+  # - etcd
+  # - golang
+  # - graphite
+  # - haproxy
+  # - http
+  # - jolokia
+  # - kafka
+  # - kibana
+  # - kubernetes
+  # - kvm
+  # - logstash
+  # - memcached
+  # - modules_names.txt
+  # - mongodb
+  # - munin
+  # - mysql
+  # - php_fpm
+  # - prometheus
+  # - rabbitmq
+  # - redis
+  # - traefik
+  # - uwsgi
+  # - vsphere
+  # - windows
+  # - zookeeper

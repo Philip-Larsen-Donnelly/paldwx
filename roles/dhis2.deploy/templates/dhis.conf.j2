@@ -1,0 +1,70 @@
+# ----------------------------------------------------------------------
+# Database connection for PostgreSQL
+# ----------------------------------------------------------------------
+
+# Hibernate SQL dialect
+connection.dialect = org.hibernate.dialect.PostgreSQLDialect
+
+# JDBC driver class
+connection.driver_class = org.postgresql.Driver
+
+# JDBC driver connection URL
+connection.url = jdbc:postgresql:{{ instance.db_name }}
+
+# Database username
+connection.username = {{ instance.db_owner | default(dhis2_db_owner_default) }}
+
+# Database password (sensitive)
+connection.password = {{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}
+
+# Database schema behavior, can be 'validate', 'update', 'create', 'create-drop'
+connection.schema = update
+
+# ----------------------------------------------------------------------
+# System
+# ----------------------------------------------------------------------
+
+# System mode for database read operations only, can be 'off', 'on'
+# system.read_only_mode = off
+
+# ----------------------------------------------------------------------
+# Encryption
+# ----------------------------------------------------------------------
+
+# Encryption password (sensitive)
+# encryption.password = xxxx
+
+# ----------------------------------------------------------------------
+# File store
+# ----------------------------------------------------------------------
+
+# File store provider. Currently 'filesystem' and 'aws-s3' are supported.
+filestore.provider = {{ dhis2_filestore.type | default('filesystem') }}
+
+# Directory / bucket name. Corresponds to folder within external directory on file system and 'bucket' on AWS S3.
+filestore.container = dhis2-{{ instance.db_name }}-store
+
+{% if fs_type == 'aws-s3' %}
+# The following configuration is applicable only on non-filesystem providers (AWS S3).
+
+# Datacenter location. Not required but recommended for performance reasons.
+filestore.location = {{ dhis2_filestore.location | default('') }}
+
+# Public identity / username.
+filestore.identity = {{ dhis2_filestore.identity | default('') }}
+
+# Secret key / password (sensitive).
+filestore.secret = {{ dhis2_filestore.secret | default('') }}
+{% endif %}
+
+# ----------------------------------------------------------------------
+# Node
+# ----------------------------------------------------------------------
+node.id = play-dhis2-org-{{ instance.db_name }}
+
+#
+# Flyway: migrate out of order  ( default = false )
+# Setting this to true is useful in a development scenarios
+# where flyway migrations may be added and applied out of order.
+# This should not be required in a production environment.
+#flyway.migrate_out_of_order=true

@@ -1,0 +1,18 @@
+# Module: dropwizard
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-dropwizard.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "dropwizard") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "dropwizard") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: dropwizard
+  #metricsets:
+  #  - collector
+  period: 10s
+  hosts: ["localhost:8080"]
+  metrics_path: /metrics/metrics
+  namespace: example
+  #username: "user"
+  #password: "secret"
+{% endif %}

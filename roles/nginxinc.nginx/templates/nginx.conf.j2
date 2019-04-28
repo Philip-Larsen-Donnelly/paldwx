@@ -1,0 +1,63 @@
+# {{ ansible_managed }}
+
+user  {{ nginx_main_template.user }};
+worker_processes  {{ nginx_main_template.worker_processes }};
+
+error_log  /var/log/nginx/error.log {{ nginx_main_template.error_level }};
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  {{ nginx_main_template.worker_connections }};
+}
+
+{% if nginx_main_template.http_enable %}
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" $request_time "$request_body"';
+
+    access_log  {{ nginx_main_template.access_log_location }};
+    error_log  {{ nginx_main_template.error_log_location }};
+
+    sendfile        on;
+  	tcp_nopush on;
+  	tcp_nodelay on;
+  	types_hash_max_size 2048;
+    keepalive_timeout  {{ nginx_main_template.http_settings.keepalive_timeout }};
+
+  	gzip on;
+  	gzip_disable "msie6";
+    gzip_types
+      "application/json;charset=utf-8" application/json
+      "application/javascript;charset=utf-8" application/javascript text/javascript
+      "application/xml;charset=utf-8" application/xml text/xml
+      "text/css;charset=utf-8" text/css
+      "text/plain;charset=utf-8" text/plain;
+
+    #gzip  on;
+{% if nginx_main_template.http_settings.cache %}
+    proxy_cache_path  /var/cache/nginx  levels=1:2 keys_zone=one:25m  inactive=14d;
+{% endif %}
+{% if nginx_main_template.http_settings.rate_limit %}
+    limit_req_zone $binary_remote_addr zone=dhis_limit:20m rate=5r/s;
+{% endif %}
+{% if nginx_main_template.http_settings.keyval %}
+    keyval_zone zone={{nginx_main_template.http_settings.keyval.zone}}:32k state=one.keyval;
+    keyval $arg_text $text zone=one;
+{% endif %}
+{% if nginx_main_template.http_global_autoindex %}
+    autoindex on;
+{% endif %}
+    include /etc/nginx/conf.d/*.conf;
+}
+{% endif %}
+
+{% if nginx_main_template.stream_enable %}
+stream {
+    include /etc/nginx/conf.d/stream/*.conf;
+}
+{% endif %}

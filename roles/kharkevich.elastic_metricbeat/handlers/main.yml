@@ -1,0 +1,8 @@
+---
+- name: ensure metricbeat is started and enabled
+  listen: restart_metricbeat
+  service:
+    name: metricbeat
+    state: restarted
+    enabled: True
+  become: True

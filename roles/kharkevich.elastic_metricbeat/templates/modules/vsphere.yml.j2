@@ -1,0 +1,23 @@
+# Module: vsphere
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-vsphere.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "vsphere") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "vsphere") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: vsphere
+  #metricsets:
+  #  - datastore
+  #  - host
+  #  - virtualmachine
+  period: 10s
+  hosts: ["https://localhost/sdk"]
+
+  username: "user"
+  password: "password"
+  # If insecure is true, don't verify the server's certificate chain
+  insecure: false
+  # Get custom fields when using virtualmachine metric set. Default false.
+  # get_custom_fields: false
+{% endif %}

@@ -1,0 +1,38 @@
+---
+# vars file for ansible-elastic-metricbeat
+metricbeat_list_modules:
+  - system
+  - aerospike
+  - apache
+  - ceph
+  - couchbase
+  - docker
+  - dropwizard
+  - elasticsearch
+  - envoyproxy
+  - etcd
+  - golang
+  - graphite
+  - haproxy
+  - http
+  - jolokia
+  - kafka
+  - kibana
+  - kubernetes
+  - kvm
+  - logstash
+  - memcached
+  - mongodb
+  - munin
+  - mysql
+  - nginx
+  - php_fpm
+  - postgresql
+  - prometheus
+  - rabbitmq
+  - redis
+  - traefik
+  - uwsgi
+  - vsphere
+  - windows
+  - zookeeper

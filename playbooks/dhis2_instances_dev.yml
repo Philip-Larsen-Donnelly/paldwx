@@ -1,0 +1,8 @@
+---
+- hosts: debug.dhis2.org
+  become: yes
+
+  roles:
+    #
+    - geerlingguy.certbot
+    - dhis2.deploy

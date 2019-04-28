@@ -1,0 +1,17 @@
+# Module: logstash
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-logstash.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "logstash") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "logstash") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: logstash
+  #metricsets:
+  #  - node
+  #  - node_stats
+  period: 10s
+  hosts: ["localhost:9600"]
+  #username: "user"
+  #password: "secret"
+{% endif %}

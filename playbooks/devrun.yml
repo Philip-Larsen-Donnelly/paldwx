@@ -1,0 +1,14 @@
+---
+- hosts: devteam
+  become: yes
+
+  vars:
+    instance: 2.31
+
+  tasks:
+    - name: Slurp hosts file
+      slurp:
+        src: /etc/filebeat/filebeat.yml
+      register: slurpfile
+
+    - debug: msg="{{ slurpfile['content'] | b64decode  }}.['filebeat']"

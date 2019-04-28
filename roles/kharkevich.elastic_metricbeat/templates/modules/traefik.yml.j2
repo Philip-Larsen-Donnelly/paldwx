@@ -1,0 +1,13 @@
+# Module: traefik
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-module-traefik.html
+
+{% if module_configuration is defined and (module_configuration | selectattr("module", "match", "traefik") | list | length)  %}
+{# Module custom settings #}
+{{ module_configuration | selectattr("module", "match", "traefik") | list | to_nice_yaml }}
+{% else %}
+{# Module default settings #}
+- module: traefik
+  metricsets: ["health"]
+  period: 10s
+  hosts: ["localhost:8080"]
+{% endif %}

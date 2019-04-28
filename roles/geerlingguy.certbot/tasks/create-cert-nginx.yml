@@ -1,0 +1,12 @@
+---
+- name: Install Certbot.
+  package: "name=python-certbot-nginx state=present"
+
+- name: Check if certificate already exists at /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Generate new certificate if one doesn't exist.
+  shell: "{{ certbot_create_command }}"
+  when: not letsencrypt_cert.stat.exists
