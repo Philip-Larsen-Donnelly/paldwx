@@ -9,7 +9,7 @@
         description: "{{ i_description }}"
         state: 'present'
         war_file: 'https://releases.dhis2.org/{{ i_war }}/dhis.war'
-        db_name: "{{ i_name | regex_replace('\.', '_') }}"
+        db_name: "{{ i_name | regex_replace('\\.', '_') }}"
         db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/{{ i_db }}'
         tomcat_port: 8420
 
