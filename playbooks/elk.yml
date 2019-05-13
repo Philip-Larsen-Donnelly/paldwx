@@ -13,10 +13,44 @@
   #       state: absent
 
 
-  roles:
-    - geerlingguy.java
-    - nginxinc.nginx
-    - geerlingguy.certbot
-    - geerlingguy.elasticsearch
-    - geerlingguy.logstash
-    - geerlingguy.kibana
+  pre_tasks:
+    # Create a new primary partition
+    # - parted:
+    #     device: "{{ storage_device }}"
+    #     number: 1
+    #     state: present
+    #   when: storage_device is defined
+    # Create a ext4 filesystem on storage device and check disk blocks.
+    - filesystem:
+        fstype: ext4
+        dev: "{{ storage_device }}"
+      when: storage_device is defined
+
+    - name: add mount point if necessary
+      mount:
+        path: "{{ storage_path }}"
+        src: "{{ storage_device }}"
+        fstype: ext4
+        opts: defaults
+        state: mounted
+      when: storage_device is defined
+
+  tasks:
+  - name: java
+    include_role:
+      name: geerlingguy.java
+  - name: nginx
+    include_role:
+      name: nginxinc.nginx
+  - name: certbot
+    include_role:
+      name: nginxinc.certbot
+  - name: elasticsearch
+    include_role:
+      name: nginxinc.elasticsearch
+  - name: logstash
+    include_role:
+      name: nginxinc.logstash
+  - name: kibana
+    include_role:
+      name: nginxinc.kibana

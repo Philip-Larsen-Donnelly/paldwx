@@ -5,6 +5,14 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
+- name: ensure data path is writable
+  file:
+    path: "{{elasticsearch_path_data }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0755
+
 - name: Install Elasticsearch.
   package:
     name: elasticsearch

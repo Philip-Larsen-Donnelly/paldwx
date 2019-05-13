@@ -51,6 +51,14 @@
     mode: 0600
     #notify: restart tomcat
 
+- name: Store ansible facts describing the instance
+  template:
+    src: "instance.fact.j2"
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
+    owner: "{{ dhis2_user }}"
+    group: "{{ dhis2_user }}"
+    mode: 0600
+
 - name: Configure tomcat ports.
   template:
     src: "server.xml.j2"

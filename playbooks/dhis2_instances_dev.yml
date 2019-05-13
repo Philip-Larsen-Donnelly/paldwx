@@ -1,8 +1,25 @@
 ---
 - hosts: debug.dhis2.org
+  strategy: free
   become: yes
 
-  roles:
-    #
-    - geerlingguy.certbot
-    - dhis2.deploy
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+
+  tasks:
+  - name: certbot
+    include_role:
+      name: geerlingguy.certbot
+  - name: dhis2 instances
+    include_role:
+      name: dhis2.deploy

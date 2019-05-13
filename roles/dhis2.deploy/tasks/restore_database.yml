@@ -59,7 +59,7 @@
         state: "{{ instance.state | default('present')  }}"
 
 
-- name: Execute sql script
+- name: Execute SQL - restore to DB {{ instance.db_name }} for {{ instance.name }}
   shell: "psql -d {{ instance.db_name }} -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql"
   become: true
   become_user: "{{ postgresql_user }}"

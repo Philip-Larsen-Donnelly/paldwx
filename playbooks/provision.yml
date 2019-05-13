@@ -29,6 +29,17 @@
         state: mounted
       when: storage_device is defined
 
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      copy:
+        src: files/dhis2.fact
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+
   roles:
     - geerlingguy.java
     - nginxinc.nginx

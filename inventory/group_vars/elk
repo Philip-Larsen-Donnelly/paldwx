@@ -12,6 +12,7 @@ nginx_http_template:
 
 elasticsearch_network_host: '0.0.0.0'
 elasticsearch_http_port: 9200
+elasticsearch_path_data: "{{ storage_path }}/elasticsearch"
 
 kibana_server_name: logs.dhis2.org
 kibana_username: kibana
