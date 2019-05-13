@@ -3,7 +3,7 @@
   strategy: free
   become: yes
 
-  variables:
+  vars:
     dhis2_instances:
       - name: "{{ i_name }}"
         description: "{{ i_description }}"
