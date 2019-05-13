@@ -1,0 +1,34 @@
+---
+- hosts: debug.dhis2.org
+  strategy: free
+  become: yes
+
+  variables:
+    dhis2_instances:
+      - name: "{{ i_name }}"
+        description: "{{ i_description }}"
+        state: 'present'
+        war_file: 'https://releases.dhis2.org/{{ i_war }}/dhis.war'
+        db_name: "{{ i_name | regex_replace('\.', '_') }}"
+        db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/{{ i_db }}'
+        tomcat_port: 8420
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+
+  tasks:
+  - name: certbot
+    include_role:
+      name: geerlingguy.certbot
+  - name: dhis2 instances
+    include_role:
+      name: dhis2.deploy

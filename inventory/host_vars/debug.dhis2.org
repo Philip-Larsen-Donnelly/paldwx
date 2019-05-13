@@ -1,6 +1,6 @@
 ---
 # DHIS 2 Instances to host on server
-dhis2_instances:
+old_dhis2_instances:
 
   - name: 2.32.0
     description: 2.32.0 patch release
