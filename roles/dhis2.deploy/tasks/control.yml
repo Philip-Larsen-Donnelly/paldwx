@@ -1,0 +1,29 @@
+---
+# === Stop instance ==========
+# stop the instance if running
+- name: stop the instance
+  systemd:
+    state: stopped
+    name: dhis2-{{ instance.name }}
+  ignore_errors: yes
+  when: instance_action == "stop"
+
+
+# === Start instance ==========
+# start the instance
+- name: stop the instance
+  systemd:
+    state: started
+    name: dhis2-{{ instance.name }}
+  ignore_errors: yes
+  when: instance_action == "start"
+
+
+# === Stop instance ==========
+# restart the instance if running
+- name: restart the instance
+  systemd:
+    state: restarted
+    name: dhis2-{{ instance.name }}
+  ignore_errors: yes
+  when: instance_action == "restart"

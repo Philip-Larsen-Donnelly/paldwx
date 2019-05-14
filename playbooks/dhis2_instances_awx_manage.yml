@@ -1,0 +1,46 @@
+---
+- hosts: debug.dhis2.org
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+
+  vars:
+    dhis2_instances:
+      - name: "{{ instance_name }}"
+        description: "{{ ansible_local.dhis2.instance_name.description }}"
+        state: 'absent'
+        war_file: "{{ ansible_local.dhis2.instance_name.war_file }}"
+        db_name: "{{ ansible_local.dhis2.instance_name.db_name }}"
+        db_demo: "{{ ansible_local.dhis2.instance_name.db_demo }}"
+        tomcat_port: "{{ ansible_local.dhis2.instance_name.tomcat_port }}"
+
+  tasks:
+  - debug:
+      msg: "{{ dhis2_instances }}"
+  - name: control dhis2 instance {{ instance_action }}
+    include_role:
+      name: dhis2.deploy
+    tasks_from: control.yml
+    when: instance_action != 'remove'
+  - name: remove dhis2 instance
+    include_role:
+      name: dhis2.deploy
+    when: instance_action == 'remove'
+    #tasks_from: databases.yml
