@@ -3,15 +3,9 @@
   strategy: free
   become: yes
 
-  vars:
-    dhis2_instances:
-      - name: "{{ i_name }}"
-        description: "{{ i_name }} demo instance"
-        state: 'present'
-        war_file: 'https://releases.dhis2.org/{{ i_war }}/dhis.war'
-        db_name: "{{ i_name | regex_replace('\\.', '-') }}"
-        db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/{{ i_db }}'
-        tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
 
   pre_tasks:
     # create custom fact file if not existing
@@ -26,6 +20,16 @@
         mode: 0755
     - name: "Re-run setup to use custom facts"
       setup: ~
+
+  vars:
+    dhis2_instances:
+      - name: "{{ instance_name }}"
+        description: "{{ instance_name }} demo instance"
+        state: 'present'
+        war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
+        db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
+        db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/{{ dhis2_demo_map[instance_war] }}/dhis2-db-sierra-leone.sql.gz'
+        tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
 
   tasks:
   - debug:
