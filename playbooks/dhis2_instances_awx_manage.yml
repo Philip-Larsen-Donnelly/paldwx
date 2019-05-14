@@ -37,7 +37,7 @@
   - name: control dhis2 instance {{ instance_action }}
     include_role:
       name: dhis2.deploy
-    tasks_from: control.yml
+      tasks_from: control.yml
     when: instance_action != 'remove'
   - name: remove dhis2 instance
     include_role:
