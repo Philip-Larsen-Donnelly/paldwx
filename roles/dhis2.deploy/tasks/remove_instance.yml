@@ -7,15 +7,14 @@
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
 
-# === DHIS 2 home =========
+
+# === get the storage location =========
 - name: set the instance locations
   set_fact:
     storage: "{{ storage_path | default('/var/lib') }}"
 
-- file:
-    path: "{{ storage }}/instances/{{ instance.name }}"
-    state: absent
 
+# === update nginx =========
 - include: nginx_config.yml
 
 # === systemd tomcat services ======
@@ -39,3 +38,8 @@
         owner: "{{ instance.db_owner | default('dhis') }}"
         state: absent
 # =========================
+
+# === finally, clean DHIS 2 home =========
+- file:
+    path: "{{ storage }}/instances/{{ instance.name }}"
+    state: absent
