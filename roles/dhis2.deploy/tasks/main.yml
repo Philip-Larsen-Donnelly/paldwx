@@ -5,7 +5,7 @@
 
 - include_role:
     name: geerlingguy.postgresql
-  when: instance.state | default('present') == 'present'
+  when: instance_action is not defined
 
 - name: install instance {{ instance.name }}
   include: install_instance.yml
