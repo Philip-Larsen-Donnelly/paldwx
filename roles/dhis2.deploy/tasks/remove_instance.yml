@@ -8,11 +8,25 @@
   ignore_errors: yes
 
 # === DHIS 2 home =========
+- name: set the instance locations
+  set_fact:
+    storage: "{{ storage_path | default('/var/lib') }}"
+
 - file:
     path: "{{ storage }}/instances/{{ instance.name }}"
     state: absent
 
 - include: nginx_config.yml
+
+# === systemd tomcat services ======
+- name: remove tomcat as a systemd service
+  file:
+    path: "/etc/systemd/system/dhis2-{{ instance.name }}.service"
+    state: absent
+
+- name: force systemd to reread configs
+  systemd:
+  daemon_reload: yes
 
 # === Remove DB ==============
 - name: remove db {{ instance.name }}
