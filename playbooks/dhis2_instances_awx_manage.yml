@@ -24,7 +24,6 @@
   vars:
     dhis2_instances:
       - name: "{{ instance_name }}"
-        description: "{{ ansible_local.dhis2.instance_name.description }}"
         state: 'absent'
         war_file: "{{ ansible_local.dhis2.instance_name.war_file }}"
         db_name: "{{ ansible_local.dhis2.instance_name.db_name }}"
