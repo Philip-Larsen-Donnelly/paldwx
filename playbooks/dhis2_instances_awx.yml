@@ -28,6 +28,8 @@
       setup: ~
 
   tasks:
+  - debug:
+      msg: "{{ dhis2_instances }}"
   - name: certbot
     include_role:
       name: geerlingguy.certbot
