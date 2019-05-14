@@ -6,12 +6,12 @@
   vars:
     dhis2_instances:
       - name: "{{ i_name }}"
-        description: "{{ i_description }}"
+        description: "{{ i_name }} demo instance"
         state: 'present'
         war_file: 'https://releases.dhis2.org/{{ i_war }}/dhis.war'
-        db_name: "{{ i_name | regex_replace('\\.', '_') }}"
+        db_name: "{{ i_name | regex_replace('\\.', '-') }}"
         db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/{{ i_db }}'
-        tomcat_port: 8420
+        tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
 
   pre_tasks:
     # create custom fact file if not existing
@@ -24,6 +24,8 @@
         src: "files/dhis2.fact.j2"
         dest: /etc/ansible/facts.d/dhis2.fact
         mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
 
   tasks:
   - name: certbot

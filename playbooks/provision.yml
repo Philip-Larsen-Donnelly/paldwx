@@ -40,10 +40,22 @@
         dest: /etc/ansible/facts.d/dhis2.fact
         mode: 0755
 
-  roles:
-    - geerlingguy.java
-    - nginxinc.nginx
-    - geerlingguy.git
-    - geerlingguy.docker
-    - geerlingguy.filebeat
-    - kharkevich.elastic_metricbeat
+  tasks:
+  - name: java
+    include_role:
+      name: geerlingguy.java
+  - name: nginx
+    include_role:
+      name: nginxinc.nginx
+  - name: git
+    include_role:
+      name: geerlingguy.git
+  - name: docker
+    include_role:
+      name: geerlingguy.docker
+  - name: filebeat
+    include_role:
+      name: geerlingguy.filebeat
+  - name: elastic_metricbeat
+    include_role:
+      name: kharkevich.elastic_metricbeat

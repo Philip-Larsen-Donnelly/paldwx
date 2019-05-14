@@ -1,2 +1,12 @@
 #!/bin/bash
 cat {{ storage_path }}/instances/*/home/instance.fact
+
+echo "[tomcat]"
+for p in {8100..8300}
+do
+  if [ ! `grep "tomcat_port=$p" {{ storage_path }}/instances/*/home/instance.fact` ]
+  then
+    echo "next_port=$p"
+    break
+  fi
+done
