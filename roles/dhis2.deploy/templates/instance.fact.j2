@@ -1,7 +1,7 @@
 [{{ instance.name }}]
-war_file = {{ instance.war_file }}
-db_name = {{ instance.db_name }}
-db_owner = {{ instance.db_owner | default(dhis2_db_owner_default) }}
-db_owner_password = {{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}
-db_demo: {{ instance.db_demo }}
+war_file={{ instance.war_file }}
+db_name={{ instance.db_name }}
+db_owner={{ instance.db_owner | default(dhis2_db_owner_default) }}
+db_owner_password={{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}
+db_demo={{ instance.db_demo }}
 tomcat_port={{ instance.tomcat_port }}
