@@ -27,16 +27,16 @@
         name: dhis2.deploy
       loop: "{{ query('dict', ansible_local.dhis2|default({})) }}"
       loop_control:
-        loop_var: instance
+        loop_var: single_instance
       vars:
         dhis2_instances:
           - name: "{{ instance_name }}"
             state: 'absent'
-            war_file: "{{ instance.value.war_file}}"
-            db_name: "{{ instance.value.db_name }}"
-            db_demo: "{{ instance.value.db_demo }}"
-            tomcat_port: "{{ instance.value.tomcat_port }}"
-      when: instance.key == instance_name and instance_action == 'remove'
+            war_file: "{{ single_instance.value.war_file}}"
+            db_name: "{{ single_instance.value.db_name }}"
+            db_demo: "{{ single_instance.value.db_demo }}"
+            tomcat_port: "{{ single_instance.value.tomcat_port }}"
+      when: single_instance.key == instance_name and instance_action == 'remove'
 
     - name: control dhis2 instance {{ instance_action }}
       include_role:
