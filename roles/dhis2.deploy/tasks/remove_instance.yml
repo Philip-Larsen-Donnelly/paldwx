@@ -26,7 +26,7 @@
 
 - name: force systemd to reread configs
   systemd:
-  daemon_reload: yes
+    daemon_reload: yes
 
 # === Remove DB ==============
 - name: remove db {{ instance.name }}
