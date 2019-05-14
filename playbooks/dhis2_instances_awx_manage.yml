@@ -25,10 +25,10 @@
     dhis2_instances:
       - name: "{{ instance_name }}"
         state: 'absent'
-        war_file: "{{ ansible_local.dhis2.instance_name.war_file }}"
-        db_name: "{{ ansible_local.dhis2.instance_name.db_name }}"
-        db_demo: "{{ ansible_local.dhis2.instance_name.db_demo }}"
-        tomcat_port: "{{ ansible_local.dhis2.instance_name.tomcat_port }}"
+        war_file: "{{ ansible_local.dhis2.[instance_name].war_file }}"
+        db_name: "{{ ansible_local.dhis2.[instance_name].db_name }}"
+        db_demo: "{{ ansible_local.dhis2.[instance_name].db_demo }}"
+        tomcat_port: "{{ ansible_local.dhis2.[instance_name].tomcat_port }}"
 
   tasks:
   - debug:
