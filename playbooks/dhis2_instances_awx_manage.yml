@@ -31,12 +31,12 @@
         loop_var: single_instance
       vars:
         instance:
-          - name: "{{ instance_name }}"
-            state: 'absent'
-            war_file: "{{ single_instance.value.war_file}}"
-            db_name: "{{ single_instance.value.db_name }}"
-            db_demo: "{{ single_instance.value.db_demo }}"
-            tomcat_port: "{{ single_instance.value.tomcat_port }}"
+          name: "{{ instance_name }}"
+          state: 'absent'
+          war_file: "{{ single_instance.value.war_file}}"
+          db_name: "{{ single_instance.value.db_name }}"
+          db_demo: "{{ single_instance.value.db_demo }}"
+          tomcat_port: "{{ single_instance.value.tomcat_port }}"
       when: single_instance.key == instance_name and instance_action == 'remove'
 
     - name: control dhis2 instance {{ instance_action }}
@@ -48,10 +48,10 @@
         loop_var: single_instance
       vars:
         instance:
-          - name: "{{ instance_name }}"
-            state: 'present'
-            war_file: "{{ single_instance.value.war_file}}"
-            db_name: "{{ single_instance.value.db_name }}"
-            db_demo: "{{ single_instance.value.db_demo }}"
-            tomcat_port: "{{ single_instance.value.tomcat_port }}"
+          name: "{{ instance_name }}"
+          state: 'present'
+          war_file: "{{ single_instance.value.war_file}}"
+          db_name: "{{ single_instance.value.db_name }}"
+          db_demo: "{{ single_instance.value.db_demo }}"
+          tomcat_port: "{{ single_instance.value.tomcat_port }}"
       when: single_instance.key == instance_name and instance_action != 'remove'

@@ -1,4 +1,6 @@
 ---
+- debug:
+    msg: "{{ instance }}"
 # === Stop instance ==========
 # stop the instance if running
 - name: stop the instance

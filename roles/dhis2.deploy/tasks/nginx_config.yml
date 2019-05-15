@@ -77,7 +77,7 @@
       <tr>
         <td><img src="resources/dhis2-icon-rgb-positive.png" style="width:30px;margin-left:5px;"></td>
         <td><a href="https://{{ inventory_hostname }}/{{ instance.name }}">{{ instance.name }}</a></td>
-        <td>{{ instance.description | default(instance.name) }}</td>
+        <td>{{ instance.description | default(default_description) }}</td>
         <td>
           <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name : {{ inventory_hostname.split(".")[0] | lower }} and log.file.path : {{ storage }}/instances/{{ instance.name }}/tomcat/logs/catalina.out',kind:kuery)">catalina.out</a>
           </br>
@@ -87,8 +87,8 @@
     marker: "<!-- {mark} ANSIBLE MANAGED BLOCK {{ instance.name }} -->"
     insertbefore: "<!-- END DHIS2-INSTANCES -->"
     state: "{{ instance.state }}"
-    vars:
-      default_description: "{{ instance.name }}"
+  vars:
+    default_description: "{{ instance.name }}"
 
 - name: add maintenance pages
   copy:
