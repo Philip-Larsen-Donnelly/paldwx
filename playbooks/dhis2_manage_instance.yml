@@ -1,5 +1,5 @@
 ---
-- hosts: coreteam
+- hosts: "{{ instance_host }}"
   strategy: free
   become: yes
 
