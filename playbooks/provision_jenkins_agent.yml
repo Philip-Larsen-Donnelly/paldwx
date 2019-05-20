@@ -1,0 +1,131 @@
+---
+- hosts: jenkins_agents
+  become: yes
+
+  vars_files:
+    # include the standard dhis2 beats config for logging to the ELK server
+    - vars/logging.yml
+    - vars/jenkins.yml
+
+  tasks:
+  # packages
+  - name: java
+    include_role:
+      name: geerlingguy.java
+  - name: maven
+    include_role:
+      name: gantsign.maven
+  - name: git
+    include_role:
+      name: geerlingguy.git
+  - name: docker
+    include_role:
+      name: geerlingguy.docker
+  - name: filebeat
+    include_role:
+      name: geerlingguy.filebeat
+  - name: elastic_metricbeat
+    include_role:
+      name: kharkevich.elastic_metricbeat
+
+  # configure the machine
+  #
+  # set up users and directories
+  # add users
+  - group:
+      name: jenkins
+      state: present
+  - user:
+      name: jenkins
+      group: jenkins
+      shell: /bin/bash
+
+  # # create a symlink to match home location on master
+  - file:
+      path: /ebs1
+      state: directory
+      mode: 0755
+  - file:
+      src: /home
+      dest: /ebs1/home
+      owner: jenkins
+      group: jenkins
+      state: link
+
+  # add some swap space  (https://stackoverflow.com/questions/24765930/add-swap-memory-with-ansible)
+  - name: Set swap_file variable
+    set_fact:
+      swap_file: "{{swap_file_path}}"
+    tags:
+      - swap.set.file.path
+  #
+  - name: Check if swap file exists
+    stat:
+      path: "{{swap_file}}"
+    register: swap_file_check
+    tags:
+      - swap.file.check
+  #
+  - name: Create swap file
+    command: fallocate -l {{swap_file_size}} {{swap_file}}
+    when: not swap_file_check.stat.exists
+    tags:
+      - swap.file.create
+  #
+  - name: Change swap file permissions
+    file: path="{{swap_file}}"
+          owner=root
+          group=root
+          mode=0600
+    tags:
+      - swap.file.permissions
+  #
+  - name: Format swap file
+    sudo: yes
+    command: "mkswap {{swap_file}}"
+    when: not swap_file_check.stat.exists
+    tags:
+      - swap.file.mkswap
+  #
+  - name: Write swap entry in fstab
+    mount: name=none
+           src={{swap_file}}
+           fstype=swap
+           opts=sw
+           passno=0
+           dump=0
+           state=present
+    tags:
+      - swap.fstab
+  #
+  - name: Turn on swap
+    sudo: yes
+    command: swapon -a
+    when: not swap_file_check.stat.exists
+    tags:
+      - swap.turn.on
+  #
+  - name: Set swappiness
+    sudo: yes
+    sysctl:
+      name: vm.swappiness
+      value: "{{swappiness}}"
+    tags:
+      - swap.set.swappiness
+
+  # set public keys
+  - name: Set authorized keys for jenkins
+  authorized_key:
+    user: jenkins
+    key: '{{ item }}'
+    state: present
+  with_file:
+    - public_keys/jenkins
+  # set public keys
+  - name: Set authorized keys for ubuntu
+  authorized_key:
+    user: ubuntu
+    key: '{{ item }}'
+    state: present
+  with_file:
+    - public_keys/jenkins

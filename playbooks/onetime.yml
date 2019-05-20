@@ -1,0 +1,17 @@
+---
+- hosts: jenkins_agents
+  become: yes
+  gather_facts: no
+
+  tasks:
+  # # create a symlink to match home location on master
+  - file:
+      path: /ebs1
+      state: directory
+      mode: 0755
+  - file:
+      src: /home
+      dest: /ebs1/home
+      owner: jenkins
+      group: jenkins
+      state: link

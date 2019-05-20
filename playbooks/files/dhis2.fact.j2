@@ -4,9 +4,12 @@ cat {{ storage_path }}/instances/*/home/instance.fact
 echo "[tomcat]"
 for p in {8100..8300}
 do
-  if [ ! `grep "tomcat_port=$p" {{ storage_path }}/instances/*/home/instance.fact` ]
+  if [ ! `grep "$p" {{ storage_path }}/instances/*/home/instance.fact /etc/nginx/conf.d/default.conf` ]
   then
     echo "next_port=$p"
     break
   fi
 done
+
+
+# more /etc/nginx/conf.d/default.conf | grep proxy_pass | sed 's/.*http.*:\([0-9]*\)\/.*/\1/'

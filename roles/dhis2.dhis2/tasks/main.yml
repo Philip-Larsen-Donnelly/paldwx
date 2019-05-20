@@ -1,0 +1,30 @@
+---
+# tasks file for dhis2.dhis2
+- name: Define DHIS2-optimised postgres configuration.
+  include_vars: "postgresql.yml"
+
+- include_role:
+    name: geerlingguy.postgresql
+
+- name: install instance {{ instance.name }}
+  include: install_instance.yml
+  loop: "{{ dhis2_instances }}"
+  loop_control:
+    loop_var: instance
+  vars:
+    #instance: "{{ item }}"
+    dhis2_user: "{{ instance.dhis2_user | default('dhis') }}"
+    dhis2_filestore: "{{ instance.filestore | default(local_filestore) }}"
+  when: instance.state | default('present') == 'present'
+
+
+- name: remove instance {{ instance.name }}
+  include: remove_instance.yml
+  loop: "{{ dhis2_instances }}"
+  loop_control:
+    loop_var: instance
+  vars:
+    #instance: "{{ item }}"
+    dhis2_user: "{{ instance.dhis2_user | default('dhis') }}"
+    dhis2_filestore: "{{ instance.filestore | default(local_filestore) }}"
+  when: instance.state == 'absent'

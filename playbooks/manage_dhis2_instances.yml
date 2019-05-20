@@ -1,0 +1,57 @@
+---
+- hosts: debug.dhis2.org
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+
+  tasks:
+    - name: remove dhis2 instance
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: remove_instance.yml
+      loop: "{{ query('dict', ansible_local.dhis2|default({})) }}"
+      loop_control:
+        loop_var: single_instance
+      vars:
+        instance:
+          name: "{{ instance_name }}"
+          state: 'absent'
+          war_file: "{{ single_instance.value.war_file}}"
+          db_name: "{{ single_instance.value.db_name }}"
+          db_demo: "{{ single_instance.value.db_demo }}"
+          tomcat_port: "{{ single_instance.value.tomcat_port }}"
+      when: single_instance.key == instance_name and instance_action == 'remove'
+
+    - name: control dhis2 instance {{ instance_action }}
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: control.yml
+      loop: "{{ query('dict', ansible_local.dhis2|default({})) }}"
+      loop_control:
+        loop_var: single_instance
+      vars:
+        instance:
+          name: "{{ instance_name }}"
+          state: 'present'
+          war_file: "{{ single_instance.value.war_file}}"
+          db_name: "{{ single_instance.value.db_name }}"
+          db_demo: "{{ single_instance.value.db_demo }}"
+          tomcat_port: "{{ single_instance.value.tomcat_port }}"
+      when: single_instance.key == instance_name and instance_action != 'remove'

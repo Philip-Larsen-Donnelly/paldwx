@@ -9,6 +9,7 @@
 #   - A hostname/ip can be a member of multiple groups
 
 
+#=============================================================================
 # logging server (ELK stack)
 [elk]
 logs.dhis2.org
@@ -18,6 +19,11 @@ ansible_ssh_user=ubuntu
 ansible_ssh_private_key_file=~/.ssh/id_rsa
 ansible_python_interpreter=/usr/bin/python3
 
+
+
+
+
+#=============================================================================
 # ansible AWX server
 [awx]
 awx.dhis2.org
@@ -27,6 +33,25 @@ ansible_ssh_user=ubuntu
 ansible_ssh_private_key_file=~/.ssh/id_rsa
 ansible_python_interpreter=/usr/bin/python3
 
+
+
+
+
+#=============================================================================
+[jenkins_agents]
+158.39.77.205
+158.39.74.172
+158.39.74.98
+158.39.77.99
+
+[jenkins_agents:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa_awx
+ansible_python_interpreter=/usr/bin/python3
+postgresql_python_library=python3-psycopg2
+
+
+#=============================================================================
 # public play servers
 [public]
 192.168.60.4
@@ -45,6 +70,8 @@ play.dhis2.org
 ansible_ssh_user=ubuntu
 ansible_ssh_private_key_file=~/.ssh/id_rsa
 
+
+
 # development servers
 [devteam]
 debug.dhis2.org
@@ -59,10 +86,14 @@ qateam
 
 [coreteam:vars]
 ansible_ssh_user=ubuntu
-ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_ssh_private_key_file=~/.ssh/id_rsa_awx
 ansible_python_interpreter=/usr/bin/python3
 postgresql_python_library=python3-psycopg2
 
+
+
+#=============================================================================
+# used? to re reviewed
 # Group 'multi' with all servers
 [multi:children]
 public
@@ -77,5 +108,3 @@ ansible_ssh_user=vagrant
 ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
 ansible_python_interpreter=/usr/bin/python3
 postgresql_python_library=python3-psycopg2
-
-[elk:vars]

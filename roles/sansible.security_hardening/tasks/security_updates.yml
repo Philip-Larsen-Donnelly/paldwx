@@ -1,0 +1,75 @@
+---
+
+- name: Install aptitude
+  become: yes
+  apt:
+    cache_valid_time: 3600
+    name: aptitude
+
+- name: Log Update Start
+  become: yes
+  lineinfile:
+    create: yes
+    insertafter: EOF
+    line: "# Starting Security Update {{ ansible_date_time.iso8601 }}"
+    name: /var/log/apt-security-updates
+
+- name: Perform Update
+  become: yes
+  apt:
+    cache_valid_time: 3600
+    default_release: "{{ ansible_distribution_release }}-security"
+    upgrade: yes
+  register: apt_upgrade
+
+- name: Log Update Details
+  become: yes
+  lineinfile:
+    create: yes
+    insertafter: EOF
+    line: "{{ apt_upgrade.stdout }}"
+    name: /var/log/apt-security-updates
+
+- name: Log Update End
+  become: yes
+  lineinfile:
+    create: yes
+    insertafter: EOF
+    line: "# Finished Security Update {{ ansible_date_time.iso8601 }}"
+    name: /var/log/apt-security-updates
+
+- block:
+    - name: Reboot box if kernel/libs updated and requested by the system
+      become: yes
+      command: sleep 2 && /sbin/shutdown -r now
+      args:
+        removes: /var/run/reboot-required
+      async: 300
+      poll: 0
+      ignore_errors: true
+      when: "ansible_virtualization_type != 'docker'"
+
+    - name: Wait for system to become reachable again
+      wait_for_connection:
+        delay: 20
+        timeout: 300
+      when: "ansible_virtualization_type != 'docker'"
+
+    - name: Copy linux-purge
+      become: yes
+      copy:
+        src: linux-purge
+        dest: /usr/bin/linux-purge
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Purge Old Kernels
+      become: yes
+      command: /usr/bin/linux-purge -k 0 -y
+      changed_when: no
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      when: "ansible_virtualization_type != 'docker'"
+
+  when: sansible_security_hardening_purge_old_kernels

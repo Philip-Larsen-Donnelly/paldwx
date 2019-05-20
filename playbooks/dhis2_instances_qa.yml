@@ -21,4 +21,4 @@
       name: geerlingguy.certbot
   - name: dhis2 instances
     include_role:
-      name: dhis2.deploy
+      name: dhis2.dhis2

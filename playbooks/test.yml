@@ -1,0 +1,39 @@
+---
+- hosts: debug.dhis2.org
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+
+  tasks:
+    - name: debug
+      debug:
+          msg: "{{ dhis2_instances }}"
+      loop: "{{ query('dict', ansible_local.dhis2|default({})) }}"
+      loop_control:
+        loop_var: instance
+      vars:
+        dhis2_instances: 
+          - name: "{{ instance_name }}"
+            state: 'absent'
+            war_file: "{{ instance.value.war_file}}"
+            db_name: "{{ instance.value.db_name }}"
+            db_demo: "{{ instance.value.db_demo }}"
+            tomcat_port: "{{ instance.value.tomcat_port }}"
+      when: instance.key == instance_name

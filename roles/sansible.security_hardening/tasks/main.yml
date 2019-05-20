@@ -1,0 +1,6 @@
+---
+
+- name: Install Security Hardening
+  include: install.yml
+  tags:
+    - build
