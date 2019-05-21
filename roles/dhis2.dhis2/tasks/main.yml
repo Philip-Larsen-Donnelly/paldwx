@@ -1,10 +1,5 @@
 ---
 # tasks file for dhis2.dhis2
-- name: Define DHIS2-optimised postgres configuration.
-  include_vars: "postgresql.yml"
-
-- include_role:
-    name: geerlingguy.postgresql
 
 - name: install instance {{ instance.name }}
   include: install_instance.yml

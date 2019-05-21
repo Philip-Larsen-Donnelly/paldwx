@@ -5,11 +5,11 @@
     url: "{{ instance.db_demo }}"
     dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
     mode: 0644
-  when: instance.db_demo is defined
+  when: instance.db_demo is defined and instance.db_demo|length
 
 - name: unzip the demo db
   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz
-  when: instance.db_demo is defined
+  when: instance.db_demo is defined and instance.db_demo|length
 
 
 - name: add redirect to nginx config
@@ -63,7 +63,7 @@
   shell: "psql -d {{ instance.db_name }} -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql"
   become: true
   become_user: "{{ postgresql_user }}"
-  when: instance.db_demo is defined
+  when: instance.db_demo is defined and instance.db_demo|length
 
 
 - name: remove temporary demo db file

@@ -5,6 +5,8 @@
   vars_files:
     # include the standard dhis2 beats config for logging to the ELK server
     - vars/logging.yml
+    # include postgres config
+    - vars/postgresql.yml
 
   pre_tasks:
     # Create a new primary partition
@@ -35,8 +37,8 @@
         path: "/etc/ansible/facts.d"
         state: "directory"
     - name: "Insert custom fact file"
-      copy:
-        src: files/dhis2.fact
+      template:
+        src: "files/dhis2.fact.j2"
         dest: /etc/ansible/facts.d/dhis2.fact
         mode: 0755
 
@@ -62,3 +64,6 @@
   - name: certbot
     include_role:
       name: geerlingguy.certbot
+  - name: postgres
+    include_role:
+      name: geerlingguy.postgresql

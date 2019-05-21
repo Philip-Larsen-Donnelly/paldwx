@@ -101,8 +101,8 @@
     recurse: yes
 
 - name: add google auth
-  copy:
-    src: dhis-google-auth.json
+  template:
+    src: "dhis-google-auth.json.j2"
     dest: "{{ storage }}/instances/{{ instance.name }}/home/dhis-google-auth.json"
     mode: 0644
 

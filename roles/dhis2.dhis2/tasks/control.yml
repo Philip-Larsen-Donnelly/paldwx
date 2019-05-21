@@ -52,12 +52,12 @@
 
 # === Start instance ==========
 # start the instance
-- name: stop the instance
+- name: start the instance
   systemd:
     state: started
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
-  when: instance_action == "start"
+  when: instance_action in ["start", "reset_war", "reset_db", "reset_war_and_db"]
 
 
 # === Restart instance ==========
@@ -89,3 +89,23 @@
     state: "{{ instance.state }}"
   notify: reload nginx
   when: instance_action in ["restart", "start", "start", "reset_war", "reset_db", "reset_war_and_db"]
+
+- name: reload nginx
+  systemd:
+    state: reloaded
+    name: nginx
+
+# === Run analytics if we have reset the DB
+- name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
+  uri:
+    url: https://{{ inventory_hostname }}/{{ instance.name }}/api/resourceTables/analytics
+    method: POST
+    user: "{{ dhis2_admin_user }}"
+    password: "{{ dhis2_admin_user_password }}"
+    force_basic_auth: yes
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 90
+  delay: 10
+  when: instance_action in ["reset_db", "reset_war_and_db"]
