@@ -2,6 +2,22 @@
 - hosts: jenkins_agents
   become: yes
 
+  pre_tasks:
+    # Create a ext4 filesystem on storage device and check disk blocks.
+    - filesystem:
+        fstype: ext4
+        dev: "{{ storage_device }}"
+      when: storage_device is defined
+
+    - name: add mount point if necessary
+      mount:
+        path: "{{ storage_path }}"
+        src: "{{ storage_device }}"
+        fstype: ext4
+        opts: defaults
+        state: mounted
+      when: storage_device is defined
+
   vars_files:
     # include the standard dhis2 beats config for logging to the ELK server
     - vars/logging.yml
@@ -30,6 +46,28 @@
 
   # configure the machine
   #
+
+  # # create a symlink to match home location on master
+  - file:
+      path: /ebs1
+      state: directory
+      mode: 0755
+    when: storage_path is not defined
+  - file:
+      src: /home
+      dest: /ebs1/home
+      owner: jenkins
+      group: jenkins
+      state: link
+    when: storage_path is not defined
+
+  - user:
+      name: jenkins
+      state: absent
+  - file:
+      path: /home/jenkins
+      state: absent
+
   # set up users and directories
   # add users
   - group:
@@ -39,18 +77,17 @@
       name: jenkins
       group: jenkins
       shell: /bin/bash
+      home: /ebs1/home/jenkins
+      move_home: yes
 
-  # # create a symlink to match home location on master
   - file:
-      path: /ebs1
-      state: directory
-      mode: 0755
-  - file:
-      src: /home
-      dest: /ebs1/home
+      src: /ebs1/home/jenkins
+      dest: /home/jenkins
       owner: jenkins
       group: jenkins
       state: link
+      force: yes
+    when: storage_path is defined
 
   # add some swap space  (https://stackoverflow.com/questions/24765930/add-swap-memory-with-ansible)
   - name: Set swap_file variable
@@ -115,17 +152,17 @@
 
   # set public keys
   - name: Set authorized keys for jenkins
-  authorized_key:
-    user: jenkins
-    key: '{{ item }}'
-    state: present
-  with_file:
+    authorized_key:
+      user: jenkins
+      key: '{{ item }}'
+      state: present
+    with_file:
     - public_keys/jenkins
   # set public keys
   - name: Set authorized keys for ubuntu
-  authorized_key:
-    user: ubuntu
-    key: '{{ item }}'
-    state: present
-  with_file:
-    - public_keys/jenkins
+    authorized_key:
+      user: ubuntu
+      key: '{{ item }}'
+      state: present
+    with_file:
+      - public_keys/jenkins
