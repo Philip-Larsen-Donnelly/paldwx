@@ -20,11 +20,6 @@
 
 # =========================
 
-# === Set up the DHIS2 Scripts
-- include: dhis2_server_scripts.yml
-
-# =============================
-
 # stop the instance if running (using the server scripts)
 # - include: dhis2_services.yml op="stop-instance"
 
