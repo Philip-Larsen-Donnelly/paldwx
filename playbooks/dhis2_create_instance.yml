@@ -22,13 +22,14 @@
       setup: ~
 
   vars:
+    use_demo: "{{ instance_use_demo_db if inventory_hostname != 'empty.dhis2.org' else '' }}"
     dhis2_instances:
       - name: "{{ instance_name }}"
         description: "Demo of {{ instance_war }} release"
         state: 'present'
         war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
-        db_demo: "{{ dhis2_demo_map[instance_war] if instance_use_demo_db == 'YES' else '' }}"
+        db_demo: "{{ dhis2_demo_map[instance_war] if use_demo == 'YES' else '' }}"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
 
   tasks:
