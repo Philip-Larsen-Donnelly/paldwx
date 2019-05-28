@@ -26,6 +26,8 @@ filebeat_output_logstash_hosts:
 kibana_host: "http://logs.dhis2.org"
 elasticsearch_hosts:
   - "logs.dhis2.org/elasticsearch"
+elasticsearch_package_state: latest
+
 logstash_hosts:
   - "logs.dhis2.org/logstash"
 

@@ -1,0 +1,15 @@
+---
+- hosts: jenkins_agents
+  become: yes
+
+  tasks:
+  # # create a symlink to match home location on master
+
+
+  - name: Install Metricbeat
+    package:
+      name: metricbeat
+      state: absent
+
+  - name: Install Filebeat.
+    package: name=filebeat state=absent

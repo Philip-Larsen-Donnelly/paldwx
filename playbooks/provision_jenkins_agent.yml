@@ -24,29 +24,6 @@
     - vars/jenkins.yml
 
   tasks:
-  # packages
-  - name: java
-    include_role:
-      name: geerlingguy.java
-  - name: maven
-    include_role:
-      name: gantsign.maven
-  - name: git
-    include_role:
-      name: geerlingguy.git
-  - name: docker
-    include_role:
-      name: geerlingguy.docker
-  - name: filebeat
-    include_role:
-      name: geerlingguy.filebeat
-  - name: elastic_metricbeat
-    include_role:
-      name: kharkevich.elastic_metricbeat
-
-  # configure the machine
-  #
-
   # # create a symlink to match home location on master
   - file:
       path: /ebs1
@@ -60,13 +37,35 @@
       group: jenkins
       state: link
     when: storage_path is not defined
+  # - user:
+  #     name: jenkins
+  #     state: absent
+  # - file:
+  #     path: /home/jenkins
+  #     state: absent
 
-  - user:
-      name: jenkins
+  - name: remove /var/lib/docker from loca storage
+    file:
+      path: /var/lib/docker
       state: absent
+    when: storage_path is defined
+  - name: put /var/lib/docker on external storage
+    file:
+      path: /ebs1/home/var/lib/docker
+      state: directory
+      mode: 0755
+    when: storage_path is defined
   - file:
-      path: /home/jenkins
-      state: absent
+      src: /ebs1/home/var/lib/docker
+      dest: /var/lib/docker
+      owner: root
+      group: root
+      state: link
+    when: storage_path is defined
+
+  - name: docker
+    include_role:
+      name: geerlingguy.docker
 
   # set up users and directories
   # add users
@@ -76,6 +75,7 @@
   - user:
       name: jenkins
       group: jenkins
+      groups: docker
       shell: /bin/bash
       home: /ebs1/home/jenkins
       move_home: yes
@@ -88,6 +88,30 @@
       state: link
       force: yes
     when: storage_path is defined
+
+  # packages
+  - name: java
+    include_role:
+      name: geerlingguy.java
+  - name: maven
+    include_role:
+      name: gantsign.maven
+  - name: git
+    include_role:
+      name: geerlingguy.git
+  - name: docker
+    include_role:
+      name: geerlingguy.docker
+  # - name: filebeat
+  #   include_role:
+  #     name: geerlingguy.filebeat
+  # - name: elastic_metricbeat
+  #   include_role:
+  #     name: kharkevich.elastic_metricbeat
+
+  # configure the machine
+  #
+
 
   # add some swap space  (https://stackoverflow.com/questions/24765930/add-swap-memory-with-ansible)
   - name: Set swap_file variable

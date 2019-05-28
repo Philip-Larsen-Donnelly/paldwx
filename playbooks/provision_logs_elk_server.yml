@@ -44,13 +44,13 @@
       name: nginxinc.nginx
   - name: certbot
     include_role:
-      name: nginxinc.certbot
+      name: geerlingguy.certbot
   - name: elasticsearch
     include_role:
-      name: nginxinc.elasticsearch
+      name: geerlingguy.elasticsearch
   - name: logstash
     include_role:
-      name: nginxinc.logstash
+      name: geerlingguy.logstash
   - name: kibana
     include_role:
-      name: nginxinc.kibana
+      name: geerlingguy.kibana

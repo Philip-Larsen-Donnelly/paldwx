@@ -43,6 +43,7 @@ ansible_python_interpreter=/usr/bin/python3
 158.39.74.172
 158.39.74.98
 158.39.77.99
+63.33.213.102
 
 [jenkins_agents:vars]
 ansible_ssh_user=ubuntu

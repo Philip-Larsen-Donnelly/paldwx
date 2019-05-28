@@ -1,7 +1,7 @@
 ---
 docker_users:
   - jenkins
-  
+
 swap_file_path: /swapfile
 # Use any of the following suffixes
 # c=1
