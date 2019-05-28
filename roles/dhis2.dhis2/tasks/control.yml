@@ -111,7 +111,7 @@
   when: instance_action in ["reset_db", "reset_war_and_db"]
 
 # === Wait until we can reach the instance before finishing the job
-- name: wait for instance {{ inventory_hostname }}/{{ instance.name }}/api to start in order to run analytics
+- name: ensure instance {{ inventory_hostname }}/{{ instance.name }}/api is up before finishing job
   uri:
     url: https://{{ inventory_hostname }}/{{ instance.name }}/dhis-web-commons/security/login.action
     method: GET
