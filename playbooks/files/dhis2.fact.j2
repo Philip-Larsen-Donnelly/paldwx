@@ -11,5 +11,14 @@ do
   fi
 done
 
+echo "[activemq]"
+for p in {15680..15880}
+do
+  if [ ! `grep "$p" {{ storage_path }}/instances/*/home/instance.fact` ]
+  then
+    echo "next_port=$p"
+    break
+  fi
+done
 
 # more /etc/nginx/conf.d/default.conf | grep proxy_pass | sed 's/.*http.*:\([0-9]*\)\/.*/\1/'
