@@ -106,6 +106,21 @@
     status_code: 200
   register: result
   until: result.status == 200
-  retries: 90
+  retries: 40
   delay: 10
   when: instance_action in ["reset_db", "reset_war_and_db"]
+
+# === Wait until we can reach the instance before finishing the job
+- name: wait for instance {{ inventory_hostname }}/{{ instance.name }}/api to start in order to run analytics
+  uri:
+    url: https://{{ inventory_hostname }}/{{ instance.name }}/dhis-web-commons/security/login.action
+    method: GET
+    user: "{{ dhis2_admin_user }}"
+    password: "{{ dhis2_admin_user_password }}"
+    force_basic_auth: yes
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 40
+  delay: 10
+  when: instance_action in ["restart", "start", "start", "reset_war", "reset_db", "reset_war_and_db"]
