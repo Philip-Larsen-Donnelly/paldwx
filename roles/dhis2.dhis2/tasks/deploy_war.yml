@@ -11,36 +11,75 @@
 #     dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}##{{ next_instance_version.stdout }}.war"
 #     mode: 0644
 
+# check if we need to do anything:
+# make a temporary file for the war:
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: war
+  register: temp_war
 
-- name: add redirect to nginx config
-  blockinfile:
-    path: "/etc/nginx/conf.d/default.conf"
-    block: |
-        location /{{ instance.name }} {
-            rewrite ^ /{{ instance.name }}_deploy_war/ ;
-        }
-        location /{{ instance.name }}_deploy_war {
-            alias /usr/share/nginx/html;
-            index deploy_war.html break;
-        }
-    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
-    insertbefore: "# END DHIS2-INSTANCES:"
-    state: "{{ instance.state }}"
-  notify: reload nginx
-
-- name: reload nginx
-  systemd:
-    state: reloaded
-    name: nginx
-
-- name: stop the instance
-  systemd:
-    state: stopped
-    name: dhis2-{{ instance.name }}
-
-# Simple version overwrites any current war file
-- name: deploy war file as next version
+- name: download the latest war file to temporary file
   get_url:
     url: "{{ instance.war_file }}"
-    dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+    dest: "{{ temp_war.path }}"
     mode: 0644
+    force: yes
+
+# get checksum of new war file
+- stat:
+    path: "{{ temp_war.path }}"
+    get_checksum: yes
+  run_once: true
+  register: new_war
+
+# get checksum of current war file
+- stat:
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+    get_checksum: yes
+  run_once: true
+  register: current_war
+
+- name: debug war status
+  debug:
+    msg: "current war: {{ current_war.stat.checksum }} :  new war: {{ new_war.stat.checksum }} "
+
+- name: The war needs an update
+  block:
+  - name: add redirect to nginx config
+    blockinfile:
+      path: "/etc/nginx/conf.d/default.conf"
+      block: |
+          location /{{ instance.name }} {
+              rewrite ^ /{{ instance.name }}_deploy_war/ ;
+          }
+          location /{{ instance.name }}_deploy_war {
+              alias /usr/share/nginx/html;
+              index deploy_war.html break;
+          }
+      marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
+      insertbefore: "# END DHIS2-INSTANCES:"
+      state: "{{ instance.state }}"
+    notify: reload nginx
+
+  - name: reload nginx
+    systemd:
+      state: reloaded
+      name: nginx
+
+  - name: stop the instance
+    systemd:
+      state: stopped
+      name: dhis2-{{ instance.name }}
+
+  - name: deploy the war file
+    copy:
+      src: "{{ temp_war.path }}"
+      dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+      remote_src: yes
+  when: new_war.stat.checksum != current_war.stat.checksum
+
+- name: delete the temp file
+  file:
+    path: "{{ temp_war.path }}"
+    state: absent
