@@ -113,7 +113,7 @@
 # === Wait until we can reach the instance before finishing the job
 - name: ensure instance {{ inventory_hostname }}/{{ instance.name }}/api is up before finishing job
   uri:
-    url: https://{{ inventory_hostname }}/{{ instance.name }}/dhis-web-commons/security/login.action
+    url: https://{{ inventory_hostname }}/{{ instance.name }}/dhis-web-commons-stream/ping.action
     method: GET
     user: "{{ dhis2_admin_user }}"
     password: "{{ dhis2_admin_user_password }}"
