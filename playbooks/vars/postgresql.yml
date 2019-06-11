@@ -1,5 +1,12 @@
 ---
 # vars file for dhis2.dhis2
+postgresql_version: "10"
+postgresql_packages:
+  - postgresql-{{ postgresql_version }}
+  - postgresql-contrib
+  - libpq-dev
+  - postgis
+
 postgresql_user: postgres
 postgresql_group: postgres
 

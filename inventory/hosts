@@ -80,6 +80,8 @@ debug.dhis2.org
 [qateam]
 verify.dhis2.org
 empty.dhis2.org
+giocare.dhis2.org
+
 
 [coreteam:children]
 devteam
