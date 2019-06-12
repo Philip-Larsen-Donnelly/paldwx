@@ -71,3 +71,5 @@ googleapis_private_key_id: ''
 googleapis_private_key: ''
 googleapis_client_email: ''
 googleapis_client_id: ''
+
+java_opts: "-Xmx1500m -Xms1000m"

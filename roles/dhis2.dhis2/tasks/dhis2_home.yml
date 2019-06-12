@@ -73,7 +73,7 @@
     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/setclasspath.sh"
     block: |
       export DHIS2_HOME='{{ storage }}/instances/{{ instance.name }}/home'
-      export JAVA_OPTS='-Xmx1500m -Xms1000m -Djava.security.egd=file:/dev/./urandom'
+      export JAVA_OPTS='{{ java_opts -Djava.security.egd=file:/dev/./urandom }}'
       export CATALINA_PID='/var/run/tomcat/{{ instance.name }}.pid'
 
 - file:
