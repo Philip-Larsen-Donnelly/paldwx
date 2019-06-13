@@ -1,22 +1,22 @@
 ---
 dhis2_demo_map:
   # development
-  'dev': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+  'dev': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   # 2.32 development
-  '2.32': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
+  '2.32': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
   # 2.32 patches
-  '2.32/2.32.0': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
+  '2.32/2.32.0': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
   # 2.31 development
-  '2.31': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
+  '2.31': 'https://databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
   # 2.31 patches
-  '2.31/2.31.3': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
-  '2.31/2.31.2': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
-  '2.31/2.31.1': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
-  '2.31/2.31.0': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/2.31.0/dhis2-db-sierra-leone.sql.gz'
+  '2.31/2.31.3': 'https://databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
+  '2.31/2.31.2': 'https://databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
+  '2.31/2.31.1': 'https://databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
+  '2.31/2.31.0': 'https://databases.dhis2.org/sierra-leone/2.31/2.31.0/dhis2-db-sierra-leone.sql.gz'
   # 2.30 and earlier
-  '2.30': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.30/dhis2-db-sierra-leone.sql.gz'
-  '2.29': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.29/dhis2-db-sierra-leone.sql.gz'
-  '2.28': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.28/dhis2-db-sierra-leone.sql.gz'
-  '2.27': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.27/dhis2-db-sierra-leone.sql.gz'
-  '2.26': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.26/dhis2-db-sierra-leone.sql.gz'
-  '2.25': 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.25/dhis2-db-sierra-leone.sql.gz'
+  '2.30': 'https://databases.dhis2.org/sierra-leone/2.30/dhis2-db-sierra-leone.sql.gz'
+  '2.29': 'https://databases.dhis2.org/sierra-leone/2.29/dhis2-db-sierra-leone.sql.gz'
+  '2.28': 'https://databases.dhis2.org/sierra-leone/2.28/dhis2-db-sierra-leone.sql.gz'
+  '2.27': 'https://databases.dhis2.org/sierra-leone/2.27/dhis2-db-sierra-leone.sql.gz'
+  '2.26': 'https://databases.dhis2.org/sierra-leone/2.26/dhis2-db-sierra-leone.sql.gz'
+  '2.25': 'https://databases.dhis2.org/sierra-leone/2.25/dhis2-db-sierra-leone.sql.gz'
