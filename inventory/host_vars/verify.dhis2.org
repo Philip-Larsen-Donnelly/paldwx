@@ -1,6 +1,6 @@
 ---
 # DHIS 2 Instances to host on server
-dhis2_instances:
+old_dhis2_instances:
   - name: dev
     description: latest development version
     state: 'present' # set to 'absent' to remove

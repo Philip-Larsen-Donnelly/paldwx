@@ -15,21 +15,21 @@ filebeat_prospectors:
 
 filebeat_output_elasticsearch_enabled: false
 filebeat_output_elasticsearch_hosts:
-  - "logs.dhis2.org/elasticsearch"
+  - "logs.dhis2.org:9200"
 
 filebeat_output_logstash_enabled: true
 filebeat_output_logstash_hosts:
-  - "logs.dhis2.org/logstash"
+  - "logs.dhis2.org:5044"
 
 
 # metricbeats vars
 kibana_host: "http://logs.dhis2.org"
 elasticsearch_hosts:
-  - "logs.dhis2.org/elasticsearch"
+  - "logs.dhis2.org:9200"
 elasticsearch_package_state: latest
 
 logstash_hosts:
-  - "logs.dhis2.org/logstash"
+  - "logs.dhis2.org:5044"
 
 metricbeat_xpack_monitoring_enabled: True
 metricbeat_setup_dashboards: True
