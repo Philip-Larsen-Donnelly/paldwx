@@ -74,3 +74,9 @@ node.id = play-dhis2-org-{{ instance.db_name }}
 # where flyway migrations may be added and applied out of order.
 # This should not be required in a production environment.
 flyway.migrate_out_of_order=true
+
+#
+server.https = on
+
+#
+analytics.cache.expiration = 3600
