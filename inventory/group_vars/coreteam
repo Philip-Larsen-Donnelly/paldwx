@@ -15,6 +15,8 @@ dhis2_db_owner_password_default: !vault |
 certbot_create_if_missing: true
 certbot_create_method: standalone
 certbot_admin_email: phil@dhis2.org
+certbot_auto_renew_user: root
+certbot_auto_renew_options: "--quiet --no-self-upgrade --pre-hook 'service nginx stop' --post-hook 'service nginx start'"
 certbot_certs:
   - email: phil@dhis2.org
     domains:

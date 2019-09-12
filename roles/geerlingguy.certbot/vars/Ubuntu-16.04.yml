@@ -1,3 +1,2 @@
 ---
-certbot_package:
-  - letsencrypt
+certbot_package: letsencrypt
