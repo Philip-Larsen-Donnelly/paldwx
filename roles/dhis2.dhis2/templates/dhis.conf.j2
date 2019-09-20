@@ -78,5 +78,9 @@ flyway.migrate_out_of_order=true
 #
 server.https = on
 
+
+# Server base URL
+server.base.url = https://{{ inventory_hostname }}/{{ instance.name }}
+
 #
 analytics.cache.expiration = 3600
