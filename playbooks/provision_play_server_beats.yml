@@ -1,0 +1,16 @@
+---
+- hosts: coreteam
+  become: yes
+
+  vars_files:
+    # include the standard dhis2 beats config for logging to the ELK server
+    - vars/logging.yml
+
+
+  tasks:
+  - name: filebeat
+    include_role:
+      name: geerlingguy.filebeat
+  - name: elastic_metricbeat
+    include_role:
+      name: kharkevich.elastic_metricbeat

@@ -23,6 +23,7 @@ dhis2_db_encrypted: True
 postgresql_unix_socket_directories:
   - "'/var/run/postgresql'"
 
+elastic_version: 7.x
 #filebeat vars
 filebeat_prospectors:
   - input_type: log

@@ -10,7 +10,14 @@ nginx_http_template:
     conf_file_name: default.conf
     conf_file_location: /etc/nginx/conf.d/
 
-elasticsearch_network_host: '0.0.0.0'
+elastic_version: 7.x
+kibana_version: "{{ elastic_version }}"
+logstash_version: "{{ elastic_version }}"
+elasticsearch_version: "{{ elastic_version }}"
+filebeat_version: "{{ elastic_version }}"
+
+
+elasticsearch_network_host: 'localhost'
 elasticsearch_http_port: 9200
 elasticsearch_path_data: "{{ storage_path }}/elasticsearch"
 elasticsearch_package_state: latest
@@ -26,6 +33,9 @@ kibana_password: !vault |
           6161
 
 
+kibana_server_host: localhost
+kibana_elasticsearch_url: "http://localhost:9200"
+
 # kibana/elk users:
 kibana_elasticsearch_username: "kibana"
 kibana_elasticsearch_password: !vault |
@@ -36,10 +46,15 @@ kibana_elasticsearch_password: !vault |
           6630346432333530350a313236383365396431323639653563353562326166393735383637306232
           6663
 
+logstash_elasticsearch_hosts:
+  - http://localhost:9200
+
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: true
 certbot_create_method: standalone
 certbot_admin_email: phil@dhis2.org
+certbot_auto_renew_user: root
+certbot_auto_renew_options: "--quiet --no-self-upgrade --pre-hook 'service nginx stop' --post-hook 'service nginx start'"
 certbot_certs:
   - email: phil@dhis2.org
     domains:

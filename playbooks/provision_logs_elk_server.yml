@@ -35,7 +35,16 @@
         state: mounted
       when: storage_device is defined
 
+
   tasks:
+  # set up users and directories
+  # add users
+  - group:
+      name: elasticsearch
+      state: present
+  - user:
+      name: elasticsearch
+      group: elasticsearch
   - name: java
     include_role:
       name: geerlingguy.java
@@ -48,9 +57,9 @@
   - name: elasticsearch
     include_role:
       name: geerlingguy.elasticsearch
-  - name: logstash
-    include_role:
-      name: geerlingguy.logstash
   - name: kibana
     include_role:
       name: geerlingguy.kibana
+  - name: logstash
+    include_role:
+      name: geerlingguy.logstash

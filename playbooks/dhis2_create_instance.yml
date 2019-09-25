@@ -32,6 +32,8 @@
         db_demo: "{{ dhis2_demo_map[instance_war] if use_demo == 'YES' else '' }}"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
+        # set monitoring to true to generate metrics for prometheus/grafana
+        dhis2_monitoring: "{{ monitoring }}"
 
   tasks:
   - debug:

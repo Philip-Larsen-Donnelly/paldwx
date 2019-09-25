@@ -40,6 +40,9 @@
     state: "{{ instance.state }}"
   notify: reload nginx
 
+
+
+
 - name: add landing page
   template:
     src: "index.html.j2"

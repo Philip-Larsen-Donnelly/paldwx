@@ -1,4 +1,5 @@
 ---
+elastic_version: 7.x
 #filebeat vars
 filebeat_prospectors:
   - input_type: log
@@ -12,7 +13,7 @@ filebeat_prospectors:
     multiline.negate: true
     multiline.match: after
 
-
+# commented out to use defaults from playbook
 filebeat_output_elasticsearch_enabled: false
 filebeat_output_elasticsearch_hosts:
   - "logs.dhis2.org:9200"
@@ -23,7 +24,7 @@ filebeat_output_logstash_hosts:
 
 
 # metricbeats vars
-kibana_host: "http://logs.dhis2.org"
+kibana_host: "logs.dhis2.org:5601"
 elasticsearch_hosts:
   - "logs.dhis2.org:9200"
 elasticsearch_package_state: latest

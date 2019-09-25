@@ -15,8 +15,7 @@ dhis2_db_owner_password_default: !vault |
 certbot_create_if_missing: true
 certbot_create_method: standalone
 certbot_admin_email: phil@dhis2.org
-certbot_auto_renew_user: root
-certbot_auto_renew_options: "--quiet --no-self-upgrade --pre-hook 'service nginx stop' --post-hook 'service nginx start'"
+certbot_auto_renew: false
 certbot_certs:
   - email: phil@dhis2.org
     domains:
@@ -26,6 +25,40 @@ certbot_create_command: >-
   --email {{ certbot_admin_email }}
   -d {{ inventory_hostname }}
 
+
+
+
+# premetheus metric collection
+prometheus_config_dir: /etc/prometheus
+prometheus_db_dir: "{{ storage_path }}/prometheus"
+prometheus_global:
+  scrape_interval: 10s
+  scrape_timeout: 5s
+  evaluation_interval: 10s
+prometheus_scrape_configs: []
+prometheus_web_listen_address: "localhost:9090"
+
+# graphana metric presentation
+grafana_security:
+  admin_user: admin
+  admin_password: !vault |
+            $ANSIBLE_VAULT;1.2;AES256;dev
+            65346663393731396262613661306262376531376464313030356366336635366339313331613835
+            3163643534373661343533303137376266663038623461650a663261636435396333643866383537
+            64666566663737376431353162663333376231376162613132306639373364336464636337373338
+            3233386533636333340a636138386134366565313538373362666464653131313737383132356138
+            6532
+grafana_auth:
+  anonymous:
+    org_name: "DHIS2"
+    org_role: Viewer
+grafana_datasources:
+  - name: prometheus
+    type: prometheus
+    url: 'https://{{ inventory_hostname }}/prometheus/'
+    basicAuth: false
+grafana_url: "https://{{ ansible_host }}/grafana"
+grafana_domain: "{{ inventory_hostname }}"
 
 # googleapis
 googleapis_project_id: !vault |

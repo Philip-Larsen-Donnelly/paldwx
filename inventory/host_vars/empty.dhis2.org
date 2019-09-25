@@ -26,26 +26,6 @@ old_dhis2_instances:
         33386131363439376631343630636638363065346333366537306533333065353461616335303730
         3135653261363234333962323334623466313162613662383031
 
-  - name: 2.31dev
-    description: 2.31 development version
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.31/dhis.war'
-    db_name: 2-31-dev
-    tomcat_port: 8101
-
-  - name: 2.32dev
-    description: 2.32 development pre-release
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.32/dhis.war'
-    db_name: 2-32-dev
-    tomcat_port: 8102
-
-  - name: 2.31.3
-    description: 2.31.3 patch version released 5 April 2019
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.31/2.31.3/dhis.war'
-    db_name: 2-31-1
-    tomcat_port: 8104
 
 # storage_path is where the instances will be installed
 storage_path: "/var/opt"

@@ -40,6 +40,8 @@
 
 - name: remove bundled webapps
   shell: /bin/rm -rf {{ storage }}/instances/{{ instance.name }}/tomcat/webapps/*
+  args:
+    warn: no
 
 
 - name: Configure host based authentication (if entries are configured).

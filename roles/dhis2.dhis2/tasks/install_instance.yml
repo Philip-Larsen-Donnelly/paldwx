@@ -70,6 +70,25 @@
     state: reloaded
     name: nginx
 
+# add to prometheus scrape config if monitoring is on- name: remove redirect from nginx config
+- name: add scraper to prometheus
+  blockinfile:
+    path: "{{ prometheus_config_dir }}/prometheus.yml"
+    block: |
+        - job_name: '{{ instance.name }}'
+          metrics_path: '/dhis/api/metrics'
+          basic_auth:
+            username: "{{ dhis2_admin_user }}"
+            password: "{{ dhis2_admin_user_password }}"
+          static_configs:
+            - targets: ['localhost:9090']
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
+    insertbefore: "# END DHIS2-INSTANCES:"
+    state: "{{ instance.state }}"
+  notify: reload prometheus
+  when: instance.dhis2_monitoring == 'true'
+
+
 - name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
   uri:
     url: https://{{ inventory_hostname }}/{{ instance.name }}/api/resourceTables/analytics

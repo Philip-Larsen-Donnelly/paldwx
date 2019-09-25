@@ -1,9 +1,9 @@
 ---
-- hosts: coreteam
+- hosts: certbot
   become: yes
 
   vars_files:
-    
+
   tasks:
   - name: certbot
     include_role:

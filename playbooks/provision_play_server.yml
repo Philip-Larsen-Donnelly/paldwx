@@ -41,7 +41,7 @@
         src: "files/dhis2.fact.j2"
         dest: /etc/ansible/facts.d/dhis2.fact
         mode: 0755
-        
+
     - name: installing repo for Java 8 in Ubuntu
       apt_repository: repo='ppa:openjdk-r/ppa'
 
@@ -70,3 +70,10 @@
   - name: postgres
     include_role:
       name: geerlingguy.postgresql
+  # prometheus and grafana for metrics
+  - name: prometheus
+    include_role:
+      name: cloudalchemy.prometheus
+  - name: grafana
+    include_role:
+      name: cloudalchemy.grafana

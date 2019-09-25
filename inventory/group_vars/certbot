@@ -1,0 +1,14 @@
+---
+# Parameters used when creating new Certbot certs.
+certbot_create_if_missing: true
+certbot_create_method: standalone
+certbot_admin_email: phil@dhis2.org
+certbot_auto_renew: false
+certbot_certs:
+  - email: phil@dhis2.org
+    domains:
+      - "{{ inventory_hostname }}"
+certbot_create_command: >-
+  certbot --standalone certonly --noninteractive --agree-tos
+  --email {{ certbot_admin_email }}
+  -d {{ inventory_hostname }}

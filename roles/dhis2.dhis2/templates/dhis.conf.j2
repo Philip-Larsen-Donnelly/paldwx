@@ -84,3 +84,14 @@ server.base.url = https://{{ inventory_hostname }}/{{ instance.name }}
 
 #
 analytics.cache.expiration = 3600
+
+
+{% if instance.dhis2_monitoring == 'true' %}
+# The following configuration turns on DHIS2 Monitoring.
+monitoring.api.enabled
+monitoring.jvm.enabled
+monitoring.dbpool.enabled
+monitoring.hibernate.enabled
+monitoring.uptime.enabled
+monitoring.cpu.enabled
+{% endif %}
