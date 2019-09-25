@@ -74,7 +74,7 @@
 - name: add scraper to prometheus
   blockinfile:
     path: "{{ prometheus_config_dir }}/prometheus.yml"
-    block: |
+    block: |1
         - job_name: '{{ instance.name }}'
           metrics_path: '/dhis/api/metrics'
           basic_auth:
