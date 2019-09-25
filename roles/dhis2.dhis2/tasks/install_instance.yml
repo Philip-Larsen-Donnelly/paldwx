@@ -86,7 +86,7 @@
     insertbefore: "# END DHIS2-INSTANCES:"
     state: "{{ instance.state }}"
   notify: reload prometheus
-  when: instance.dhis2_monitoring == 'true'
+  when: instance.dhis2_monitoring == 'YES'
 
 
 - name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics

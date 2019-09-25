@@ -29,7 +29,7 @@
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
-        dhis2_monitoring: "{{ monitoring | default('false') }}"
+        dhis2_monitoring: "{{ monitoring | default('NO') }}"
 
   tasks:
   - debug:
