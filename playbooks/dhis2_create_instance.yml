@@ -20,6 +20,8 @@
         mode: 0755
     - name: "Re-run setup to use custom facts"
       setup: ~
+    - debug:
+        msg: "{{ ansible_local.dhis2 }}"
 
   vars:
     use_demo: "{{ instance_use_demo_db if inventory_hostname != 'empty.dhis2.org' else '' }}"
@@ -33,7 +35,7 @@
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
-        dhis2_monitoring: "{{ monitoring | default('NO') }}"
+        monitoring: "{{ monitoring | default('NO') }}"
 
   tasks:
   - debug:

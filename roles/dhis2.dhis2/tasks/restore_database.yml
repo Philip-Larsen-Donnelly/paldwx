@@ -1,5 +1,8 @@
 ---
 # download the demo db (if not empty param)
+- name: get the current date time
+  set_fact: db_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
+
 - name: fetch demo db file for {{ instance.name }}
   get_url:
     url: "{{ instance.db_demo }}"
@@ -58,7 +61,6 @@
         owner: "{{ instance.db_owner | default('dhis') }}"
         state: "{{ instance.state | default('present')  }}"
 
-
 - name: Execute SQL - restore to DB {{ instance.db_name }} for {{ instance.name }}
   shell: "psql -d {{ instance.db_name }} -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql"
   become: true
@@ -71,6 +73,12 @@
     path: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql"
     state: absent
 
+
+- name: update the facts with the install datetime
+  lineinfile:
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
+    regexp: "^db_date=.+$"
+    line: "db_date='{{ db_date }}'"
 
 # - name: wait for instance to start in order to run analytics
 #   uri:

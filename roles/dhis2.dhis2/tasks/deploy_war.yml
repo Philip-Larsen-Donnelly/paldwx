@@ -19,6 +19,9 @@
     suffix: war
   register: temp_war
 
+- name: get the current date time
+  set_fact: war_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
+
 - name: download the latest war file to temporary file
   get_url:
     url: "{{ instance.war_file }}"
@@ -73,6 +76,13 @@
       src: "{{ temp_war.path }}"
       dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
       remote_src: yes
+
+  - name: update the facts with the install datetime
+    lineinfile:
+      dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
+      regexp: "^war_date=.+$"
+      line: "war_date='{{ war_date }}'"
+
   when: new_war.stat.checksum != current_war.stat.checksum|d('')
 
 - name: delete the temp file
