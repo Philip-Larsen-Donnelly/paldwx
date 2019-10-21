@@ -82,9 +82,9 @@
         <td><a href="https://{{ inventory_hostname }}/{{ instance.name }}">{{ instance.name }}</a></td>
         <td>{{ instance.description | default(default_description) }}</td>
         <td>
-          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name : {{ inventory_hostname.split(".")[0] | lower }} and log.file.path : {{ storage }}/instances/{{ instance.name }}/tomcat/logs/catalina.out',kind:kuery)">catalina.out</a>
+          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/{{ instance.name }}/',kind:kuery)">catalina.out</a>
           </br>
-          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name : {{ inventory_hostname.split(".")[0] | lower }} and log.file.path : *nginx*  and message : /{{ instance.name }}',kind:kuery)">nginx</a>
+          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/{{ instance.name }}/',kind:kuery)">nginx</a>
         </td>
       </tr>
     marker: "<!-- {mark} ANSIBLE MANAGED BLOCK {{ instance.name }} -->"
