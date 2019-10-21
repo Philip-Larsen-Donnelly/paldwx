@@ -1,38 +1,5 @@
 ---
 # DHIS 2 Instances to host on server
-old_dhis2_instances:
-
-  - name: 2.32.0
-    description: 2.32.0 patch release
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.32/2.32.0/dhis.war'
-    db_name: 2-32-0
-    db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.32/SL_Malaria_232.sql.gz'
-    tomcat_port: 8320
-
-  - name: 2.32malaria
-    description: 2.32 development pre-release - malaria DB
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.32/dhis.war'
-    db_name: 2-32-malaria
-    db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.32/SL_Malaria_232.sql.gz'
-    tomcat_port: 8105
-
-  - name: 2.31dev
-    description: 2.31 development pre-release
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.31/dhis.war'
-    db_name: 2-31-dev
-    db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
-    tomcat_port: 8103
-
-  - name: 2.31.3
-    description: 2.31.3 patch release
-    state: 'present' # set to 'absent' to remove
-    war_file: 'https://releases.dhis2.org/2.31/2.31.3/dhis.war'
-    db_name: 2-31-3
-    db_demo: 'https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/2.31/dhis2-db-sierra-leone.sql.gz'
-    tomcat_port: 8313
 
 other_instances:
 
