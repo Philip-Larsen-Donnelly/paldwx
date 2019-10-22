@@ -86,6 +86,11 @@ server.base.url = https://{{ inventory_hostname }}/{{ instance.name }}
 analytics.cache.expiration = 3600
 
 
+# turn on metadata audit
+metadata.audit.log = on
+metadata.audit.persist = on
+
+
 {% if instance.monitoring %}
 # The following configuration turns on DHIS2 Monitoring.
 monitoring.api.enabled
