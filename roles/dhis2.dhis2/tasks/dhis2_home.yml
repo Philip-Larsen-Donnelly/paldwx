@@ -116,7 +116,10 @@
     replace: '{{ storage }}/instances/*/tomcat/logs/catalina.out'
   notify: restart filebeat
 
-# remove the webapps directory
-# - file:
-#     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps"
-#     state: absent
+
+- name: set log rotation for tomcat logs
+  blockinfile:
+    path: /etc/logrotate.d/tomcat-{{ instance.name }}
+    block: |
+      {{ storage }}/instances/{{ instance.name }}/tomcat/logs/catalina.out {   copytruncate   daily   rotate 7   compress   missingok   size 5M  }
+    create: yes
