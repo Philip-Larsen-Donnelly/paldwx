@@ -36,6 +36,7 @@
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
         monitoring: "{{ monitoring | default('NO') }}"
+        hibernate_monitoring: "{{ hibernate_monitoring | default('NO') }}"
 
   tasks:
   - debug:

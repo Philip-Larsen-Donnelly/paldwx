@@ -98,9 +98,10 @@ monitoring.jvm.enabled = on
 monitoring.dbpool.enabled = on
 monitoring.uptime.enabled = on
 monitoring.cpu.enabled = on
-{% endif %}
 
 {% if instance.hibernate_monitoring %}
 # The following configuration turns on DHIS2 Monitoring for debugging hibernate performance.
 monitoring.hibernate.enabled = on
+{% endif %}
+
 {% endif %}
