@@ -3,12 +3,12 @@ scrape_configs:
 {% if i != instance.name %}
 {% if ansible_local.dhis2[i].monitoring|default(false) %}
   - job_name: {{ i }}
-    metrics_path: '/api/metrics'
+    metrics_path: '/{{ i }}/api/metrics'
     basic_auth:
       username: "{{ dhis2_admin_user }}"
       password: "{{ dhis2_admin_user_password }}"
     static_configs:
-      - targets: ['localhost:{{ ansible_local.dhis2[i].tomcat_port }}/{{ i }}']
+      - targets: ['localhost:{{ ansible_local.dhis2[i].tomcat_port }}']
 {% endif %}
 {% endif %}
 {% endfor %}
