@@ -37,7 +37,7 @@ prometheus_global:
   evaluation_interval: 10s
 prometheus_scrape_configs: []
 prometheus_web_listen_address: "localhost:9090"
-prometheus_web_external_url: "{{ inventory_hostname }}/prometheus"
+prometheus_web_external_url: "https://{{ inventory_hostname }}/prometheus"
 
 # graphana metric presentation
 grafana_security:

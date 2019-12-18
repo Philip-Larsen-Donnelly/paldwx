@@ -27,7 +27,7 @@
     use_demo: "{{ instance_use_demo_db if inventory_hostname != 'empty.dhis2.org' else '' }}"
     dhis2_instances:
       - name: "{{ instance_name }}"
-        description: "Demo of {{ instance_war }} release"
+        description: "{{ instance_description | default('Demo of '+instance_war+' release',true) }}"
         state: 'present'
         war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
