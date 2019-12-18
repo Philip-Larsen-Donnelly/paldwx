@@ -14,10 +14,10 @@ scrape_configs:
 {% endfor %}
 {% if instance.monitoring|default(false) %}
   - job_name: {{ instance.name }}
-    metrics_path: '/api/metrics'
+    metrics_path: '/{{ instance.name }}/api/metrics'
     basic_auth:
       username: "{{ dhis2_admin_user }}"
       password: "{{ dhis2_admin_user_password }}"
     static_configs:
-      - targets: ['localhost:{{ instance.tomcat_port }}/{{ instance.name }}']
+      - targets: ['localhost:{{ instance.tomcat_port }}']
 {% endif %}
