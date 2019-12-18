@@ -73,7 +73,7 @@ a {
 
 <h2 style="float: left;margin-top: 0;">DHIS 2 {{ inventory_hostname.split(".")[0] | lower }}</h2>
 
-<div class="intro">The following DHIS 2 services are available:</div>
+<div class="intro">The following DHIS 2 instances are available on this server:</div>
 
 <table style="width: 100%">
 <tr>
@@ -96,34 +96,42 @@ a {
 </tr>
 -->
 <tr>
-  <td><i class="fa fa-refresh"></i></td>
-  <td><a href="http://ci.dhis2.org">Continuous integration</a></td>
-  <td>Continuous integration for latest builds of DHIS 2 versions</td>
+  <td><i class="fa fa-stethoscope"></i></td>
+  <td>
+    <a href="/prometheus/">Prometheus</a><br>
+    <a href="/grafana/">Grafana</a></td>
+  <td>Performance monitoring with Prometheus and Grafana</td>
   <td></td>
+</tr>
+</table>
+
+<div class="intro">Other links:</div>
+
+<table style="width: 100%">
+<tr>
+  <th></i></th>
+  <th style="width: 28%">Service</th>
+  <th style="width: 65%">Description</th>
 </tr>
 <tr>
   <td><i class="fa fa-refresh"></i></td>
   <td><a href="http://ci.dhis2.org">Continuous integration</a></td>
   <td>Continuous integration for latest builds of DHIS 2 versions</td>
-  <td></td>
 </tr>
   <tr>
   <td><i class="fa fa-graduation-cap"></li></td>
   <td><a href="https://training.dhis2.org">Academy training</a></td>
   <td>Moodle instance for academy training material and tests</td>
-  <td></td>
 </tr>
 <tr>
   <td><i class="fa fa-bug"></i></td>
   <td><a href="https://jira.dhis2.org">Jira issue tracking</a></td>
   <td>Tracking for DHIS 2 bug reports and feature requests</td>
-  <td></td>
 </tr>
 <tr>
   <td><i class="fa fa-paper-plane-o"></i></td>
-  <td><a href="https://play.dhis2.org/appstore">App store</a></td>
-  <td>App store for DHIS 2 web apps</td>
-  <td></td>
+  <td><a href="https://play.dhis2.org/appstore">App Hub</a></td>
+  <td>App Hub for DHIS 2 web apps</td>
 </tr>
 </table>
 
