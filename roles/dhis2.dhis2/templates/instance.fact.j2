@@ -1,4 +1,5 @@
 [{{ instance.name }}]
+installed_by={{ awx_user_name | default('unknown') }}
 war_file={{ instance.war_file }}
 war_date=null
 db_name={{ instance.db_name }}
