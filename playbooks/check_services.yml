@@ -1,0 +1,18 @@
+---
+- hosts: coreteam
+  become: yes
+
+  vars_files:
+    # include postgres config
+    - vars/postgresql.yml
+
+  tasks:
+  - name: ensure postgresql is running
+    service:
+      name: "{{ postgresql_daemon }}"
+      state: started
+
+  - name: ensure nginx is running
+    service:
+      name: nginx
+      state: started
