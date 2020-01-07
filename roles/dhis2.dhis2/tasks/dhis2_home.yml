@@ -22,7 +22,7 @@
 # deploy standalone tomcat instance for each dhis2 instance
 - name: download tomcat
   unarchive:
-    src: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.27/bin/apache-tomcat-8.5.27.tar.gz
+    src: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.tar.gz
     dest: /tmp
     remote_src: yes
   args:
