@@ -26,7 +26,7 @@
     dest: /tmp
     remote_src: yes
   args:
-    creates: /tmp/apache-tomcat-8.5.27
+    creates: /tmp/apache-tomcat-8.5.50
 
 # create a directory if it doesn't exist
 - file:
@@ -34,7 +34,7 @@
     state: directory
     mode: 0755
 
-- command: cp -r /tmp/apache-tomcat-8.5.27 {{ storage }}/instances/{{ instance.name }}/tomcat
+- command: cp -r /tmp/apache-tomcat-8.5.50 {{ storage }}/instances/{{ instance.name }}/tomcat
   args:
     creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
 
