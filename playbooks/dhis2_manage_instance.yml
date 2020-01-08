@@ -21,10 +21,6 @@
     - name: "Re-run setup to use custom facts"
       setup: ~
 
-    - name: generate list from string
-        set_fact:
-          test_list: "{{ test_list_csv.split(',') | list }}"
-
   tasks:
     # remove the instance
     - name: remove dhis2 instance
