@@ -21,6 +21,10 @@
     - name: "Re-run setup to use custom facts"
       setup: ~
 
+    - name: generate list from string
+        set_fact:
+          test_list: "{{ test_list_csv.split(',') | list }}"
+
   tasks:
     # remove the instance
     - name: remove dhis2 instance
@@ -38,7 +42,7 @@
           db_name: "{{ single_instance.value.db_name }}"
           db_demo: "{{ single_instance.value.db_demo }}"
           tomcat_port: "{{ single_instance.value.tomcat_port }}"
-      when: single_instance.key == instance_name and instance_action == 'remove'
+      when: single_instance.key is match(instance_name) and instance_action == 'remove'
 
     # start, stop, restart, reset(DB, war, both) the instance
     - name: control dhis2 instance {{ instance_action }}
@@ -56,4 +60,4 @@
           db_name: "{{ single_instance.value.db_name }}"
           db_demo: "{{ single_instance.value.db_demo }}"
           tomcat_port: "{{ single_instance.value.tomcat_port }}"
-      when: single_instance.key == instance_name and instance_action != 'remove'
+      when: single_instance.key is match(instance_name) and instance_action != 'remove'
