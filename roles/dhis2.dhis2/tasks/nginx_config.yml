@@ -40,8 +40,12 @@
     state: "{{ instance.state }}"
   notify: reload nginx
 
-
-
+- name: Check whether /usr/share/nginx/html/index.html contains "# END DHIS2-INSTANCES:"
+  command: grep -Fxq "END DHIS2-INSTANCES" /usr/share/nginx/html/index.html
+  register: checklanding
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
 
 - name: add landing page
   template:
@@ -49,6 +53,7 @@
     dest: "/usr/share/nginx/html/index.html"
     mode: 0644
     force: no
+  when: checklanding.rc != 0
 
 - name: create resources directory
   file:
