@@ -31,7 +31,7 @@
         state: 'present'
         war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
-        db_demo: "{{ dhis2_demo_map[instance_war] if use_demo == 'YES' else '' }}"
+        db_demo: "{{ emis_demo_map[instance_war] }}"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
