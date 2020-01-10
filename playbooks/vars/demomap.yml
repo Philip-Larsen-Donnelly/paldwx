@@ -37,3 +37,13 @@ dhis2_demo_map:
   '2.27': 'https://databases.dhis2.org/sierra-leone/2.27/dhis2-db-sierra-leone.sql.gz'
   '2.26': 'https://databases.dhis2.org/sierra-leone/2.26/dhis2-db-sierra-leone.sql.gz'
   '2.25': 'https://databases.dhis2.org/sierra-leone/2.25/dhis2-db-sierra-leone.sql.gz'
+emis_demo_map:
+  # development
+  'dev': 'https://databases.dhis2.org/EMIS/dev/dhis2-db-uganda.sql.gz'
+  # 2.33 development
+  '2.33': 'https://databases.dhis2.org/EMIS/2.33/dhis2-db-uganda.sql.gz'
+  # 2.33 patches
+  '2.33/2.33.2-rc': 'https://databases.dhis2.org/EMIS/2.33/dhis2-db-uganda.sql.gz'
+  '2.33/2.33.2': 'https://databases.dhis2.org/EMIS/2.33/dhis2-db-uganda.sql.gz'
+  '2.33/2.33.1': 'https://databases.dhis2.org/EMIS/2.33/dhis2-db-uganda.sql.gz'
+  '2.33/2.33.0': 'https://databases.dhis2.org/EMIS/2.33/dhis2-db-uganda.sql.gz'
