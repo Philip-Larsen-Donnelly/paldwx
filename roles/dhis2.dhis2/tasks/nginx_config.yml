@@ -40,7 +40,7 @@
     state: "{{ instance.state }}"
   notify: reload nginx
 
-- name: Check whether /usr/share/nginx/html/index.html contains "# END DHIS2-INSTANCES:"
+- name: Check whether /usr/share/nginx/html/index.html contains "END DHIS2-INSTANCES"
   command: grep -Fxq "END DHIS2-INSTANCES" /usr/share/nginx/html/index.html
   register: checklanding
   check_mode: no
