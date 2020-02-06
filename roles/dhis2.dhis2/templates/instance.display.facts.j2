@@ -1,0 +1,8 @@
+[
+{% for i in ansible_local.dhis2 %}
+{% if i.name != instance_name %}
+{"name": "{{ ansible_local.dhis2[i].name }}","description": "{{ ansible_local.dhis2[i].description | default(ansible_local.dhis2[i].name)  }}","installed_by":"{{ ansible_local.dhis2[i].installed_by | default('unknown') }}","war_file":"{{ ansible_local.dhis2[i].war_file }}","war_date":"{{ ansible_local.dhis2[i].war_date }}","db_name":"{{ ansible_local.dhis2[i].db_name }}","db_owner":"{{ ansible_local.dhis2[i].db_owner | default('unknown') }}","db_demo":"{{ ansible_local.dhis2[i].db_demo }}","db_date":"{{ ansible_local.dhis2[i].war_date }}","tomcat_port":"{{ ansible_local.dhis2[i].tomcat_port }}","activemq_port":"{{ ansible_local.dhis2[i].activemq_port }}","monitoring":"{{ ansible_local.dhis2[i].monitoring }}","hibernate_monitoring":"{{ ansible_local.dhis2[i].hibernate_monitoring }}","master_control":"{{ ansible_local.dhis2[i].master_control  | default('NO') }}"},
+{% endif %}
+{% endfor %}
+{"name": "{{ instance_name }}","description": "{{ instance.description | default(instance_name)  }}","installed_by":"{{ awx_user_name | default('unknown') }}","war_file":"{{ instance.war_file }}","war_date":"{{ war_date | default(instance.war_date) | default('') }}","db_name":"{{ instance.db_name }}","db_owner":"{{ instance.db_owner | default(dhis2_db_owner_default) }}","db_demo":"{{ instance.db_demo }}","db_date":"{{ db_date | default(instance.db_date) | default('') }}","tomcat_port":"{{ instance.tomcat_port }}","activemq_port":"{{ instance.activemq_port }}","monitoring":"{{ instance.monitoring }}","hibernate_monitoring":"{{ instance.hibernate_monitoring }}","master_control":"{{ instance.master_control | default('NO')  }}"}
+]

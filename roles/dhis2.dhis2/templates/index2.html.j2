@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{  inventory_hostname.split(".")[0] | upper }}</title>
+<meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
+<link rel='shortcut icon' href='resources/favicon.ico' type='image/x-icon' />
+<link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/materialize/tabulator_materialize.min.css" rel="stylesheet">
+<link href="resources/css/landing.css" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/v4-shims.css">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+<body >
+<div id="topBar"></div>
+<img src="resources/dhis2-logo-rgb-positive.png" style="width:150px;margin-left:15px;float:left;margin-right: 20px;margin-top:-10px;">
+<div id="container">
+
+<h2 style="float: left;margin-top: 0;">DHIS 2 {{ inventory_hostname.split(".")[0] | lower }}</h2>
+
+<div class="intro">The following DHIS 2 instances are available on this server:</div>
+
+<div id="instance-table"></div>
+<br><br>
+
+<div class="intro">Other links:</div>
+
+<table style="width: 100%">
+<tr>
+  <th></i></th>
+  <th style="width: 28%">Service</th>
+  <th style="width: 65%">Description</th>
+</tr>
+<tr>
+  <td><i class="fa fa-stethoscope"></i></td>
+  <td>
+    <a href="/prometheus/">Prometheus</a><br>
+    <a href="/grafana/">Grafana</a></td>
+  <td>Performance monitoring with Prometheus and Grafana</td>
+</tr>
+</table>
+
+</div>
+</body>
+<script>
+    //Build Tabulator
+    var table = new Tabulator("#instance-table", {
+    ajaxURL:"/instance_facts.json",
+    ajaxResponse:function(url, params, response){
+        //url - the URL of the request
+        //params - the parameters passed with the request
+        //response - the JSON object returned in the body of the response.
+        return Object.values(response); //return the tableData property of a response json object
+    },
+
+    layout:"fitColumns",
+	  height:"100%",
+    resizableColumns:false,
+    placeholder:"No Data Set",
+    columns:[
+        {title:"Name", field:"name", sorter:"string", formatter:"link", formatterParams:{
+				     labelField:"db_name",
+				     urlPrefix:"https://{{ inventory_hostname }}/",
+				     urlField:"db_name",
+				     target:"_blank",
+		 }},
+         {title:"Description", field:"description", sorter:"string", width:450},
+         {title:"Owner", field:"installed_by", sorter:"string"},
+         {title:"MC?", field:"master_control", align:"center", formatter:"tickCross", sorter:"boolean", formatterParams:{
+				    allowEmpty:true,
+				    allowTruthy:false,
+				    tickElement:"<i class='mcfa fa fa-user-edit'></i>",
+				    crossElement:false,
+				}},
+{title:"Age", field:"war_date", formatter:"datetimediff", formatterParams:{
+    inputFormat:"YYYY-MM-DD hh:mm:ss.mmm",
+    humanize:true,
+    invalidPlaceholder:"(invalid date)",
+}}
+
+  	],
+    rowFormatter:function(row){
+        var element = row.getElement(),
+        data = row.getData(),
+        rowTable, cellContents;
+
+        //define a table layout structure and set width of row
+        rowTable = document.createElement("div")
+        rowTable.style.width = "100%";
+
+				var catlink = "<a href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/" + data.name + "/',kind:kuery)\">catalina.out</a>";
+				var nlink = "<a href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
+
+        //add row data on right hand side
+	    	cellContents =  "<div class=\"artblock\"><div class=\"artefact\"><i class=\"minfa fa fa-cube\"></i>" + data.war_file + "</div><div class=\"clock\"><i class=\"minfa fa fa-clock\"></i>" + new Date(data.war_date).toLocaleString() + "</div></div>"
+				cellContents += "<div class=\"artblock\"><div class=\"artefact\"><i class=\"minfa fa fa-database\"></i>" + data.db_demo + "</div><div class=\"clock\"><i class=\"minfa fa fa-clock\"></i>" + new Date(data.db_date).toLocaleString() + "</div></div>"
+				cellContents += "<div class=\"footblock\"><div class=\"logs\">" + catlink + nlink+ "</div></div>"
+
+
+        rowTable.innerHTML = cellContents;
+
+        // rowTable.appendChild(rowTabletr);
+
+        //append newly formatted contents to the row
+        element.appendChild(rowTable);
+    },
+
+});
+
+
+
+ </script>
+
+
+</html>

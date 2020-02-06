@@ -43,9 +43,23 @@
   include: deploy_war.yml
   when: instance_action in ["reset_war", "reset_war_and_db"]
 
+# ===  Save a DB snapshot to s3
+- name: save a DB snapshot to s3
+  include: save_snapshot.yml
+  when: instance_action == "save"
 
-# ===  Reset WAR
-- name: re-deploy the war file
+# ===  Restore a DB snapshot from s3
+- name: restore a DB snapshot from s3
+  include: restore_snapshot.yml
+  when: instance_action == "restore"
+
+# ===  commit DB as latest
+- name: save a DB snapshot to s3
+  include: commit_database.yml
+  when: instance_action == "commit"
+
+# ===  Reset DB
+- name: re-deploy the DB file
   include: restore_database.yml
   when: instance_action in ["reset_db", "reset_war_and_db"]
 

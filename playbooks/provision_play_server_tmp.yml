@@ -47,9 +47,10 @@
 
   tasks:
   # prometheus and grafana for metrics
-  - name: prometheus
-    include_role:
-      name: cloudalchemy.prometheus
-  - name: grafana
-    include_role:
-      name: cloudalchemy.grafana
+    - name: Install certbot-nginx plugin
+      package:
+        name: "python-certbot-nginx"
+        state: present
+    - name: certbot
+      include_role:
+        name: geerlingguy.certbot

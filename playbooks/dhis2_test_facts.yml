@@ -1,0 +1,44 @@
+---
+- hosts: "{{ instance_host }}"
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2env2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2env.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+    - debug:
+        msg: "{{ ansible_local.dhis2 }}"
+    - debug:
+        msg: "{{ ansible_local.dhis2env }}"
+
+  vars:
+    dhis2_instances:
+      - name: "{{ instance_name }}"
+        description: "{{ instance_description | default('Demo of '+instance_war+' release',true) }}"
+        state: 'present'
+        war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
+        db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
+        db_demo: "{{ emis_demo_map[instance_war] }}"
+        tomcat_port: "{{ ansible_local.dhis2env.tomcat.next_port }}"
+        activemq_port: "{{ ansible_local.dhis2env.activemq.next_port }}"
+        # set monitoring to true to generate metrics for prometheus/grafana
+        monitoring: "{{ monitoring | default('NO') }}"
+        hibernate_monitoring: "{{ hibernate_monitoring | default('NO') }}"
+
+  tasks:
+  - debug:
+      msg: "{{ dhis2_instances }}"

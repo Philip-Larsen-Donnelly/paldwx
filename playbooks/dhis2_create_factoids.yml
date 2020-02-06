@@ -1,0 +1,60 @@
+---
+- hosts: "{{ instance_host }}"
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+    - debug:
+        msg: "{{ ansible_local.dhis2 }}"
+
+  # vars:
+  #   use_demo: "{{ instance_use_demo_db if inventory_hostname != 'empty.dhis2.org' else '' }}"
+  #   instance:
+  #       name: "{{ instance_name }}"
+  #       description: "{{ instance_description | default('Demo of '+instance_war+' release',true) }}"
+  #       state: 'present'
+  #       war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
+  #       db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
+  #       db_demo: "{{ dhis2_demo_map[instance_war] if use_demo == 'YES' else '' }}"
+  #       tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
+  #       activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
+  #       # set monitoring to true to generate metrics for prometheus/grafana
+  #       monitoring: "{{ monitoring | default('NO') }}"
+  #       hibernate_monitoring: "{{ hibernate_monitoring | default('NO') }}"
+  #       # choose whether to have master control of the database (permission to save over it)
+  #       master_control: "{{ master_control | default('NO') if use_demo == 'YES' else 'NO' }}"
+
+  tasks:
+
+  - name: dhis2 instance factoids
+    include_role:
+      name: dhis2.dhis2
+      tasks_from: factualise_instance.yml
+    loop: "{{ ansible_local.dhis2 }}"
+    loop_control:
+      loop_var: single_instance
+    vars:
+      instance: "{{ single_instance }}"
+      # instance_name: "{{ single_instance.name }}"
+        # state: 'absent'
+        # war_file: "{{ single_instance.value.war_file}}"
+        # db_name: "{{ single_instance.value.db_name }}"
+        # db_demo: "{{ single_instance.value.db_demo }}"
+        # tomcat_port: "{{ single_instance.value.tomcat_port }}"
+    when: single_instance.name is match(instance_name) and single_instance.name not in ['tomcat','activemq']

@@ -88,11 +88,20 @@ giocare.dhis2.org
 smoke.dhis2.org
 bigmac.dhis2.org
 
+# Metadata packages
+[metapack]
+whom.dhis2.org
+
+# Unicef Data eXchange Platform
+[unicef]
+unicef-dxp.dhis2.org
 
 [coreteam:children]
 devteam
 qateam
 emis
+metapack
+unicef
 
 [coreteam:vars]
 ansible_ssh_user=ubuntu

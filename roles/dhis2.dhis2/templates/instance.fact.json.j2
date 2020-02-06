@@ -1,0 +1,15 @@
+{
+  "name": "{{ instance.name }}",
+  "installed_by":"{{ awx_user_name | default('unknown') }}",
+  "war_file":"{{ instance.war_file }}",
+  "war_date":null,
+  "db_name":"{{ instance.db_name }}",
+  "db_owner":"{{ instance.db_owner | default(dhis2_db_owner_default) }}",
+  "db_owner_password":"{{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}",
+  "db_demo":"{{ instance.db_demo }}",
+  "db_date":null,
+  "tomcat_port":"{{ instance.tomcat_port }}",
+  "activemq_port":"{{ instance.activemq_port }}",
+  "monitoring":"{{ instance.monitoring }}",
+  "hibernate_monitoring":"{{ instance.hibernate_monitoring }}"
+}

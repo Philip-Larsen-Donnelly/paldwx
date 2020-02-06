@@ -37,9 +37,12 @@
         # set monitoring to true to generate metrics for prometheus/grafana
         monitoring: "{{ monitoring | default('NO') }}"
         hibernate_monitoring: "{{ hibernate_monitoring | default('NO') }}"
+        # choose whether to have master control of the database (permission to save over it)
+        master_control: "{{ master_control | default('false') if use_demo == 'YES' else 'false' }}"
 
   tasks:
-  - debug:
+  - name: debug the dhis2_instances
+    debug:
       msg: "{{ dhis2_instances }}"
   - name: dhis2 instances
     include_role:

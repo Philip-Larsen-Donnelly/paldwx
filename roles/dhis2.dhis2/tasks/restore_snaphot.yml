@@ -1,0 +1,31 @@
+---
+# download the demo db (if not empty param)
+#
+# - name: get the current date time
+#   set_fact: db_snap_date="{{lookup('pipe','date \"+%Y-%m-%d_%H%M%S\"')}}"
+#
+# - name: Dump database snapshot (without analytics) to a file (with compression)
+#   postgresql_db:
+#     name: "{{ instance.db_name }}"
+#     state: dump
+#     target: /tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz
+#     target_opts: "-T analytics* -T _*"
+#   become: true
+#   become_user: "{{ postgresql_user }}"
+#   when: instance.db_demo is defined and instance.db_demo|length
+#   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
+#
+# - name: copy the snapshot to s3
+#   aws_s3:
+#     aws_access_key: "{{ aws_access_key }}"
+#     aws_secret_key: "{{ aws_secret_key }}"
+#     bucket: dhis2-database-backups
+#     object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+#     src: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+#     mode: put
+#     metadata: "saved_by={{ awx_user_name | default('unknown') }},original_source={{ instance.db_demo }}"
+#
+# - name: remove local dump file
+#   file:
+#     path: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+#     state: absent

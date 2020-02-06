@@ -1,0 +1,64 @@
+---
+# tasks file for dhis2.dhis2
+
+
+- name: update the facts
+  set_fact:
+    instance_update: "{{ instance_update | default(instance) | combine({item.name: item.value}) }}"
+  with_items:
+    - { name: war_date , value: "{{ war_date | default('') }}" }
+    - { name: db_date , value: "{{ db_date | default('') }}" }
+    - { name: installed_by , value: "{{ awx_user_name | default('unknown') }}" }
+    - { name: db_owner , value: "{{ instance.db_owner | default('dhis') }}" }
+
+
+- name: debug instance_update
+  debug:
+    msg: "{{ instance_update }}"
+
+# - name: update displayed facts
+#   template:
+#     src: "instance.display.facts.j2"
+#     dest: "/usr/share/nginx/html/instance_facts.json"
+#     mode: 0644
+
+
+- name: ensure facts file exists
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/share/nginx/html/{{ item }}"
+    mode: 0644
+    force: no
+  with_items:
+    - instance_facts.json
+
+- name: load var from file
+  slurp:
+    src: /usr/share/nginx/html/instance_facts.json
+  register: imported_var
+#
+# - name: debug imported
+#   debug:
+#     msg: "{{ imported_var.content|b64decode|from_json }}"
+
+
+- name: append more key/values
+  set_fact:
+    updated_var: "{{ imported_var.content|b64decode|from_json | json_query(my_query) }}"
+  vars:
+    my_query: "[?name.contains(@, '{{ instance.name }}') == false]"
+
+# - name: debug updated_var
+#   debug:
+#     msg: "{{ updated_var }}"
+
+- set_fact:
+    all_instances: "{{ updated_var + [ instance_update ] if instance.state == 'present' else updated_var }}"
+
+- debug:
+    var: all_instances
+
+- name: write var to file
+  copy:
+    content: "{{ all_instances | to_nice_json }}"
+    dest: /usr/share/nginx/html/instance_facts.json

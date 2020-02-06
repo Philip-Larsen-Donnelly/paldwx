@@ -45,7 +45,14 @@
     - name: installing repo for Java 8 in Ubuntu
       apt_repository: repo='ppa:openjdk-r/ppa'
 
+    - name: Ensure Pip is installed.
+      package: name="python3-pip" state=present
+
   tasks:
+  - pip:
+      name: botocore
+  - pip:
+      name: boto3
   - name: java
     include_role:
       name: geerlingguy.java

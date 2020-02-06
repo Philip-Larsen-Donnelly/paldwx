@@ -20,7 +20,7 @@
   register: temp_war
 
 - name: get the current date time
-  set_fact: war_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
+  set_fact: war_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M:%S.%3N\"')}}"
 
 - name: download the latest war file to temporary file
   get_url:
@@ -81,7 +81,16 @@
     lineinfile:
       dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
       regexp: "^war_date=.+$"
-      line: "war_date='{{ war_date }}'"
+      line: "war_date={{ war_date }}"
+
+  - name: update the json facts with the install datetime
+    lineinfile:
+      dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
+      regexp: "^  \"war_date\":.+$"
+      line: "  \"war_date\": {{ war_date }},"
+
+  - name: update displayed facts
+    include: factualise_instance.yml
 
   when: new_war.stat.checksum != current_war.stat.checksum|d('')
 

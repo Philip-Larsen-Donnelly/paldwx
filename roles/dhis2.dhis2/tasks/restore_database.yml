@@ -1,19 +1,29 @@
 ---
 # download the demo db (if not empty param)
 - name: get the current date time
-  set_fact: db_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
+  set_fact: db_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M:%S.%3N\"')}}"
+
+- name: fetch demo db file for project
+  aws_s3:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    bucket: dhis2-database-development
+    object: "{{ instance.db_demo }}"
+    dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+    mode: get
+  when: project is defined
 
 - name: fetch demo db file for {{ instance.name }}
   get_url:
     url: "{{ instance.db_demo }}"
     dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
     mode: 0644
-  when: instance.db_demo is defined and instance.db_demo|length
+  when: project is not defined and instance.db_demo is defined and instance.db_demo|length
 
-- name: unzip the demo db
-  command: gunzip -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz
-  when: instance.db_demo is defined and instance.db_demo|length
-
+# - name: unzip the demo db
+#   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz
+#   when: instance.db_demo is defined and instance.db_demo|length
+#
 
 - name: add redirect to nginx config
   blockinfile:
@@ -42,9 +52,7 @@
     name: dhis2-{{ instance.name }}
 
 - name: remove db {{ instance.name }}
-  include_role:
-    name: geerlingguy.postgresql
-    tasks_from: databases.yml
+  include: databases.yml
   vars:
     postgresql_databases:
       - name: "{{ instance.db_name }}"
@@ -52,21 +60,38 @@
         state: absent
 
 - name: create db {{ instance.name }}
-  include_role:
-    name: geerlingguy.postgresql
-    tasks_from: databases.yml
+  include: databases.yml
   vars:
     postgresql_databases:
       - name: "{{ instance.db_name }}"
         owner: "{{ instance.db_owner | default('dhis') }}"
         state: "{{ instance.state | default('present')  }}"
 
-- name: Execute SQL - restore to DB {{ instance.db_name }} for {{ instance.name }}
-  shell: "psql -d {{ instance.db_name }} -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql"
+- name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
+  postgresql_db:
+    name: "{{ instance.db_name }}"
+    state: restore
+    target: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
   become: true
   become_user: "{{ postgresql_user }}"
   when: instance.db_demo is defined and instance.db_demo|length
 
+- name: Execute SQL - force admin password
+  postgresql_query:
+    db: "{{ instance.db_name }}"
+    query: UPDATE users SET password = %s WHERE username = %s
+    positional_args:
+    - '{{ dhis2_admin_user_password_hash }}'
+    - '{{ dhis2_admin_user }}'
+  become: true
+  become_user: "{{ postgresql_user }}"
+  when: dhis2_admin_user_password_hash is defined
+
+
+# - name: Execute SQL - make sure all users have up-to-date password
+#   shell: "psql -d {{ instance.db_name }} -c 'UPDATE users SET passwordlastupdated = \"{{ db_date }}\"'"
+#   become: true
+#   become_user: "{{ postgresql_user }}"
 
 - name: remove temporary demo db file
   file:
@@ -78,7 +103,18 @@
   lineinfile:
     dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
     regexp: "^db_date=.+$"
-    line: "db_date='{{ db_date }}'"
+    line: "db_date={{ db_date }}"
+
+
+- name: update the json facts with the install datetime
+  lineinfile:
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
+    regexp: "^  \"db_date\":.+$"
+    line: "  \"db_date\": {{ db_date }},"
+
+- name: update displayed facts
+  include: factualise_instance.yml
+
 
 # - name: wait for instance to start in order to run analytics
 #   uri:

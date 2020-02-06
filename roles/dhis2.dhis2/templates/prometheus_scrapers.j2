@@ -1,14 +1,14 @@
 scrape_configs:
-{% for i in ansible_local.dhis2 %}
+{% for i in ansible_local.dhis2.instances %}
 {% if i != instance.name %}
-{% if ansible_local.dhis2[i].monitoring|default(false) %}
+{% if ansible_local.dhis2.instances[i].monitoring|default(false) %}
   - job_name: {{ i }}
     metrics_path: '/{{ i }}/api/metrics'
     basic_auth:
       username: "{{ dhis2_admin_user }}"
       password: "{{ dhis2_admin_user_password }}"
     static_configs:
-      - targets: ['localhost:{{ ansible_local.dhis2[i].tomcat_port }}']
+      - targets: ['localhost:{{ ansible_local.dhis2.instances[i].tomcat_port }}']
 {% endif %}
 {% endif %}
 {% endfor %}

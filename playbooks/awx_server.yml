@@ -12,7 +12,7 @@
     - geerlingguy.nodejs
     - geerlingguy.awx
   vars:
-    nodejs_version: "8.x"
+    nodejs_version: "10.x"
     pip_install_packages:
       - name: docker-compose
     nginx_http_template_enable: true

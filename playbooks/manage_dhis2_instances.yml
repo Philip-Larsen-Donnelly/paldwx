@@ -28,7 +28,7 @@
       include_role:
         name: dhis2.dhis2
         tasks_from: remove_instance.yml
-      loop: "{{ query('dict', ansible_local.dhis2|default({})) }}"
+      loop: "{{ query('dict', ansible_local.dhis2.instances|default({})) }}"
       loop_control:
         loop_var: single_instance
       vars:
@@ -45,7 +45,7 @@
       include_role:
         name: dhis2.dhis2
         tasks_from: control.yml
-      loop: "{{ query('dict', ansible_local.dhis2|default({})) }}"
+      loop: "{{ query('dict', ansible_local.dhis2.instances|default({})) }}"
       loop_control:
         loop_var: single_instance
       vars:

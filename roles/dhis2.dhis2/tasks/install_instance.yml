@@ -11,23 +11,13 @@
   postgresql_user:
     name: "{{ instance.db_owner | default(dhis2_db_owner_default) }}"
     password: "{{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}"
+    role_attr_flags: CREATEDB,SUPERUSER
     state: present
   become: true
   become_user: "{{ postgresql_user }}"
   # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
   vars:
     ansible_ssh_pipelining: true
-
-# =========================
-
-# stop the instance if running (using the server scripts)
-# - include: dhis2_services.yml op="stop-instance"
-
-# - name: stop the instance
-#   command: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/shutdown.sh"
-#   become: yes
-#   become_user: "{{ dhis2_user }}"
-#   ignore_errors: yes
 
 
 # === Deploy WAR ==============
@@ -103,4 +93,4 @@
   until: result.status == 200
   retries: 90
   delay: 10
-  when: instance.db_demo is defined and instance.db_demo|length
+  when: project is not defined and instance.db_demo is defined and instance.db_demo|length

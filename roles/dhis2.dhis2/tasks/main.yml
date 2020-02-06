@@ -12,7 +12,6 @@
     dhis2_filestore: "{{ instance.filestore | default(local_filestore) }}"
   when: instance.state | default('present') == 'present'
 
-
 - name: remove instance {{ instance.name }}
   include: remove_instance.yml
   loop: "{{ dhis2_instances }}"

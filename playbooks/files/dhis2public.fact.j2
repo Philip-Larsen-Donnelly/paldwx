@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+import json
+import sys
+import glob
+
+fact={}
+inst=[]
+tomcat={"next_port":""}
+activemq={"next_port":""}
+tomcat_start_port=8100
+t_ports=[]
+activemq_start_port=15680
+a_ports=[]
+
+# get the list of instances
+with open("/usr/share/nginx/html/instance_facts.json", "r") as read_file:
+    instances = json.load(read_file)
+
+for i in instances:
+
+    inst.append(i)
+    try:
+        t_ports.append(i.tomcat_port)
+        a_ports.append(i.activemq_port)
+    except:
+        pass
+
+
+for t in xrange(tomcat_start_port, tomcat_start_port + len(t_ports) + 1):
+    use = '{}'.format(t)
+    if not use in t_ports:
+        tomcat["next_port"] = t
+        break
+
+for a in xrange(activemq_start_port, activemq_start_port + len(a_ports) + 1):
+    use = '{}'.format(a)
+    if not use in a_ports:
+        activemq["next_port"] = a
+        break
+
+fact["instances"]=inst
+fact["tomcat"]=tomcat
+fact["activemq"]=activemq
+
+# output the facts
+print json.dumps(fact)

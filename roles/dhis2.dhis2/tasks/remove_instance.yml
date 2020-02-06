@@ -27,11 +27,13 @@
   systemd:
     daemon_reload: yes
 
+
+# === Taks a snapshot of DB? ======
+
+
 # === Remove DB ==============
 - name: remove db {{ instance.name }}
-  include_role:
-    name: geerlingguy.postgresql
-    tasks_from: databases.yml
+  include: databases.yml
   vars:
     postgresql_databases:
       - name: "{{ instance.db_name }}"

@@ -1,0 +1,65 @@
+---
+- hosts: "{{ instance_host }}"
+  gather_facts: no
+  become: yes
+  tasks:
+    # - find: path="/tmp" patterns="test*"
+    #   register: files
+    #
+    # - debug: msg="{{ files.files | sort(attribute='ctime') | map(attribute='path') | list }}"
+
+    - name: get the latest snapshot
+      block:
+        - name: Get available snapshots from S3
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-backups
+            mode: list
+            prefix: "{{ ansible_host }}/{{ instance_name }}/"
+          register: s3_list
+
+        - name: list database snapshots
+          debug: msg="{{ s3_list.s3_keys }}"
+
+        - name: Make sure there is a snapshot
+          block:
+            - name: Get url of most recent snapshot
+              aws_s3:
+                aws_access_key: "{{ aws_access_key }}"
+                aws_secret_key: "{{ aws_secret_key }}"
+                bucket: dhis2-database-backups
+                mode: geturl
+                object: "{{ s3_list.s3_keys[-1] }}"
+              register: s3_url
+
+            - name: this is the url
+              debug: msg="{{ s3_url }}"
+
+            - name: this is the assumed URL
+              debug: msg="https://dhis2-database-backups.s3.amazonaws.com/{{ s3_list.s3_keys[-1] }}"
+          when: s3_list.s3_keys
+
+
+        - name: Check if there are any snapshots for this host
+          block:
+            - name: Get available snapshots from S3
+              aws_s3:
+                aws_access_key: "{{ aws_access_key }}"
+                aws_secret_key: "{{ aws_secret_key }}"
+                bucket: dhis2-database-backups
+                mode: list
+                prefix: "{{ ansible_host }}/"
+              register: s3_list_all
+
+            - name: Available snapshots for this host in the form `<host>/<instance>/<snapshot>`
+              debug: msg="{{ s3_list_all.s3_keys }}"
+              when: s3_list_all.s3_keys
+
+            - debug: msg="There are no snapshots available for host {{ ansible_host }}"
+              when: s3_list_all.s3_keys == []
+
+          when: s3_list.s3_keys == []
+
+
+      when: instance_use_db_snapshot != 0
