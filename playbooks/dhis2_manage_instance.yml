@@ -23,7 +23,7 @@
 
     - name: Ensure Pip is installed.
       package: name="python3-pip" state=present
-      
+
     - pip:
         name: botocore
     - pip:
@@ -46,9 +46,32 @@
           db_name: "{{ single_instance.value.db_name }}"
           db_demo: "{{ single_instance.value.db_demo }}"
           tomcat_port: "{{ single_instance.value.tomcat_port }}"
-      when: single_instance.key is match(instance_name) and instance_action == 'remove' and single_instance.key not in ['tomcat','activemq']
+      when:
+        - single_instance.key is match(instance_name)
+        - instance_action == 'remove'
+        - single_instance.key not in ['tomcat','activemq']
 
-    # start, stop, restart, reset(DB, war, both) the instance
+    - name: check for snapshot
+      block:
+        - name: Get available snapshots from S3
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-backups
+            mode: list
+            prefix: "{{ ansible_host }}/{{ instance_name }}/"
+          register: s3_list
+
+        - name: Get most recent snapshot
+          set_fact:
+            s3_snapshot: "{{ s3_list.s3_keys[-1] }}"
+          when: s3_list.s3_keys
+
+        - fail: msg="Bailing out. There are no snapshots to restore"
+          when: s3_snapshot is undefined or s3_snapshot|length == 0
+      when: instance_action == 'restore_snapshot'
+
+    # start, stop, restart, reset(DB, war, both), save_snapshot, commit_db
     - name: control dhis2 instance {{ instance_action }}
       include_role:
         name: dhis2.dhis2
@@ -64,4 +87,7 @@
           db_name: "{{ single_instance.value.db_name }}"
           db_demo: "{{ single_instance.value.db_demo }}"
           tomcat_port: "{{ single_instance.value.tomcat_port }}"
-      when: single_instance.key is match(instance_name) and instance_action != 'remove' and single_instance.key not in ['tomcat','activemq']
+      when:
+        - single_instance.key is match(instance_name)
+        - instance_action  != 'remove'
+        - single_instance.key not in ['tomcat','activemq']

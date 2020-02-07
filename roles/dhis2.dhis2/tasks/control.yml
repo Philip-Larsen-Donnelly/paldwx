@@ -46,22 +46,23 @@
 # ===  Save a DB snapshot to s3
 - name: save a DB snapshot to s3
   include: save_snapshot.yml
-  when: instance_action == "save"
+  when: instance_action == "save_snapshot"
 
 # ===  Restore a DB snapshot from s3
 - name: restore a DB snapshot from s3
-  include: restore_snapshot.yml
-  when: instance_action == "restore"
+  set_fact:
+    restore_snapshot: "latest"
+  when: instance_action == "restore_snapshot"
 
 # ===  commit DB as latest
 - name: save a DB snapshot to s3
   include: commit_database.yml
-  when: instance_action == "commit"
+  when: instance_action == "commit_db"
 
 # ===  Reset DB
 - name: re-deploy the DB file
   include: restore_database.yml
-  when: instance_action in ["reset_db", "reset_war_and_db"]
+  when: instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]
 
 
 # === Start instance ==========
@@ -71,7 +72,7 @@
     state: started
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
-  when: instance_action in ["start", "reset_war", "reset_db", "reset_war_and_db"]
+  when: instance_action in ["start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]
 
 
 # === Restart instance ==========
@@ -102,7 +103,7 @@
     insertbefore: "# END DHIS2-INSTANCES:"
     state: "{{ instance.state }}"
   notify: reload nginx
-  when: instance_action in ["restart", "start", "start", "reset_war", "reset_db", "reset_war_and_db"]
+  when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]
 
 - name: reload nginx
   systemd:
@@ -120,9 +121,9 @@
     status_code: 200
   register: result
   until: result.status == 200
-  retries: 40
+  retries: 30
   delay: 10
-  when: instance_action in ["reset_db", "reset_war_and_db"]
+  when: instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]
 
 # === Wait until we can reach the instance before finishing the job
 - name: ensure instance {{ inventory_hostname }}/{{ instance.name }}/api is up before finishing job
@@ -135,6 +136,6 @@
     status_code: 200
   register: result
   until: result.status == 200
-  retries: 40
+  retries: 30
   delay: 10
-  when: instance_action in ["restart", "start", "start", "reset_war", "reset_db", "reset_war_and_db"]
+  when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]

@@ -1,0 +1,25 @@
+---
+- hosts: "{{ instance_host }}"
+  gather_facts: no
+  become: yes
+  tasks:
+    # - find: path="/tmp" patterns="test*"
+    #   register: files
+    #
+    # - debug: msg="{{ files.files | sort(attribute='ctime') | map(attribute='path') | list }}"
+
+    - name: check for snapshot
+      block:
+        - name: Get available snapshots from S3
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-backups
+            mode: list
+            prefix: "{{ ansible_host }}/{{ instance_name }}/"
+          register: s3_list
+
+        - name: Get most recent snapshot
+          set_fact:
+            s3_snapshot: "{{ s3_list.s3_keys[-1] }}"
+          when: s3_list.s3_keys

@@ -3,22 +3,56 @@
 - name: get the current date time
   set_fact: db_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M:%S.%3N\"')}}"
 
-- name: fetch demo db file for project
-  aws_s3:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    bucket: dhis2-database-development
-    object: "{{ instance.db_demo }}"
-    dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
-    mode: get
-  when: project is defined
+- name: check for snapshot
+  block:
+    - name: Get available snapshots from S3
+      aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: dhis2-database-backups
+        mode: list
+        prefix: "{{ ansible_host }}/{{ instance_name }}/"
+      register: s3_list
 
-- name: fetch demo db file for {{ instance.name }}
-  get_url:
-    url: "{{ instance.db_demo }}"
-    dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
-    mode: 0644
-  when: project is not defined and instance.db_demo is defined and instance.db_demo|length
+    - name: Get most recent snapshot
+      set_fact:
+        s3_snapshot: "{{ s3_list.s3_keys[-1] }}"
+      when: s3_list.s3_keys
+  when: restore_snapshot is defined and restore_snapshot == "if_available"
+
+- name: fetch the snapshot db
+  block:
+    - name: fetch demo db file for snapshot
+      aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: dhis2-database-backups
+        object: "{{ s3_snapshot }}"
+        dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+        mode: get
+  when: s3_snapshot is defined
+
+- name: fetch the baseline db
+  block:
+    - name: fetch demo db file for project
+      aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: dhis2-database-development
+        object: "{{ instance.db_demo }}"
+        dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+        mode: get
+      when: project is defined and instance.db_demo is defined and instance.db_demo|length
+
+    - name: fetch demo db file for {{ instance.name }}
+      get_url:
+        url: "{{ instance.db_demo }}"
+        dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+        mode: 0644
+      when: project is not defined and instance.db_demo is defined and instance.db_demo|length
+  when: s3_snapshot is not defined
+
+
 
 # - name: unzip the demo db
 #   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz
