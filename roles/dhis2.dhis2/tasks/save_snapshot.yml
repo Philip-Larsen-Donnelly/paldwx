@@ -11,7 +11,6 @@
     target_opts: "-T analytics* -T _*"
   become: true
   become_user: "{{ postgresql_user }}"
-  when: instance.db_demo is defined and instance.db_demo|length
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
 - name: copy the snapshot to s3
