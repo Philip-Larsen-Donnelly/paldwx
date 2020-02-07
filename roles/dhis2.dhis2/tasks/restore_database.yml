@@ -145,6 +145,7 @@
     dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
     regexp: "^  \"db_date\":.+$"
     line: "  \"db_date\": {{ db_date }},"
+  ignore_errors: yes
 
 - name: update displayed facts
   include: factualise_instance.yml
