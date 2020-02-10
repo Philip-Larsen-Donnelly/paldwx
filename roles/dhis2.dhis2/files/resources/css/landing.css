@@ -80,7 +80,7 @@ a {
 
 .container {
   display: grid;
-  _box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
   border-radius: 8px;
   grid-template-columns: 10px 140px 100px 520px 68px 72px 10px;
@@ -116,8 +116,8 @@ a {
     grid-row-end: 5;
     align-self: center;
    text-decoration: none;
-   font-size:22px;
-  _color:#222;
+   font-size:28px;
+  color:#222;
 }
 
 .attribute{

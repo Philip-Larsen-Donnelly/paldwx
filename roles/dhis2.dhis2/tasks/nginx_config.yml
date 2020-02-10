@@ -40,8 +40,8 @@
     state: "{{ instance.state }}"
   notify: reload nginx
 
-- name: Check whether /usr/share/nginx/html/index.html contains "<!-- END DHIS2-INSTANCES -->"
-  command: 'grep -Fxq "<!-- END DHIS2-INSTANCES -->" /usr/share/nginx/html/index.html'
+- name: Check whether /usr/share/nginx/html/index_old.html contains "<!-- END DHIS2-INSTANCES -->"
+  command: 'grep -Fxq "<!-- END DHIS2-INSTANCES -->" /usr/share/nginx/html/index_old.html'
   register: checklanding
   check_mode: no
   ignore_errors: yes
@@ -50,18 +50,18 @@
 - name: add landing page
   template:
     src: "index2.html.j2"
-    dest: "/usr/share/nginx/html/index2.html"
+    dest: "/usr/share/nginx/html/index.html"
     mode: 0644
     force: yes
 #
 # - file:
-#     path: "/usr/share/nginx/html/index.html"
+#     path: "/usr/share/nginx/html/index_old.html"
 #     state: absent
 
 - name: add landing page
   template:
     src: "index.html.j2"
-    dest: "/usr/share/nginx/html/index.html"
+    dest: "/usr/share/nginx/html/index_old.html"
     mode: 0644
     force: yes
   when: checklanding.rc != 0
@@ -91,7 +91,7 @@
 
 - name: update landing page
   blockinfile:
-    path: "/usr/share/nginx/html/index.html"
+    path: "/usr/share/nginx/html/index_old.html"
     block: |
       <tr>
         <td><img src="resources/dhis2-icon-rgb-positive.png" style="width:30px;margin-left:5px;"></td>
