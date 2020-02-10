@@ -1,4 +1,8 @@
 ---
+- name: facts holder
+  set_fact:
+    instance_update: "{{ instance }}"
+
 # === DHIS 2 home =========
 - include: dhis2_home.yml
 - include: nginx_config.yml
