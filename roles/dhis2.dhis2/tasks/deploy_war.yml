@@ -89,6 +89,15 @@
       regexp: "^  \"war_date\":.+$"
       line: "  \"war_date\": {{ war_date }},"
 
+
+
+  - name: update the facts
+    set_fact:
+      instance: "{{ instance | combine({item.name: item.value}) }}"
+    with_items:
+      - { name: 'war_date' , value: "{{ war_date | default('') }}" }
+      - { name: 'installed_by' , value: "{{ awx_user_name | default('unknown') }}" }
+
   - name: update displayed facts
     include: factualise_instance.yml
 

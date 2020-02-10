@@ -1,15 +1,15 @@
 ---
 # tasks file for dhis2.dhis2
 
-
+#
 - name: update the facts
   set_fact:
-    instance_update: "{{ instance_update | default(instance) | combine({item.name: item.value}) }}"
-  with_items:
-    - { name: war_date , value: "{{ war_date | default('') }}" }
-    - { name: db_date , value: "{{ db_date | default('') }}" }
-    - { name: installed_by , value: "{{ awx_user_name | default('unknown') }}" }
-    - { name: db_owner , value: "{{ instance.db_owner | default('dhis') }}" }
+    instance_update: "{{ instance }}"
+#   with_items:
+#     - { name: war_date , value: "{{ war_date | default('') }}" }
+#     - { name: db_date , value: "{{ db_date | default('') }}" }
+#     - { name: installed_by , value: "{{ awx_user_name | default('unknown') }}" }
+#     - { name: db_owner , value: "{{ instance.db_owner | default('dhis') }}" }
 
 
 - name: debug instance_update
