@@ -70,6 +70,9 @@
  {title:"Name", field:"name", sorter:"string"}
 
   	],
+    initialSort:[
+        {column:"name", dir:"desc"}, //sort by this first
+    ],
     rowFormatter:function(row){
         var element = row.getElement(),
         data = row.getData(),
