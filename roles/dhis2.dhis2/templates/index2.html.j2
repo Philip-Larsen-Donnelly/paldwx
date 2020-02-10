@@ -82,9 +82,10 @@
 
 				var catlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/" + data.name + "/',kind:kuery)\">catalina.out</a>";
 				var nlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
+        var dicon = "<img src=\"resources/dhis2-icon-rgb-positive.png\" style=\"width:22px;\"> "
 
         cellContents =  "<div class=\"container\">"
-        cellContents += "<a href=\"https://{{ inventory_hostname }}/" + data.name + "\" class=\"instance\">" + data.name + "</a>"
+        cellContents += "<a href=\"https://{{ inventory_hostname }}/" + data.name + "\" class=\"instance\">" + dicon + data.name + "</a>"
         cellContents += "<div class=\"whereami description\">" + data.description + "</div>"
         // cellContents += "<div class=\"whereami label agel age\">deployed</div>"
         cellContents += "<div class=\"whereami aget age\"><span class=\"agel\">deployed</span> " + moment(data.war_date).fromNow() + "</div>"
