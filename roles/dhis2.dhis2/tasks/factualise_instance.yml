@@ -46,7 +46,7 @@
   set_fact:
     updated_var: "{{ imported_var.content|b64decode|from_json | json_query(my_query) }}"
   vars:
-    my_query: "[?name.contains(@, '{{ instance.name }}') == false]"
+    my_query: "[?name!='{{ instance.name }}']"
 
 # - name: debug updated_var
 #   debug:

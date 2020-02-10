@@ -80,21 +80,23 @@ a {
 
 .container {
   display: grid;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  _box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
   border-radius: 8px;
   grid-template-columns: 10px 140px 100px 520px 68px 72px 10px;
   grid-template-rows: repeat(14,10px);
-  border:1px solid #eee;
+  border:1px solid #ccc;
   width:920px;
   font-family: 'Open Sans', Tahoma, Arial, sans-serif;
   background:#fff;
-  color: #666;
-  margin:10px;
+  color: #aaa;
+  margin:5px;
 }
 
 .container:hover{
-  color:#000;
+  color:#666;
+  border:1px solid #666;
+  _box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
 .whereami{
@@ -102,8 +104,9 @@ a {
   _background:#eee
 }
 
-.container:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+.container:hover a {
+  _box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  color:#1053af;
 }
 
 .instance {
@@ -113,15 +116,14 @@ a {
     grid-row-end: 5;
     align-self: center;
    text-decoration: none;
-   font-size:28px;
+   font-size:22px;
   _color:#222;
 }
 
 .attribute{
   border-radius: 5px;
   border:1px solid #ccc;
-  background:#999;
-  color:#fff;
+  _color:#666;
   text-decoration:none;
   padding:2px 5px;
   margin:2px
@@ -129,14 +131,15 @@ a {
 .log{
   border-radius: 5px;
   border:1px solid #ccc;
+  color:#1053af7d;
   background:#fff;
-  color:#666;
   text-decoration:none;
   padding:1px 5px;
   margin:2px;
 }
 .log:hover{
   _background:#ddd;
+  border:1px solid #1053af;
 }
 
 .description {
@@ -146,17 +149,17 @@ a {
     grid-row-end: 14;
    _text-align: center;
    font-size:14px;
+   color:#666;
   overflow:hidden;
   text-overflow: ellipsis;
   _border-right:1px solid #666;
-  padding-right:5px;
   white-space:pre-wrap
 }
 
 .label{
   grid-column-start: 3;
   grid-column-end: 4;
-  color: #666;
+  _color: #666;
   padding-right:5px;
   text-align: right;
    font-size:14px;
@@ -170,6 +173,7 @@ a {
   grid-column-end: 7;
   font-size:14px;
   text-align: right;
+  color:#666;
 }
 .age{
     grid-row-start: 2;

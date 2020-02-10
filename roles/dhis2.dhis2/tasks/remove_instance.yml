@@ -17,6 +17,8 @@
 # === update nginx =========
 - include: nginx_config.yml
 
+- include: factualise_instance.yml
+
 # === systemd tomcat services ======
 - name: remove tomcat as a systemd service
   file:
