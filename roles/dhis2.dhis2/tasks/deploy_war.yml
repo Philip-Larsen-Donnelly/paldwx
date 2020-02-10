@@ -83,11 +83,11 @@
       regexp: "^war_date=.+$"
       line: "war_date={{ war_date }}"
 
-  - name: update the json facts with the install datetime
-    lineinfile:
-      dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
-      regexp: "^  \"war_date\":.+$"
-      line: "  \"war_date\": {{ war_date }},"
+  # - name: update the json facts with the install datetime
+  #   lineinfile:
+  #     dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
+  #     regexp: "^  \"war_date\":.+$"
+  #     line: "  \"war_date\": {{ war_date }},"
 
 
 

@@ -61,13 +61,13 @@
     group: "{{ dhis2_user }}"
     mode: 0600
 
-- name: Store ansible facts describing the instance (json format)
-  template:
-    src: "instance.fact.json.j2"
-    dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
-    owner: "{{ dhis2_user }}"
-    group: "{{ dhis2_user }}"
-    mode: 0600
+# - name: Store ansible facts describing the instance (json format)
+#   template:
+#     src: "instance.fact.json.j2"
+#     dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
+#     owner: "{{ dhis2_user }}"
+#     group: "{{ dhis2_user }}"
+#     mode: 0600
 
 - name: Configure tomcat ports.
   template:

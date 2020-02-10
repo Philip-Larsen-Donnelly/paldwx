@@ -139,13 +139,13 @@
     regexp: "^db_date=.+$"
     line: "db_date={{ db_date }}"
 
-
-- name: update the json facts with the install datetime
-  lineinfile:
-    dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
-    regexp: "^  \"db_date\":.+$"
-    line: "  \"db_date\": {{ db_date }},"
-  ignore_errors: yes
+# 
+# - name: update the json facts with the install datetime
+#   lineinfile:
+#     dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
+#     regexp: "^  \"db_date\":.+$"
+#     line: "  \"db_date\": {{ db_date }},"
+#   ignore_errors: yes
 
 
 
