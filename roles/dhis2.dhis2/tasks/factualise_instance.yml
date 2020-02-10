@@ -4,7 +4,7 @@
 #
 - name: update the facts
   set_fact:
-    instance_update: "{{ instance }}"
+    instance_update: "{{ instance_update | default(instance) }}"
 #   with_items:
 #     - { name: war_date , value: "{{ war_date | default('') }}" }
 #     - { name: db_date , value: "{{ db_date | default('') }}" }
