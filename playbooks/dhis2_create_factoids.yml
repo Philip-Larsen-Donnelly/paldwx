@@ -42,19 +42,56 @@
 
   tasks:
 
-  - name: dhis2 instance factoids
-    include_role:
-      name: dhis2.dhis2
-      tasks_from: factualise_instance.yml
-    loop: "{{ ansible_local.dhis2 }}"
-    loop_control:
-      loop_var: single_instance
-    vars:
-      instance: "{{ single_instance }}"
+    - name: load var from file
+      fetch:
+        src: /usr/share/nginx/html/index.html
+        dest: /tmp/fetched
+
+    - name: read the html file
+      set_fact:
+        file_lines: "{{ lookup('file', '/tmp/fetched/'+ansible_host+'/usr/share/nginx/html/index.html').split('\n') }}"
+
+    - name: get relevant list items
+      set_fact:
+        instance_n: "{{ file_lines|select('search', '<td><a')|map('regex_replace', ' *<td><a.*> *(.*)</a></td>', '\\1')|list }}"
+        instance_d: "{{ file_lines|select('search', '<td>[^<]*</td>')|map('regex_replace', ' *<td> *(.*)</td>', '\\1')|list }}"
+
+    - set_fact:
+        my_descriptions: "{{ dict( instance_n | zip(instance_d) ) }}"
+
+
+
+    - name: dhis2 instance factoids
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: convert_facts.yml
+      loop: "{{ ansible_local.dhis2.instances|dict2items }}"
+      loop_control:
+        loop_var: single_instance
+      vars:
+        instance:
+          name: "{{ single_instance.key }}"
+          description: "{{ my_descriptions[single_instance.key] | default('demo instance') }}"
+          state: 'present'
+          war_file: "{{ single_instance.value.war_file | default('-') }}"
+          war_date: "{{ single_instance.value.war_date | default('2020-01-01 01:00:00.000') | regex_replace(\"'(.*)'$\", '\\1:00')  }}"
+          db_name: "{{ single_instance.value.db_name | default('-')  }}"
+          db_date: "{{ single_instance.value.db_date | default('2020-01-01 01:00:00.000') | regex_replace(\"'(.*)'$\", '\\1:00')  }}"
+          db_demo: "{{ single_instance.value.db_demo | default('-') }}"
+          tomcat_port: "{{ single_instance.value.tomcat_port | default('-') }}"
+          activemq_port: "{{ single_instance.value.activemq_port | default('-') }}"
+          # set monitoring to true to generate metrics for prometheus/grafana
+          monitoring: "{{ single_instance.value.monitoring | default('NO') }}"
+          hibernate_monitoring: "{{ single_instance.value.hibernate_monitoring | default('NO') }}"
+          # choose whether to have master control of the database (permission to save over it)
+          master_control: "{{ single_instance.value.master_control | default('False')  }}"
+          installed_by: "{{ single_instance.value.installed_by | default('-') }}"
+      # when: single_instance.key is match('2.32.4-rc')
+
+
       # instance_name: "{{ single_instance.name }}"
         # state: 'absent'
         # war_file: "{{ single_instance.value.war_file}}"
         # db_name: "{{ single_instance.value.db_name }}"
         # db_demo: "{{ single_instance.value.db_demo }}"
         # tomcat_port: "{{ single_instance.value.tomcat_port }}"
-    when: single_instance.name is match(instance_name) and single_instance.name not in ['tomcat','activemq']
