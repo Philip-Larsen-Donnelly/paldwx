@@ -1,6 +1,10 @@
 ---
 # tasks file for dhis2.dhis2
 
+- name: facts holder
+  set_fact:
+    instance_update: "{{ instance }}"
+
 - name: install instance {{ instance.name }}
   include: install_instance.yml
   loop: "{{ dhis2_instances }}"

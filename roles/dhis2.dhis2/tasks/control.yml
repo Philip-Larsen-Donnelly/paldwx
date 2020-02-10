@@ -1,6 +1,10 @@
 ---
 - debug:
     msg: "{{ instance }}"
+    
+- name: facts holder
+  set_fact:
+    instance_update: "{{ instance }}"
 
 - name: set the instance locations
   set_fact:

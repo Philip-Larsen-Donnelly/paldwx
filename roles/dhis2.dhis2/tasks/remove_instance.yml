@@ -1,4 +1,8 @@
 ---
+- name: facts holder
+  set_fact:
+    instance_update: "{{ instance }}"
+
 # === Stop instance ==========
 # stop the instance if running
 - name: stop the instance
