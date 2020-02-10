@@ -12,7 +12,7 @@ body {
   background-color: #f7f7f7;
 }
 #container {
-  max-width: 48em;
+  max-width: 945px;
   margin: 26px auto;
   line-height: 1.6em;
   color: #666;
@@ -53,4 +53,166 @@ a {
     margin-left: 6px;
     margin-right: 6px;
   }
+}
+
+.tabulator-col{
+  float:right;
+}
+.tabulator-col-content:hover{
+  background:white !important;
+}
+.tabulator-col-title{
+  text-transform: uppercase;
+  font-size:12px;
+  font-weight:normal;
+}
+.tabulator-header{
+  border:none !important;
+}
+
+.tabulator-row{
+  border-bottom:0px;
+}
+.tabulator-row:hover{
+  background:none !important;
+  cursor:default !important;
+}
+
+.container {
+  display: grid;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 8px;
+  grid-template-columns: 10px 140px 100px 520px 68px 72px 10px;
+  grid-template-rows: repeat(14,10px);
+  border:1px solid #eee;
+  width:920px;
+  font-family: 'Open Sans', Tahoma, Arial, sans-serif;
+  background:#fff;
+  color: #666;
+  margin:10px;
+}
+
+.container:hover{
+  color:#000;
+}
+
+.whereami{
+  _border:1px solid #ddd;
+  _background:#eee
+}
+
+.container:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.instance {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 5;
+    align-self: center;
+   text-decoration: none;
+   font-size:28px;
+  _color:#222;
+}
+
+.attribute{
+  border-radius: 5px;
+  border:1px solid #ccc;
+  background:#999;
+  color:#fff;
+  text-decoration:none;
+  padding:2px 5px;
+  margin:2px
+}
+.log{
+  border-radius: 5px;
+  border:1px solid #ccc;
+  background:#fff;
+  color:#666;
+  text-decoration:none;
+  padding:1px 5px;
+  margin:2px;
+}
+.log:hover{
+  _background:#ddd;
+}
+
+.description {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 6;
+    grid-row-end: 14;
+   _text-align: center;
+   font-size:14px;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  _border-right:1px solid #666;
+  padding-right:5px;
+  white-space:pre-wrap
+}
+
+.label{
+  grid-column-start: 3;
+  grid-column-end: 4;
+  color: #666;
+  padding-right:5px;
+  text-align: right;
+   font-size:14px;
+  font-weight:bold;
+}
+.agel{
+  font-weight:bold;
+}
+.aget{
+  grid-column-start: 4;
+  grid-column-end: 7;
+  font-size:14px;
+  text-align: right;
+}
+.age{
+    grid-row-start: 2;
+    grid-row-end: 4;
+
+}
+.file{
+    grid-column-start: 4;
+    grid-column-end: 5;
+   font-size:14px;
+   padding-right:10px;
+   overflow:hidden;
+   text-overflow:ellipsis;
+
+}
+.master{
+  color:#666;
+}
+.date{
+    grid-column-start: 5;
+    grid-column-end: 7;
+   font-size:14px;
+  text-align: right;
+}
+.installer{
+    grid-row-start: 5;
+    grid-row-end: 7;
+
+}
+.war{
+    grid-row-start: 7;
+    grid-row-end: 10;
+}
+
+.db{
+    grid-row-start: 9;
+    grid-row-end: 12;
+}
+.logs{
+    grid-row-start: 12;
+    grid-row-end: 15;
+}
+.attributes{
+    grid-row-start: 2;
+    grid-row-end: 5;
 }

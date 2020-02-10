@@ -55,49 +55,51 @@
         return Object.values(response); //return the tableData property of a response json object
     },
 
-    layout:"fitColumns",
+    //layout:"fitColumns",
 	  height:"100%",
-    resizableColumns:false,
+    //resizableColumns:false,
     placeholder:"No Data Set",
     columns:[
-        {title:"Name", field:"name", sorter:"string", formatter:"link", formatterParams:{
-				     labelField:"db_name",
-				     urlPrefix:"https://{{ inventory_hostname }}/",
-				     urlField:"db_name",
-				     target:"_blank",
-		 }},
-         {title:"Description", field:"description", sorter:"string", width:450},
-         {title:"Owner", field:"installed_by", sorter:"string"},
-         {title:"MC?", field:"master_control", align:"center", formatter:"tickCross", sorter:"boolean", formatterParams:{
-				    allowEmpty:true,
-				    allowTruthy:false,
-				    tickElement:"<i class='mcfa fa fa-user-edit'></i>",
-				    crossElement:false,
-				}},
 {title:"Age", field:"war_date", formatter:"datetimediff", formatterParams:{
-    inputFormat:"YYYY-MM-DD hh:mm:ss.mmm",
+    inputFormat:"YYYY-MM-DD",
     humanize:true,
     invalidPlaceholder:"(invalid date)",
-}}
+}},
+{title:"Owner", field:"installed_by", sorter:"string"},
+ {title:"Description", field:"description", sorter:"string"},
+ {title:"Name", field:"name", sorter:"string"}
 
   	],
     rowFormatter:function(row){
         var element = row.getElement(),
         data = row.getData(),
         rowTable, cellContents;
+        while(element.firstChild) element.removeChild(element.firstChild);
 
         //define a table layout structure and set width of row
         rowTable = document.createElement("div")
         rowTable.style.width = "100%";
 
-				var catlink = "<a href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/" + data.name + "/',kind:kuery)\">catalina.out</a>";
-				var nlink = "<a href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
+				var catlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/" + data.name + "/',kind:kuery)\">catalina.out</a>";
+				var nlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
 
-        //add row data on right hand side
-	    	cellContents =  "<div class=\"artblock\"><div class=\"artefact\"><i class=\"minfa fa fa-cube\"></i>" + data.war_file + "</div><div class=\"clock\"><i class=\"minfa fa fa-clock\"></i>" + new Date(data.war_date).toLocaleString() + "</div></div>"
-				cellContents += "<div class=\"artblock\"><div class=\"artefact\"><i class=\"minfa fa fa-database\"></i>" + data.db_demo + "</div><div class=\"clock\"><i class=\"minfa fa fa-clock\"></i>" + new Date(data.db_date).toLocaleString() + "</div></div>"
-				cellContents += "<div class=\"footblock\"><div class=\"logs\">" + catlink + nlink+ "</div></div>"
-
+        cellContents =  "<div class=\"container\">"
+        cellContents += "<a href=\"https://{{ inventory_hostname }}/" + data.name + "\" class=\"instance\">" + data.name + "</a>"
+        cellContents += "<div class=\"whereami description\">" + data.description + "</div>"
+        // cellContents += "<div class=\"whereami label agel age\">deployed</div>"
+        cellContents += "<div class=\"whereami aget age\"><span class=\"agel\">deployed</span> " + moment(data.war_date).fromNow() + "</div>"
+        cellContents += "<div class=\"whereami label war\">war: </div>"
+        cellContents += "<div class=\"whereami file war\">" + data.war_file + "</div>"
+        cellContents += "<div class=\"whereami date war\">" + new Date(data.war_date).toLocaleString() + "</div>"
+        cellContents += "<div class=\"whereami label db\">database: </div>"
+        cellContents += "<div class=\"whereami file db\">" + data.db_demo + "</div>"
+        cellContents += "<div class=\"whereami date db\">" + new Date(data.db_date).toLocaleString() + "</div>"
+        cellContents += "<div class=\"whereami label installer\">owner: </div>"
+        cellContents += "<div class=\"whereami file installer\">" + data.installed_by + "</div>"
+        cellContents += "<div class=\"whereami label logs\">logs: </div>"
+        cellContents += "<div class=\"whereami file logs\">" + catlink + nlink+ "</div>"
+        cellContents += "<div class=\"whereami file attributes\"><span class=\"attribute\">postgresql-10</span><span class=\"attribute\">tomcat-8.5.50</span><span class=\"attribute\">jvm-8</span></div>"
+        cellContents += "</div>"
 
         rowTable.innerHTML = cellContents;
 
