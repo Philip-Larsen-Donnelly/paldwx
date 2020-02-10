@@ -153,8 +153,8 @@
   set_fact:
     instance: "{{ instance | combine({item.name: item.value}) }}"
   with_items:
-    - { name: 'db_date' , value: "{{ db_date | default('') }}" }
-    - { name: 'db_owner' , value: "{{ instance.db_owner | default('dhis') }}" }
+    - { name: db_date , value: "{{ db_date | default('') }}" }
+    - { name: db_owner , value: "{{ instance.db_owner | default('dhis') }}" }
 
 - name: update displayed facts
   include: factualise_instance.yml
