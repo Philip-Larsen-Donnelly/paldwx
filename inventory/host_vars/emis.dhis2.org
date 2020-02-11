@@ -3,6 +3,8 @@
 storage_path: "/mnt/sdb"
 # The following is needed to set up mount point (for storage_path) on an extrnal volume
 storage_device: "/dev/sdb"
+project: "emis"
+dhis2_run_analytics: false
 
 dhis2_admin_user: admin-emis
 dhis2_admin_user_password: !vault |
