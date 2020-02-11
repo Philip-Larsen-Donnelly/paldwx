@@ -7,6 +7,7 @@
 <link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/materialize/tabulator_materialize.min.css" rel="stylesheet">
 <link href="resources/css/landing.css" rel="stylesheet">
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/v4-shims.css">
@@ -55,23 +56,23 @@
         return Object.values(response); //return the tableData property of a response json object
     },
 
-    //layout:"fitColumns",
+    layout:"fitColumns",
 	  height:"100%",
     //resizableColumns:false,
     placeholder:"No Data Set",
     columns:[
-{title:"Age", field:"war_date", formatter:"datetimediff", formatterParams:{
+{title:"Age", field:"war_date", formatter:"datetimediff", width:100, formatterParams:{
     inputFormat:"YYYY-MM-DD",
     humanize:true,
     invalidPlaceholder:"(invalid date)",
 }},
-{title:"Owner", field:"installed_by", sorter:"string"},
- {title:"Description", field:"description", sorter:"string"},
- {title:"Name", field:"name", sorter:"string"}
+// {title:"Owner", field:"installed_by", sorter:"string"},
+ {title:"Description", field:"description", sorter:"string", width:570},
+ {title:"Name", field:"name", sorter:"string", width:210}
 
   	],
     initialSort:[
-        {column:"name", dir:"desc"}, //sort by this first
+        {column:"war_date", dir:"desc"}, //sort by this first
     ],
     rowFormatter:function(row){
         var element = row.getElement(),
@@ -87,23 +88,28 @@
 				var nlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
         var dicon = "<img src=\"resources/dhis2-icon-rgb-positive.png\" style=\"width:22px;\"> "
 
-        cellContents =  "<div class=\"container\">"
-        cellContents += "<a href=\"https://{{ inventory_hostname }}/" + data.name + "\" class=\"instance\">" + dicon + data.name + "</a>"
-        cellContents += "<div class=\"whereami description\">" + data.description + "</div>"
-        // cellContents += "<div class=\"whereami label agel age\">deployed</div>"
-        cellContents += "<div class=\"whereami aget age\"><span class=\"agel\">deployed</span> " + moment(data.war_date).fromNow() + "</div>"
-        cellContents += "<div class=\"whereami label war\">war: </div>"
-        cellContents += "<div class=\"whereami file war\">" + data.war_file + "</div>"
-        cellContents += "<div class=\"whereami date war\">" + new Date(data.war_date).toLocaleString() + "</div>"
-        cellContents += "<div class=\"whereami label db\">database: </div>"
-        cellContents += "<div class=\"whereami file db\">" + data.db_demo + "</div>"
-        cellContents += "<div class=\"whereami date db\">" + new Date(data.db_date).toLocaleString() + "</div>"
-        cellContents += "<div class=\"whereami label installer\">owner: </div>"
-        cellContents += "<div class=\"whereami file installer\">" + data.installed_by + "</div>"
-        cellContents += "<div class=\"whereami label logs\">logs: </div>"
-        cellContents += "<div class=\"whereami file logs\">" + catlink + nlink+ "</div>"
-        cellContents += "<div class=\"whereami file attributes\"><span class=\"attribute\">postgresql-10</span><span class=\"attribute\">tomcat-8.5.50</span><span class=\"attribute\">jvm-8</span></div>"
-        cellContents += "</div>"
+        cellContents =  "<div class=\"base\">"
+        cellContents +=  "<div class=\"container_b\">"
+        cellContents += "<div class=\"inst_icon\">" + dicon + "</div>"
+        cellContents += "<a href=\"https://{{ inventory_hostname }}/" + data.name + "\" class=\"instance\">" + data.name + "</a>"
+        cellContents += "<div class=\"description\">" + data.description + "</div>"
+        // cellContents += "<div class=\"label agel age\">deployed</div>"
+        cellContents += "<div class=\"aget age\">" + moment().from(data.war_date,true) + "</div>"
+
+        cellContents +=  "</div></div><div class=\"details\">"
+        cellContents +=  "<div class=\"container_d\">"
+        cellContents += "<div class=\"label war\">war: </div>"
+        cellContents += "<div class=\"file war\">" + data.war_file + "</div>"
+        cellContents += "<div class=\"date war\">" + new Date(data.war_date).toLocaleString() + "</div>"
+        cellContents += "<div class=\"label db\">database: </div>"
+        cellContents += "<div class=\"file db\">" + data.db_demo + "</div>"
+        cellContents += "<div class=\"date db\">" + new Date(data.db_date).toLocaleString() + "</div>"
+        cellContents += "<div class=\"label installer\">owner: </div>"
+        cellContents += "<div class=\"file installer\">" + data.installed_by + "</div>"
+        cellContents += "<div class=\"label logs\">logs: </div>"
+        cellContents += "<div class=\"file logs\">" + catlink + nlink+ "</div>"
+        cellContents += "<div class=\"attributes\"><span class=\"attribute\">postgresql-10</span><span class=\"attribute\">tomcat-8.5.50</span><span class=\"attribute\">jvm-8</span></div>"
+        cellContents += "</div></div>"
 
         rowTable.innerHTML = cellContents;
 
@@ -112,9 +118,16 @@
         //append newly formatted contents to the row
         element.appendChild(rowTable);
     },
+    renderComplete:function(){
+      $(function() {
+        $(".base").on( "click", function() {
+          $(this).next().slideToggle(400);
+          $expand = $(this).find(">:first-child");
+        });
+      });
+    },
 
 });
-
 
 
  </script>
