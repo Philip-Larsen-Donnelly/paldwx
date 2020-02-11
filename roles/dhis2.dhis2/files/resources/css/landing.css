@@ -71,6 +71,7 @@ a {
   border-left:1px solid #eee;
   text-align:center;
   background:#f7f7f7 !important;
+  padding-top:7px !important;
 }
 .tabulator-col-content:hover{
   background:#f7f7f7 !important;
@@ -84,6 +85,7 @@ a {
 .tabulator-header{
   border:none !important;
   background:#f7f7f7 !important;
+  height:40px;
 }
 
 .tabulator-row{
