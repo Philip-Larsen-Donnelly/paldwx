@@ -189,6 +189,15 @@ a {
    text-overflow:ellipsis;
 
 }
+/* Hide scrollbar */
+.file::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE and Edge */
+.file {
+  -ms-overflow-style: none;
+}
+
 .master{
   color:#666;
 }
