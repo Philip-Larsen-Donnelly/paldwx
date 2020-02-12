@@ -46,6 +46,7 @@
 </div>
 </body>
 <script>
+    var notoggle = true;
     //Build Tabulator
     var table = new Tabulator("#instance-table", {
     ajaxURL:"/instance_facts.json",
@@ -119,12 +120,15 @@
         element.appendChild(rowTable);
     },
     renderComplete:function(){
-      $(function() {
-        $(".base").on( "click", function() {
-          $(this).next().slideToggle(400);
-          $expand = $(this).find(">:first-child");
+      if (notoggle){
+        $(function() {
+          $(".base").on( "click", function() {
+            $(this).next().slideToggle(400);
+            $expand = $(this).find(">:first-child");
+          });
         });
-      });
+        notoggle = false;
+      }
     },
 
 });
