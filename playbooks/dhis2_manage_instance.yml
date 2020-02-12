@@ -80,13 +80,7 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance:
-          name: "{{ single_instance.key }}"
-          state: 'present'
-          war_file: "{{ single_instance.value.war_file}}"
-          db_name: "{{ single_instance.value.db_name }}"
-          db_demo: "{{ single_instance.value.db_demo }}"
-          tomcat_port: "{{ single_instance.value.tomcat_port }}"
+        instance: "{{ single_instance }}"
       when:
         - single_instance.key is match(instance_name)
         - instance_action  != 'remove'
