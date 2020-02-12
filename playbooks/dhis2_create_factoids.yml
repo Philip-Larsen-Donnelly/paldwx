@@ -44,12 +44,12 @@
 
     - name: load var from file
       fetch:
-        src: /usr/share/nginx/html/index.html
+        src: /usr/share/nginx/html/index_old.html
         dest: /tmp/fetched
 
     - name: read the html file
       set_fact:
-        file_lines: "{{ lookup('file', '/tmp/fetched/'+ansible_host+'/usr/share/nginx/html/index.html').split('\n') }}"
+        file_lines: "{{ lookup('file', '/tmp/fetched/'+ansible_host+'/usr/share/nginx/html/index_old.html').split('\n') }}"
 
     - name: get relevant list items
       set_fact:
@@ -74,9 +74,9 @@
           description: "{{ my_descriptions[single_instance.key] | default('demo instance') }}"
           state: 'present'
           war_file: "{{ single_instance.value.war_file | default('-') }}"
-          war_date: "{{ single_instance.value.war_date | default('2020-01-01 01:00:00.000') | regex_replace(\"'(.*)'$\", '\\1:00')  }}"
+          war_date: "{{ single_instance.value.war_date | default('-') | regex_replace(\"'(.*)'$\", '\\1:00')  }}"
           db_name: "{{ single_instance.value.db_name | default('-')  }}"
-          db_date: "{{ single_instance.value.db_date | default('2020-01-01 01:00:00.000') | regex_replace(\"'(.*)'$\", '\\1:00')  }}"
+          db_date: "{{ single_instance.value.db_date | default('-') | regex_replace(\"'(.*)'$\", '\\1:00')  }}"
           db_demo: "{{ single_instance.value.db_demo | default('-') }}"
           tomcat_port: "{{ single_instance.value.tomcat_port | default('-') }}"
           activemq_port: "{{ single_instance.value.activemq_port | default('-') }}"
@@ -86,7 +86,7 @@
           # choose whether to have master control of the database (permission to save over it)
           master_control: "{{ single_instance.value.master_control | default('False')  }}"
           installed_by: "{{ single_instance.value.installed_by | default('-') }}"
-      # when: single_instance.key is match('2.32.4-rc')
+      # when: single_instance.key is match('2.33dev')
 
 
       # instance_name: "{{ single_instance.name }}"

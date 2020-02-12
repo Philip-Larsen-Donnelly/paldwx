@@ -15,11 +15,13 @@
         state: "directory"
     - name: "Insert custom fact file"
       template:
-        src: "files/dhis2.fact.j2"
+        src: "files/dhis2public.fact.j2"
         dest: /etc/ansible/facts.d/dhis2public.fact
         mode: 0755
     - name: "Re-run setup to use custom facts"
       setup: ~
+    - debug:
+        msg: "{{ ansible_local.dhis2public.instances }}"
 
     - name: Ensure Pip is installed.
       package: name="python3-pip" state=present
@@ -35,21 +37,20 @@
       include_role:
         name: dhis2.dhis2
         tasks_from: remove_instance.yml
-      loop: "{{ query('dict', ansible_local.dhis2.instances|default({})) }}"
+      loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
       loop_control:
         loop_var: single_instance
       vars:
         instance:
-          name: "{{ single_instance.key }}"
+          name: "{{ single_instance.name }}"
           state: 'absent'
-          war_file: "{{ single_instance.value.war_file}}"
-          db_name: "{{ single_instance.value.db_name }}"
-          db_demo: "{{ single_instance.value.db_demo }}"
-          tomcat_port: "{{ single_instance.value.tomcat_port }}"
+          war_file: "{{ single_instance.war_file}}"
+          db_name: "{{ single_instance.db_name }}"
+          db_demo: "{{ single_instance.db_demo }}"
+          tomcat_port: "{{ single_instance.tomcat_port }}"
       when:
-        - single_instance.key is match(instance_name)
+        - single_instance.name is match(instance_name)
         - instance_action == 'remove'
-        - single_instance.key not in ['tomcat','activemq']
 
     - name: check for snapshot
       block:
@@ -76,12 +77,11 @@
       include_role:
         name: dhis2.dhis2
         tasks_from: control.yml
-      loop: "{{ query('dict', ansible_local.dhis2.instances|default({})) }}"
+      loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance.value }}"
+        instance: "{{ single_instance }}"
       when:
-        - single_instance.key is match(instance_name)
+        - single_instance.name is match(instance_name)
         - instance_action  != 'remove'
-        - single_instance.key not in ['tomcat','activemq']
