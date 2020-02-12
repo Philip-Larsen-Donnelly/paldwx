@@ -80,7 +80,7 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance }}"
+        instance: "{{ single_instance.value }}"
       when:
         - single_instance.key is match(instance_name)
         - instance_action  != 'remove'
