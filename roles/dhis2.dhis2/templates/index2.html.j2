@@ -48,8 +48,9 @@
 <script>
     var notoggle = true;
     //Build Tabulator
+    var cachebust = new Date().getTime();
     var table = new Tabulator("#instance-table", {
-    ajaxURL:"/instance_facts.json",
+    ajaxURL:"/instance_facts.json?v="+cachebust,
     ajaxResponse:function(url, params, response){
         //url - the URL of the request
         //params - the parameters passed with the request
