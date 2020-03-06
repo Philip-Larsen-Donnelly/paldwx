@@ -13,12 +13,14 @@
   become_user: "{{ postgresql_user }}"
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
+- set_fact: save_suffix="{{ db_save_suffix | default('') }}"
+
 - name: copy the snapshot to s3
   aws_s3:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: dhis2-database-backups
-    object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}{{ save_suffix }}.sql.gz"
     src: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     mode: put
     metadata: "saved_by={{ awx_user_name | default('unknown') }},original_source={{ instance.db_demo }},war_file={{ instance.war_file }}"

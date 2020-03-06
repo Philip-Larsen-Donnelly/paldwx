@@ -1,0 +1,92 @@
+---
+- hosts: "{{ instance_host }}"
+  gather_facts: yes
+  become: yes
+
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2public.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2public.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+    # - debug:
+    #     msg: "{{ ansible_local.dhis2public.instances }}"
+
+
+  tasks:
+    - name: Get available snapshots from S3
+      aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: dhis2-database-backups
+        mode: list
+        prefix: "{{ ansible_host }}/{{ instance_name }}/"
+      register: s3_list
+
+    # - debug:
+    #     msg: "{{ ansible_host }}/{{ instance_name }}/"
+    #
+    # - debug:
+    #     msg: "{{ s3_list }}"
+
+    - name: Get most recent snapshot
+      set_fact:
+        s3_snapshot: "{{ s3_list.s3_keys[-1] }}"
+      when: s3_list.s3_keys
+
+    - name: Snapshots
+      block:
+        - name: get snapshot url
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-backups
+            object: "{{ s3_snapshot }}"
+            expiration: 86400
+            mode: geturl
+          register: s3_snapshot_url
+          no_log: True
+
+        - name: URL of the last snapshot
+          debug:
+            msg:
+              - "Presigned URL for the last snapshot: {{ s3_snapshot_url }}"
+              - "This link will be valid for 24 hours."
+          when: s3_snapshot_url is defined
+      when: s3_snapshot is defined
+
+    - name: get committed url
+      aws_s3:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: dhis2-database-development
+        object: "{{ db_demo }}"
+        expiration: 86400
+        mode: geturl
+      loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
+      loop_control:
+        loop_var: my_instance
+      vars:
+        db_demo: "{{ my_instance.db_demo }}"
+      when:
+        - my_instance.name is match(instance_name)
+      register: s3_db_url
+      no_log: True
+
+
+    - name: URL of the committed database
+      block:
+        - debug:
+            msg:
+              - "Presigned URL for the current committed DB: {{ s3_db_url.results[0].url }}"
+              - "This link will be valid for 24 hours."
+      when:
+        - s3_db_url is defined

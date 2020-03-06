@@ -17,6 +17,11 @@
   set_fact:
     storage: "{{ storage_path | default('/var/lib') }}"
 
+# ===  Save a DB snapshot to s3
+- name: save a DB snapshot to s3
+  include: save_snapshot.yml
+  vars:
+    db_save_suffix: "_REMOVED"
 
 # === update nginx =========
 - include: nginx_config.yml
