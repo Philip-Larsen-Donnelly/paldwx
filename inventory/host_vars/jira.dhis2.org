@@ -1,0 +1,53 @@
+---
+# storage_path is where the instances will be installed
+storage_path: "/ebs1"
+# The following is needed to set up mount point (for storage_path) on an extrnal volume
+storage_device: "/dev/nvme0n1"
+
+postgresql_version: "11"
+postgresql_packages:
+  - postgresql-{{ postgresql_version }}
+
+postgresql_user: postgres
+postgresql_group: postgres
+
+postgresql_daemon: "postgresql"
+postgresql_restarted_state: "restarted"
+
+postgresql_unix_socket_directories:
+  - '/var/run/postgresql'
+
+postgresql_data_dir: "{{ storage_path }}/postgresql/{{ __postgresql_version }}/main"
+
+# Global configuration options that will be set in postgresql.conf.
+postgresql_global_config_options:
+  - option: unix_socket_directories
+    value: '{{ postgresql_unix_socket_directories | join(",") }}'
+  - option: data_directory
+    value: "{{ postgresql_data_dir }}"
+
+postgresql_databases:
+  - name: jiradb
+    lc_collate: "C"
+    lc_ctype: "C"
+    encoding: "UNICODE"
+
+postgresql_users:
+  - name: jirauser
+    password: !vault |
+          $ANSIBLE_VAULT;1.2;AES256;dev
+          30316335653631656366613937363735396235646232383466353032353366313637653365666461
+          3363343334373237393832376539616332653331313738300a663835623266643031393964663234
+          35373632633565336338353935333439636230636634393466643734643931393134386139646163
+          3635643632633737620a366166636633646431663436316232346633636634393839366136333633
+          3238
+    db: jiradb
+
+
+
+nginx_http_template_enable: true
+nginx_http_template:
+  default:
+    template_file: http/jira_default.conf.j2
+    conf_file_name: default.conf
+    conf_file_location: /etc/nginx/conf.d/

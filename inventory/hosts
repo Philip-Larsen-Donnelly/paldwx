@@ -35,6 +35,15 @@ ansible_python_interpreter=/usr/bin/python3
 
 
 
+#=============================================================================
+[jira]
+jira.dhis2.org
+
+[jira:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/phil-ci.pem
+ansible_python_interpreter=/usr/bin/python3
+postgresql_python_library=python3-psycopg2
 
 
 #=============================================================================
@@ -85,6 +94,7 @@ debug.dhis2.org
 verify.dhis2.org
 empty.dhis2.org
 giocare.dhis2.org
+test.performance.dhis2.org
 smoke.dhis2.org
 bigmac.dhis2.org
 
