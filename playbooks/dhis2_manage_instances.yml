@@ -49,7 +49,7 @@
           db_demo: "{{ single_instance.db_demo }}"
           tomcat_port: "{{ single_instance.tomcat_port }}"
       when:
-        - single_instance.name == instance_name
+        - single_instance.name is match(instance_name)
         - instance_action == 'remove'
 
     - name: check for snapshot
@@ -83,5 +83,5 @@
       vars:
         instance: "{{ single_instance }}"
       when:
-        - single_instance.name == instance_name
+        - single_instance.name is match(instance_name)
         - instance_action  != 'remove'
