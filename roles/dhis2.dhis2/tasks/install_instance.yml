@@ -82,7 +82,7 @@
     content: '{{ scraper_content }}'
     marker: "# {mark} ANSIBLE MANAGED BLOCK - PROMETHEUS"
     insertbefore: EOF
-  # notify: reload prometheus
+  notify: reload prometheus
 
 
 - name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
