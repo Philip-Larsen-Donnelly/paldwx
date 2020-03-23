@@ -6,7 +6,7 @@ scrape_configs:
     metrics_path: '/{{ i }}/api/metrics'
     basic_auth:
       username: "{{ dhis2_prometheus_user }}"
-      password: "{{ dhis2_admin_user_password }}"
+      password: "{{ dhis2_prometheus_user_password }}"
     static_configs:
       - targets: ['localhost:{{ ansible_local.dhis2.instances[i].tomcat_port }}']
 {% endif %}
@@ -17,7 +17,7 @@ scrape_configs:
     metrics_path: '/{{ instance.name }}/api/metrics'
     basic_auth:
       username: "{{ dhis2_prometheus_user }}"
-      password: "{{ dhis2_admin_user_password }}"
+      password: "{{ dhis2_prometheus_user_password }}"
     static_configs:
       - targets: ['localhost:{{ instance.tomcat_port }}']
 {% endif %}
