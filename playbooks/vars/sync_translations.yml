@@ -8,7 +8,7 @@ t_pass: !vault |
           6434326563643236330a383263333131613562616633643361633938333731613331373130383865
           65646264316434643963326438353132356132306364366436393165366136303638
 t_server: "https://{{ instance_host }}/{{ instance_name }}"
-t_project: "x-test-meta-trans-sync"
+t_project: "meta-who-packages"
 t_package: "{{ package }}"
 t_txkey: !vault |
           $ANSIBLE_VAULT;1.2;AES256;dev
