@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/sync_translations.yml
+
+  tasks:
+  - name: synchronise
+    include_role:
+      name: dhis2.transifex
