@@ -79,7 +79,7 @@
       when:
         - my_instance.name is match(instance_name)
       register: s3_db_url
-      # no_log: True
+      no_log: True
 
 
     - name: URL of the committed database
