@@ -1,0 +1,32 @@
+---
+# tasks file for dhis2.dhis2
+
+
+- name: load var from file
+  fetch:
+    src: /usr/share/nginx/html/index_old.html
+    dest: /tmp/fetched
+
+- name: read the html file
+  set_fact:
+    file_lines: "{{ lookup('file', '/tmp/fetched/'+ansible_host+'/usr/share/nginx/html/index_old.html').split('\n') }}"
+
+- debug:
+    msg: "{{ file_lines }}"
+
+- name: get relevant list items
+  set_fact:
+    instance_n: "{{ file_lines|select('search', '<td><a')|map('regex_replace', ' *<td><a.*> *(.*)</a></td>', '\\1')|list }}"
+    instance_d: "{{ file_lines|select('search', '<td>[^<]*</td>')|map('regex_replace', ' *<td> *(.*)</td>', '\\1')|list }}"
+
+- debug:
+    msg: "{{ instance_n }}"
+
+- debug:
+    msg: "{{ instance_d }}"
+
+- set_fact:
+    descriptions: "{{ dict( instance_n | zip(instance_d) ) }}"
+
+- debug:
+    msg: "{{ descriptions['2.32.4-rc'] }}"

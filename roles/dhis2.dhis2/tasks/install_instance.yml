@@ -43,7 +43,7 @@
 
 - name: remove redirect from nginx config
   blockinfile:
-    path: "/etc/nginx/conf.d/default.conf"
+    path: "/etc/nginx/dhis2_instances"
     block: |
         location /{{ instance.name }} {
             proxy_pass                http://127.0.0.1:{{ instance.tomcat_port }}/{{ instance.name }};
@@ -55,7 +55,6 @@
             #proxy_cache               dhis;
         }
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
-    insertbefore: "# END DHIS2-INSTANCES:"
     state: "{{ instance.state }}"
   notify: reload nginx
 
@@ -83,6 +82,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK - PROMETHEUS"
     insertbefore: EOF
   notify: reload prometheus
+  ignore_errors: yes
 
 
 - name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
@@ -94,7 +94,7 @@
     force_basic_auth: yes
     status_code: 200
   register: result
-  until: result.status == 200
+  until: result.status in [200, 401]
   retries: 90
   delay: 10
   when: project is not defined and instance.db_demo is defined and instance.db_demo|length

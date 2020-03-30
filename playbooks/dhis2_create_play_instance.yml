@@ -3,6 +3,10 @@
   strategy: free
   become: yes
 
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
   pre_tasks:
     # create custom fact file if not existing
     - name: "Create custom fact directory"
@@ -16,6 +20,8 @@
         mode: 0755
     - name: "Re-run setup to use custom facts"
       setup: ~
+    - debug:
+        msg: "{{ ansible_local.dhis2 }}"
 
   vars:
     use_demo: "{{ instance_use_demo_db if inventory_hostname != 'empty.dhis2.org' else '' }}"
@@ -23,17 +29,20 @@
       - name: "{{ instance_name }}"
         description: "{{ instance_description | default('Demo of '+instance_war+' release',true) }}"
         state: 'present'
-        war_file: '{{ instance_war }}'
+        war_file: 'https://releases.dhis2.org/{{ instance_war }}'
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
-        db_demo: "{{ instance_db | default('') }}"
+        db_demo: "{{ dhis2_demo_map[instance_war] if use_demo == 'YES' else '' }}"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
         monitoring: "{{ monitoring | default('NO') }}"
         hibernate_monitoring: "{{ hibernate_monitoring | default('NO') }}"
+        # choose whether to have master control of the database (permission to save over it)
+        master_control: "{{ master_control | default('false') if use_demo == 'YES' else 'false' }}"
 
   tasks:
-  - debug:
+  - name: debug the dhis2_instances
+    debug:
       msg: "{{ dhis2_instances }}"
   - name: dhis2 instances
     include_role:

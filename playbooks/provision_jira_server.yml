@@ -1,10 +1,6 @@
 ---
-- hosts: coreteam
+- hosts: jira8.dhis2.org
   become: yes
-
-  vars_files:
-    # include postgres config
-    - vars/postgresql_latest.yml
 
   pre_tasks:
     # Create a new primary partition
@@ -40,22 +36,20 @@
         dest: /etc/ansible/facts.d/dhis2.fact
         mode: 0755
 
-    - name: installing repo for Java 8 in Ubuntu
-      apt_repository: repo='ppa:openjdk-r/ppa'
 
   tasks:
-  - name: java
+  # - name: nginx
+  #   include_role:
+  #     name: nginxinc.nginx
+  # - name: git
+  #   include_role:
+  #     name: geerlingguy.git
+  # - name: docker
+  #   include_role:
+  #     name: geerlingguy.docker
+  # - name: certbot
+  #   include_role:
+  #     name: geerlingguy.certbot
+  - name: postgres
     include_role:
-      name: geerlingguy.java
-  - name: nginx
-    include_role:
-      name: nginxinc.nginx
-  - name: git
-    include_role:
-      name: geerlingguy.git
-  - name: docker
-    include_role:
-      name: geerlingguy.docker
-  - name: certbot
-    include_role:
-      name: geerlingguy.certbot
+      name: geerlingguy.postgresql

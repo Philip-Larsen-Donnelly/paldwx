@@ -65,8 +65,7 @@ location /grafana/ {
    }
 
 
-# BEGIN DHIS2-INSTANCES:
-# END DHIS2-INSTANCES:
+include dhis2_instances;
 
     location / {
         root   /usr/share/nginx/html;
@@ -81,6 +80,5 @@ location /grafana/ {
     location = /50x.html {
         root   /usr/share/nginx/html;
     }
-
 
 }

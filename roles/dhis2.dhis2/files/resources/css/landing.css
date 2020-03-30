@@ -35,7 +35,10 @@ table th {
   background-color: #f7f7f7;
 }
 .intro {
-  padding: 50px 0 30px 0;
+  padding: 80px 0 30px 0;
+}
+.intro_next {
+  padding: 10px 0 30px 0;
 }
 .fa {
   color: #235EA0;
@@ -44,7 +47,7 @@ table th {
 }
 a {
   text-decoration: none;
-  color: #0053AF;
+  color:#1053af;
 }
 @media (max-width:770px) {
   #container {
@@ -146,7 +149,7 @@ a {
     align-self: center;
    text-decoration: none;
    font-size:16px;
-  color:#222;
+  _color:#222;
 }
 
 .description {

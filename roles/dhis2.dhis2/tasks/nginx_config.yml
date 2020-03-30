@@ -5,26 +5,23 @@
     chdir: "/etc/ssl/certs"
     creates: "/etc/ssl/certs/dhparam.pem"
 
-- name: Check whether /etc/nginx/conf.d/default.conf contains "# END DHIS2-INSTANCES:"
-  command: 'grep -Fxq "# END DHIS2-INSTANCES:" /etc/nginx/conf.d/default.conf'
-  register: checknginxconf
-  check_mode: no
-  ignore_errors: yes
-  changed_when: no
+
+- name: Migrate nginx config
+  shell: sed -n '/BEGIN DHIS2-INSTANCES/,/END DHIS2-INSTANCES/p' /etc/nginx/conf.d/default.conf > /etc/nginx/dhis2_instances; sed -i '/# .*DHIS2-INSTANCES/d'  /etc/nginx/dhis2_instances
+  args:
+    creates: /etc/nginx/dhis2_instances
 
 - name: configure nginx
   template:
-    src: "nginx.dhis.conf.j2"
+    src: "nginx{{ dhis2_lander }}.dhis.conf.j2"
     dest: "/etc/nginx/conf.d/default.conf"
     mode: 0644
     force: yes
   notify: reload nginx
-  when: checknginxconf.rc != 0
-
 
 - name: add DHIS 2 instances to nginx config
   blockinfile:
-    path: "/etc/nginx/conf.d/default.conf"
+    path: "/etc/nginx/dhis2_instances"
     block: |
         location /{{ instance.name }} {
             proxy_pass                http://127.0.0.1:{{ instance.tomcat_port }}/{{ instance.name }};
@@ -40,31 +37,12 @@
     state: "{{ instance.state }}"
   notify: reload nginx
 
-- name: Check whether /usr/share/nginx/html/index_old.html contains "<!-- END DHIS2-INSTANCES -->"
-  command: 'grep -Fxq "<!-- END DHIS2-INSTANCES -->" /usr/share/nginx/html/index_old.html'
-  register: checklanding
-  check_mode: no
-  ignore_errors: yes
-  changed_when: no
-
 - name: add landing page
   template:
-    src: "index2.html.j2"
+    src: "index{{ dhis2_lander }}.html.j2"
     dest: "/usr/share/nginx/html/index.html"
     mode: 0644
     force: yes
-#
-# - file:
-#     path: "/usr/share/nginx/html/index_old.html"
-#     state: absent
-
-- name: add landing page
-  template:
-    src: "index.html.j2"
-    dest: "/usr/share/nginx/html/index_old.html"
-    mode: 0644
-    force: yes
-  when: checklanding.rc != 0
 
 - name: create resources directory
   file:
@@ -88,31 +66,6 @@
     url: "https://github.com/dhis2/dhis2-identity/raw/master/web/Logo/Default/dhis2-logo-rgb-positive.png"
     dest: "/usr/share/nginx/html/resources/dhis2-logo-rgb-positive.png"
     mode: 0644
-
-- name: update landing page
-  blockinfile:
-    path: "/usr/share/nginx/html/index_old.html"
-    block: |
-      <tr>
-        <td><img src="resources/dhis2-icon-rgb-positive.png" style="width:30px;margin-left:5px;"></td>
-        <td><a href="https://{{ inventory_hostname }}/{{ instance.name }}">{{ instance.name }}</a></td>
-        <td>{{ instance.description | default(default_description) }}
-          </br>
-          <span style="font-weight: bold;font-size: small;">WAR:</span><span style="font-size: small;"> {{ instance.war_file }}</span>
-          </br>
-          <span style="font-weight: bold;font-size: small;">DB:</span><span style="font-size: small;"> {{ instance.db_demo }}</span>
-        </td>
-        <td>
-          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/{{ instance.name }}/',kind:kuery)">catalina.out</a>
-          </br>
-          <a href="https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/{{ instance.name }}/',kind:kuery)">nginx</a>
-        </td>
-      </tr>
-    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK {{ instance.name }} -->"
-    insertbefore: "<!-- END DHIS2-INSTANCES -->"
-    state: "{{ instance.state }}"
-  vars:
-    default_description: "{{ instance.name }}"
 
 - name: add maintenance pages
   copy:

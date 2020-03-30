@@ -61,7 +61,7 @@
 
 - name: add redirect to nginx config
   blockinfile:
-    path: "/etc/nginx/conf.d/default.conf"
+    path: "/etc/nginx/dhis2_instances"
     block: |
         location /{{ instance.name }} {
             rewrite ^ /{{ instance.name }}_restore_db/ ;
@@ -71,7 +71,6 @@
             index restore_db.html break;
         }
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
-    insertbefore: "# END DHIS2-INSTANCES:"
     state: "{{ instance.state }}"
   notify: reload nginx
 

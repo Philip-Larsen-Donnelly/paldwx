@@ -1,0 +1,13 @@
+#
+#This will update and install only the security updates
+#
+---
+- hosts: coreteam
+  gather_facts: no
+  become: yes
+
+  tasks:
+  - name: Migrate nginx config
+    shell: sed -n '/BEGIN DHIS2-INSTANCES/,/END DHIS2-INSTANCES/p' /etc/nginx/conf.d/default.conf > /etc/nginx/dhis2_instances; sed -i '/# .*DHIS2-INSTANCES/d'  /etc/nginx/dhis2_instances
+    args:
+      creates: /etc/nginx/dhis2_instances

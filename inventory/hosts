@@ -77,11 +77,6 @@ storage_path="/mnt/sdb"
 [liveplay]
 play.dhis2.org
 
-[liveplay:vars]
-ansible_ssh_user=ubuntu
-ansible_ssh_private_key_file=~/.ssh/id_rsa
-
-
 # Education (EMIS)
 [emis]
 emis.dhis2.org
@@ -110,6 +105,7 @@ covid.dhis2.org
 unicef-dxp.dhis2.org
 
 [coreteam:children]
+liveplay
 devteam
 qateam
 emis

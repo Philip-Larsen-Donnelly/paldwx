@@ -1,0 +1,11 @@
+---
+- hosts: "{{ instance_host }}"
+  strategy: free
+  become: yes
+
+  tasks:
+
+    - name: dhis2 instance lander
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: copy_lander.yml
