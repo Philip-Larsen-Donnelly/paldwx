@@ -77,16 +77,27 @@
       vars:
         db_demo: "{{ my_instance.db_demo }}"
       when:
-        - my_instance.name is match(instance_name)
+        - my_instance.name == instance_name
       register: s3_db_url
       no_log: True
 
-
-    - name: URL of the committed database
+    - name: Committed database
       block:
-        - debug:
+
+        - name: Get details from S3
+          set_fact:
+            s3_committed_db: "{{ my_instance.url }}"
+          loop: "{{ s3_db_url.results }}"
+          loop_control:
+            loop_var: my_instance
+          when: my_instance.url is defined
+          no_log: True
+
+        - name: URL of the committed database
+          debug:
             msg:
-              - "Presigned URL for the current committed DB: {{ s3_db_url.results[0].url }}"
+              - "Presigned URL for the current committed DB: {{ s3_committed_db }}"
               - "This link will be valid for 24 hours."
+
       when:
         - s3_db_url is defined
