@@ -5,3 +5,4 @@ storage_path: "/ebs1/home"
 storage_device: "/dev/nvme0n1"
 
 dhis2_lander: "-play"
+dhis2_nginx: "-play"

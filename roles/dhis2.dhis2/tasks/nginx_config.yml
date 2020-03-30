@@ -13,7 +13,7 @@
 
 - name: configure nginx
   template:
-    src: "nginx{{ dhis2_lander }}.dhis.conf.j2"
+    src: "nginx{{ dhis2_nginx }}.dhis.conf.j2"
     dest: "/etc/nginx/conf.d/default.conf"
     mode: 0644
     force: yes
