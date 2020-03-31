@@ -107,7 +107,7 @@
     target: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
   become: true
   become_user: "{{ postgresql_user }}"
-  when: instance.db_demo is defined and instance.db_demo|length
+  # when: instance.db_demo is defined and instance.db_demo|length
 
 - name: Execute SQL - force admin password
   postgresql_query:
