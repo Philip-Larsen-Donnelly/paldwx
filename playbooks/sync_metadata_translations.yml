@@ -4,8 +4,9 @@
   gather_facts: no
 
   vars_files:
-    # include the vars mapping dhis2 war to demo db version
+    # include the vars for authentication when synchronising
     - vars/sync_translations.yml
+
 
   tasks:
   - name: synchronise

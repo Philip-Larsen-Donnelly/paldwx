@@ -1,7 +1,22 @@
 ---
 # tasks file for dhis2.transifex
-- name: Synchronise DHIS2 instance with transifex
+- name: Synchronise DHIS2 instance with transifex (full DB)
   script: sync_transifex.py -u {{ t_user }} -p {{ t_pass }} -s {{ t_server }} -k {{ t_package }} -j {{ t_project }} -t {{ t_txkey }}
   args:
     executable: python3
     chdir: "/tmp"
+  when: t_package is defined and t_package|length
+
+ #
+ # - name: debug
+ #   debug:
+ #     msg: sync_transifex_packages.py -u {{ t_user }} -p {{ t_pass }} -s {{ t_server }} -k {{ t_package }} -j {{ t_project }} -t {{ t_txkey }}
+
+- name: Synchronise DHIS2 instance with transifex for package {{ t_package }}
+  script: sync_transifex_packages.py -u {{ t_user }} -p {{ t_pass }} -s {{ t_server }} -r {{ meta_package_root }} -k {{ meta_package }} -j {{ t_project }} -t {{ t_txkey }}
+  args:
+    executable: python3
+    chdir: "/tmp"
+  loop: "{{ meta_packages }}"
+  loop_control:
+    loop_var: meta_package

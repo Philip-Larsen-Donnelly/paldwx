@@ -1,0 +1,58 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  vars:
+    aws_access_key: !vault |
+              $ANSIBLE_VAULT;1.2;AES256;dev
+              32346338333530633665383130303566313733636261363462636637353336336232313063656461
+              3635613539313965646433303135666439333439313139640a313465353038633335386662383865
+              63666563316333623337336439313161343935303231323261306534303031316137393536336634
+              6331313036333763310a356530666334333530383736363464613232363364613832626339396463
+              35303431346565326330396231653961373235333232336233363962353261326631
+    aws_secret_key: !vault |
+              $ANSIBLE_VAULT;1.2;AES256;dev
+              33336334316539643161356133333234656237633339383864323431333862373263663566353836
+              3663656565643239626437316632623461626264373966620a366434373062663334653431633432
+              36643865613138646565656164366230303033623465396637303630623435326263643430626339
+              3635313364636136650a363663313933343634323364623563396464336339333231373338363835
+              36333934353866363134393562636532343163386431343464313530653066646466383561616534
+              6236303462663666333233373932376332646466353337656231
+
+  tasks:
+    - pip:
+        name: botocore
+    - pip:
+        name: boto3
+
+    - name: copy DB from {{ db_from }} to {{ db_to }}
+      block:
+        - name: download {{ db_from }} file S3
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-development
+            object: "{{ project }}/{{ db_from }}"
+            dest: "/tmp/db_cp.sql.gz"
+            mode: get
+
+        - name: upload {{ db_to }} to s3
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-development
+            object: "{{ project }}/{{ db_to }}"
+            src: "/tmp/db_cp.sql.gz"
+            mode: put
+            metadata: "copied_from={{ db_from }}"
+
+        - name: remove local temporary file
+          file:
+            path: "/tmp/db_cp.sql.gz"
+            state: absent
+
+      when:
+        - project is defined
+        - db_from is defined
+        - db_to is defined

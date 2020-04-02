@@ -19,7 +19,8 @@ parser = argparse.ArgumentParser(description='Pull translations from dhis2 API a
 parser.add_argument('-u','--user', action="store", help='dhis2 user', required=True)
 parser.add_argument('-p','--password', action="store", help='dhis2 password', required=True)
 parser.add_argument('-s','--server', action="store", help='dhis2 server instance', required=True)  # e.g. https://whom.dhis2.org/phil_dev
-parser.add_argument('-k','--package', action="store", help='dhis2 metadata package name', required=True) # e.g. "COVID19_AGG/COVID19_agg"
+parser.add_argument('-r','--package_root', action="store", help='dhis2 metadata package root', required=True) # e.g. "https://raw.githubusercontent.com/dhis2/metadata-package-development/work-in-progress/metadata/"
+parser.add_argument('-k','--package', action="store", help='dhis2 metadata package name', required=True) # e.g. "COVID19_AGG/COVID19_AGG_COMPLETE_V1_DHIS2.30/metadata.json"
 parser.add_argument('-j','--project', action="store", help='dhis2 project name', required=True) # e.g. meta-who-packages
 parser.add_argument('-t','--tx_token', action="store", help='transifex api token', required=True)
 args = parser.parse_args()
@@ -43,7 +44,7 @@ tx_translations_api='https://www.transifex.com/api/2/project/{s}/resource/{r}/tr
 tx_resources_api='https://www.transifex.com/api/2/project/{s}/resources/'
 tx_content_api='https://www.transifex.com/api/2/project/{s}/resource/{r}/content'
 tx_translations_update_api='https://www.transifex.com/api/2/project/{s}/resource/{r}/translation/{l}'
-metadata_extract_config_root="https://raw.githubusercontent.com/dhis2/metadata-package-development/work-in-progress/metadata/"
+metadata_extract_config_root=args.package_root
 metadata_extract_config_suffix="_export_conf.json"
 excluded_objects=["organisationUnits","users","organisationUnit","user"]
 
@@ -188,6 +189,61 @@ def minimise_translations(in_trans, out_trans):
 
     # return delta
 
+def json_to_metadata():
+
+    print("Pushing translations to",args.server,"...")
+
+    locales = {}
+
+    for localefile in glob.iglob(locale_file_glob_pattern.format(p=args.package)):
+        # print(localefile)
+
+        lfile=open(localefile,'r')
+        locale = json.load(lfile)
+        lfile.close()
+
+        locale_name = localefile.replace(locale_file_prefix.format(p=args.package),'').split('.')[0]
+        if locale_name != 'en':
+            # print("locale", locale)
+            for resource in locale:
+                # print("\tresource", resource)
+                for id in locale[resource]:
+                    for property in locale[resource][id]:
+                        property_value = locale[resource][id][property]
+                        if property_value:
+                            translation = [{ "property": property, "locale": locale_name, "value": property_value }]
+                            entry = { resource : { id : { "translations" : translation }}}
+                            merge_translations(locales,entry)
+
+        # locales.merge(locale)
+
+    # print(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
+
+    # mfile= open("toMeta.json",'w')
+    # mfile.write(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
+    # mfile.close()
+
+    # compare downloaded translations with those pulled from DHIS2, so that we only have
+    # to push back updates
+    toDHIS2 = minimise_translations(fromDHIS2,locales)
+
+    # mfile= open("toMetaMin.json",'w')
+    # mfile.write(json.dumps(toDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
+    # mfile.close()
+
+    for resource in toDHIS2:
+        for id in toDHIS2[resource]:
+            payload = json.dumps(toDHIS2[resource][id], sort_keys=True, indent=2, separators=(',', ': '))
+            url = args.server+"/api/"+resource+"/"+id+"/translations"
+            # print("PUT ",url)
+            r = requests.put(url, data=payload,auth=AUTH)
+            print(r.status_code,": PUT ",url)
+            # print(payload)
+            if r.status_code > 204:
+                print(payload)
+                print(r.headers)
+
+
 
 def json_to_transifex():
 
@@ -233,6 +289,60 @@ def json_to_transifex():
         print(r.status_code,": POST ",url)
 
 
+def transifex_to_json():
+
+    print("Pulling translations from transifex...")
+
+    langs = []
+    urll = tx_langs_api.format(s=project_slug, r=resource_slug)
+    response = requests.get(urll, auth=TX_AUTH)
+    if response.status_code == requests.codes['OK']:
+        langs= (x['code'] for x in response.json()['available_languages'])
+        # print(langs)
+
+    for language_code in langs:
+        # print(language_code)
+
+        urls = tx_stats_api.format(s=project_slug, r=resource_slug, l=language_code)
+        response = requests.get(urls, auth=TX_AUTH)
+        if response.status_code == requests.codes['OK']:
+            trans=response.json()['translated_entities']
+
+            if trans > 0:
+                # If there are any translations for this language code in transifex, download them
+                print(language_code,":", trans, "translations. Downloading")
+
+                path_to_file=locale_file_pattern.format(p=args.package, l=language_code)
+                url = tx_translations_api.format(s=project_slug, r=resource_slug, l=language_code, m=tx_mode)
+                response = requests.get(url, auth=TX_AUTH)
+                if response.status_code == requests.codes['OK']:
+                    os.makedirs(os.path.dirname(path_to_file), exist_ok=True)
+                    with open(path_to_file, 'wb') as f:
+                        for line in response.iter_content():
+                            f.write(line)
+            else:
+                # If there are no translations currently in transifex, check if we have some existing
+                # translations from DHIS2 and push them to transifex
+                for localefile in glob.iglob(locale_file_glob_pattern.format(p=args.package)):
+
+                    lfile=open(localefile,'r')
+                    locale = json.load(lfile)
+                    lfile.close()
+
+                    locale_name = localefile.replace(locale_file_prefix.format(p=args.package),'').split('.')[0]
+                    if locale_name == language_code:
+                        print(language_code,"has no translations in transifex. Pushing existing translations to transifex.")
+
+                        url = tx_translations_update_api.format(s=project_slug, r=resource_slug, l=language_code)
+                        content = open(localefile, 'r').read()
+                        data = {'content': content}
+                        r = requests.put(
+                             url, data=json.dumps(data), auth=TX_AUTH, headers={'content-type': 'application/json'},
+                        )
+                        print(r.status_code,": PUT ",url)
+
+
+
 def find_ids(key, var, parent=""):
   if hasattr(var,'items'):
         for k, v in var.items():
@@ -246,148 +356,28 @@ def find_ids(key, var, parent=""):
                     for result in find_ids(key, d, k):
                         yield result
 
-def find_keys(key, var, parent=""):
-  if hasattr(var,'items'):
-        for k, v in var.items():
-            if k == key:
-                # print("==== parent:", parent)
-                # if isinstance(v, dict):
-                #     print(var)
-                #     print(key,k,v)
-                if key == "id" and parent != "" and v not in package_ids:
-                    myURL=args.server+"/api/"+parent+"/"+v
-                    # print("myURL", myURL)
-                    recurse_objects(args.server+"/api/"+parent+"/"+v)
-                yield v
-            if isinstance(v, dict):
-                for result in find_keys(key, v, k):
-                    yield result
-            elif isinstance(v, list):
-                for d in v:
-                    for result in find_keys(key, d, k):
-                        yield result
-
-
-def recurse_objects(url):
-    # prevent infinite recursion
-    if url not in spidered and url.split("/")[5] not in excluded_objects:
-        spidered.add(url)
-        response=requests.get(url+".json"+"?fields=:all&paging=false",auth=AUTH)
-
-        if response.status_code == requests.codes['OK']:
-            collection = response.json()
-            for m in find_keys("id", collection):
-                package_ids.add(m)
-            for ob in ["chart", "mapView", "reportTable", "eventReport", "eventChart", "indicator", "categoryOption", "category", "categories", "categoryOption", "categoryOptionCombo", "categoryCombo", "legendSet", "categoryOptionGroupSet"]:
-                for obs in find_keys(ob, collection):
-                    # print("OB1",ob,obs)
-                    if "id" in obs:
-                        recurse_objects(args.server+"/api/"+ob+"/"+obs["id"])
-                for obs in find_keys(ob+"s", collection):
-                    # print("OB2",ob,obs)
-                    if "id" in obs:
-                        recurse_objects(args.server+"/api/"+ob+"/"+obs["id"])
-            for h in find_keys("href", collection):
-                # print("------> href:",h)
-                if h != url:
-                    if url.split("/")[6] not in package_ids:
-                        recurse_objects(h)
-
-def get_exported_ids():
-
-    try:
-        export_response=requests.get(metadata_extract_config_root+"COVID19_AGG/COVID19_AGG_COMPLETE_V1_DHIS2.30/metadata.json")
-        if export_response.status_code == requests.codes['OK']:
-            export=json.loads(export_response.text)
-            for m in find_ids("id", export):
-                package_ids.add(m)
-        else:
-            print("Cannot retrieve export details. Exiting.")
-            exit(1)
-    except KeyError:
-        print("Cannot retrieve export details. Exiting.")
-        exit(1)
-
-
-def get_package_ids():
-
-    try:
-        for g in export['_sharing']['groups']:
-            collection = (requests.get(args.server+"/api/userGroups/"+g['id']+".json"+"?fields=:all&paging=false",auth=AUTH)).json()
-            for m in find_keys("id", collection):
-                package_ids.add(m)
-    except KeyError:
-                pass
-
-    try:
-        for c in export['customObjects']:
-            type=c["objectType"]
-            for i in c["objectIds"]:
-                collection = (requests.get(args.server+"/api/"+type+"/"+i+".json"+"?fields=:all&paging=false",auth=AUTH)).json()
-                for m in find_keys("id", collection):
-                    package_ids.add(m)
-    except KeyError:
-                pass
-
-# ["charts", "mapViews", "reportTables", "eventReports", "eventCharts"]
-
-		# switch (types[k]) {
-		# case "categoryOptions":
-		# 	defaultDefault = "xYerKDKCefk";
-		# 	break;
-		# case "categories":
-		# 	defaultDefault = "GLevLNI9wkl";
-		# 	break;
-		# case "categoryOptionCombos":
-		# 	defaultDefault = "HllvX50cXC0";
-		# 	break;
-		# case "categoryCombos":
-		# 	defaultDef
-
-    for resource in ["dashboardIds", "dataElementGroupIds", "dataSetIds", "indicatorGroupIds", "programIds", "validationRuleGroupIds"]:
-        try:
-            print("resource", resource)
-            if resource in export:
-                for r in export[resource]:
-                    print("r", r)
-                    object_url=args.server+"/api/"+resource.replace('Ids','s')+"/"+r
-                    recurse_objects(object_url)
-
-                    # collection = (requests.get(+".json"+"?fields=:all&paging=false",auth=AUTH)).json()
-                    # for m in find_keys("id", collection):
-                    #     package_ids.add(m)
-                    # for ob in ["chart", "mapView", "reportTable", "eventReport", "eventChart", "categoryOption", "categorie", "categoryOptionCombo", "categoryCombo"]:
-                    #     for obs in find_keys(ob, collection):
-                    #         print(ob,"in",r)
-                    #         print(ob,obs)
-                    # for h in find_keys("href", collection):
-                    #     print("------> href:",h)
-        except KeyError:
-            print("error")
-            pass
-    print("got Ids")
-
 
 if __name__ == "__main__":
 
-    config_response=requests.get(metadata_extract_config_root+pack)
+    export_response=requests.get(metadata_extract_config_root+pack)
 
-    if config_response.status_code == requests.codes['OK']:
-        config=json.loads(config_response.text)
+    if export_response.status_code == requests.codes['OK']:
+        export=json.loads(export_response.text)
 
-        for export in config['export']:
+        fromDHIS2={}
+        package_ids = set()
+        # spidered= set()
+        #
+        resource_slug="package-"+pack.split("/")[0]
+        # print(resource_slug)
+        #
+        for m in find_ids("id", export):
+            package_ids.add(m)
 
-            fromDHIS2={}
-            package_ids = set()
-            # spidered= set()
-            #
-            resource_slug="package-"+export['_code']
-            # print(resource_slug)
-            #
-            get_exported_ids()
-
-            metadata_to_json()
-            # json_to_transifex()
+        metadata_to_json()
+        json_to_transifex()
+        transifex_to_json()
+        json_to_metadata()
 
     else:
         print("Unable to retrieve config file from",metadata_extract_config_root+pack+metadata_extract_config_suffix)
