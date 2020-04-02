@@ -1,0 +1,7 @@
+---
+# tasks file for dhis2.transifex
+- name: Synchronise DHIS2 instance with transifex for package {{ meta_package }}
+  script: sync_transifex_packages.py -u {{ t_user }} -p {{ t_pass }} -s {{ t_server }} -r {{ meta_package_root }} -k {{ meta_package }} -j {{ t_project }} -t {{ t_txkey }}
+  args:
+    executable: python3
+    chdir: "/tmp"
