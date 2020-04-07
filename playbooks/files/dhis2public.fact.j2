@@ -12,10 +12,14 @@ tomcat_start_port=8100
 t_ports=[]
 activemq_start_port=15680
 a_ports=[]
+instances=[]
 
 # get the list of instances
-with open("/usr/share/nginx/html/instance_facts.json", "r") as read_file:
-    instances = json.load(read_file)
+try:
+    with open("/usr/share/nginx/html/instance_facts.json", "r") as read_file:
+        instances = json.load(read_file)
+except IOError:
+    pass
 
 for i in instances:
 

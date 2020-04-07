@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>{{  inventory_hostname.split(".")[0] | upper }}</title>
+<title>DHIS 2 Demo DB Editor</title>
 <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
 <link rel='shortcut icon' href='resources/favicon.ico' type='image/x-icon' />
 <link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/materialize/tabulator_materialize.min.css" rel="stylesheet">
@@ -19,9 +19,15 @@
 <img src="resources/dhis2-logo-rgb-positive.png" style="width:150px;margin-left:15px;float:left;margin-right: 20px;margin-top:-10px;">
 <div id="container">
 
-<h2 style="float: left;margin-top: 0;">DHIS 2 {{ inventory_hostname.split(".")[0] | lower }}</h2>
+<h2 style="float: left;margin-top: 0;">DHIS 2 Demo DB Editor</h2>
 
-<div class="intro">The following DHIS 2 instances are available on this server:</div>
+<div class="intro">
+<p>Here you can deploy demo SL databases for modification!<br>
+Manage the instances at <a href="https://awx.dhis2.org">awx.dhis2.org</a><br>
+Only one instance of a specific DB may be deployed at one time. Remember to commit the DB and remove the instance when you are done.</p>
+<p>The following DHIS2 SL DB instances are currently in use. If you want to make changes to a deployed DB, please coordinate with the owner of that instance.</p>
+</div>
+
 
 <div id="instance-table"></div>
 <br><br>

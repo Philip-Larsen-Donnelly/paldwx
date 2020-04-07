@@ -11,6 +11,8 @@
     target_opts: "-T analytics* -T _*"
   become: true
   become_user: "{{ postgresql_user }}"
+  vars:
+    ansible_ssh_pipelining: true
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
 - set_fact: save_suffix="{{ db_save_suffix | default('') }}"

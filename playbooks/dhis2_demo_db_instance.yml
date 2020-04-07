@@ -22,6 +22,7 @@
       setup: ~
     - debug:
         msg: "{{ ansible_local.dhis2public.instances }}"
+      when: ansible_local.dhis2public is defined
 
     - name: Ensure Pip is installed.
       package: name="python3-pip" state=present
@@ -38,7 +39,7 @@
         state: 'present'
         war_file: "https://releases.dhis2.org/{{ dhis2_demo_to_war[instance_name] }}"
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
-        db_demo: "{{ project }}/{{ instance_demo }}/dhis2-db-sierra-leone.sql.gz"
+        db_demo: "{{ project }}/{{ instance_name }}/dhis2-db-sierra-leone.sql.gz"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
@@ -69,7 +70,7 @@
           when: instance_exists is undefined or instance_exists|length == 0
 
         - fail: msg="Bailing out. An instance for this database is already deployed."
-          when: instance_exists == instance_name
+          when: instance_exists is defined and instance_exists == instance_name
 
       when: instance_action == 'create'
 
