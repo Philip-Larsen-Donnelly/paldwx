@@ -1,0 +1,133 @@
+---
+- hosts: "{{ instance_host }}"
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars mapping dhis2 war to demo db version
+    - vars/demomap.yml
+
+  pre_tasks:
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2public.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2public.fact
+        mode: 0755
+    - name: "Re-run setup to use custom facts"
+      setup: ~
+    - debug:
+        msg: "{{ ansible_local.dhis2public.instances }}"
+
+    - name: Ensure Pip is installed.
+      package: name="python3-pip" state=present
+
+    - pip:
+        name: botocore
+    - pip:
+        name: boto3
+
+  vars:
+    dhis2_instances:
+      - name: "{{ instance_name }}"
+        description: "{{ instance_description | default(project + ' demo database edit instance',true) }}"
+        state: 'present'
+        war_file: 'https://releases.dhis2.org/'{{ dhis2_demo_to_war[instance_name] }}''
+        db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
+        db_demo: "{{ project }}/{{ instance_demo }}/dhis2-db-sierra-leone.sql.gz"
+        tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
+        activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
+        # set monitoring to true to generate metrics for prometheus/grafana
+        monitoring: "NO"
+        hibernate_monitoring: "NO"
+        # choose whether to have master control of the database (permission to save over it)
+        master_control: "{{ master_control | default('false') }}"
+
+  tasks:
+
+    - name: create a new instance
+      block:
+
+
+
+        - name: Get most recent snapshot
+          set_fact:
+            instance_exists: "{{ single_instance.name }}"
+          loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
+          loop_control:
+            loop_var: single_instance
+          when:
+            - single_instance.name == instance_name
+
+        - name: dhis2 instances
+          include_role:
+            name: dhis2.dhis2
+          when: instance_exists is undefined or instance_exists|length == 0
+
+        - fail: msg="Bailing out. An instance for this database is already deployed."
+          when: instance_exists == instance_name
+
+      when: instance_action == 'create'
+
+
+
+    - name: manage the instance
+      block:
+        # remove the instance
+        - name: remove dhis2 instance
+          include_role:
+            name: dhis2.dhis2
+            tasks_from: remove_instance.yml
+          loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
+          loop_control:
+            loop_var: single_instance
+          vars:
+            instance:
+              name: "{{ single_instance.name }}"
+              state: 'absent'
+              war_file: "{{ single_instance.war_file}}"
+              db_name: "{{ single_instance.db_name }}"
+              db_demo: "{{ single_instance.db_demo }}"
+              tomcat_port: "{{ single_instance.tomcat_port }}"
+          when:
+            - single_instance.name == instance_name
+            - instance_action == 'remove'
+
+        - name: check for snapshot
+          block:
+            - name: Get available snapshots from S3
+              aws_s3:
+                aws_access_key: "{{ aws_access_key }}"
+                aws_secret_key: "{{ aws_secret_key }}"
+                bucket: dhis2-database-backups
+                mode: list
+                prefix: "{{ ansible_host }}/{{ instance_name }}/"
+              register: s3_list
+
+            - name: Get most recent snapshot
+              set_fact:
+                s3_snapshot: "{{ s3_list.s3_keys[-1] }}"
+              when: s3_list.s3_keys
+
+            - fail: msg="Bailing out. There are no snapshots to restore"
+              when: s3_snapshot is undefined or s3_snapshot|length == 0
+          when: instance_action == 'restore_snapshot'
+
+        # start, stop, restart, reset(DB, war, both), save_snapshot, commit_db
+        - name: control dhis2 instance {{ instance_action }}
+          include_role:
+            name: dhis2.dhis2
+            tasks_from: control.yml
+          loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
+          loop_control:
+            loop_var: single_instance
+          vars:
+            instance: "{{ single_instance }}"
+          when:
+            - single_instance.name == instance_name
+            - instance_action  != 'remove'
+      when: instance_action != 'create'

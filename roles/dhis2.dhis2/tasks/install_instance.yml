@@ -97,4 +97,6 @@
   until: result.status in [200, 401]
   retries: 90
   delay: 10
-  when: project is not defined and instance.db_demo is defined and instance.db_demo|length
+  when:
+    - (project is not defined and instance.db_demo is defined and instance.db_demo|length) or
+    - (project == "sierra-leone")
