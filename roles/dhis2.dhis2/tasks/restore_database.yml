@@ -38,7 +38,7 @@
       aws_s3:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
-        bucket: dhis2-database-development
+        bucket: {{ dhis2_project_database_bucket }}
         object: "{{ instance.db_demo }}"
         dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
         mode: get

@@ -89,12 +89,12 @@ debug.dhis2.org
 verify.dhis2.org
 empty.dhis2.org
 test.performance.dhis2.org
+test.databases.dhis2.org
 smoke.dhis2.org
 bigmac.dhis2.org
 
 # Metadata packages
 [metapack]
-whom.dhis2.org
 who-dev.dhis2.org
 who-demos.dhis2.org
 who-sandbox.dhis2.org

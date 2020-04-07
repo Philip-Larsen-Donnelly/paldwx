@@ -2,6 +2,8 @@
 dhis2_lander: "-dev"
 dhis2_nginx: "-dev"
 
+dhis2_project_database_bucket: dhis2-database-development
+
 postgresql_version: "10"
 postgresql_packages:
   - postgresql-{{ postgresql_version }}
