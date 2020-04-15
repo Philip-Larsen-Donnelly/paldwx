@@ -26,10 +26,10 @@
     - name: Ensure Pip is installed.
       package: name="python3-pip" state=present
 
-    - pip:
-        name: botocore
-    - pip:
-        name: boto3
+    # - pip:
+    #     name: botocore
+    # - pip:
+    #     name: boto3
 
   tasks:
     # remove the instance
