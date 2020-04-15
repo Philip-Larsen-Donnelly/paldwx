@@ -24,7 +24,7 @@
     object: "{{ instance.db_demo }}"
     src: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     mode: put
-    metadata: "saved_by={{ awx_user_name | default('unknown') }},original_source={{ instance.db_demo }},war_file={{ instance.war_file }}"
+    metadata: "saved_by={{ awx_user_name | default('unknown') }},comment={{ db_commit_comment | default('') }},original_source={{ instance.db_demo }},war_file={{ instance.war_file }}"
 
 - name: remove local dump file
   file:
