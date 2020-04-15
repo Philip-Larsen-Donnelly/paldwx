@@ -98,3 +98,4 @@
   retries: 90
   delay: 10
   when: (project is not defined and instance.db_demo is defined and instance.db_demo|length != 0) or (project == "sierra-leone")
+  ignore_errors: yes
