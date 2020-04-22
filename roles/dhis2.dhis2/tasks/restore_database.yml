@@ -133,7 +133,7 @@
 
 - name: remove temporary demo db file
   file:
-    path: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql"
+    path: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
     state: absent
 
 
