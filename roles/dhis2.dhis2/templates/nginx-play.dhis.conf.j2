@@ -134,7 +134,7 @@ include dhis2_instances;
     # appstore.dhis2.org
 
     location /appstore {
-        proxy_pass                http://ec2-54-76-228-69.eu-west-1.compute.amazonaws.com:8082/appstore;
+        proxy_pass                http://ec2-54-154-39-6.eu-west-1.compute.amazonaws.com:8082/appstore;
         proxy_redirect            off;
         proxy_set_header          Host               $host;
         proxy_set_header          X-Real-IP          $remote_addr;
