@@ -28,7 +28,7 @@
         aws_secret_key: "{{ aws_secret_key }}"
         bucket: dhis2-database-backups
         object: "{{ s3_snapshot }}"
-        dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
         mode: get
   when: s3_snapshot is defined
 
@@ -40,14 +40,14 @@
         aws_secret_key: "{{ aws_secret_key }}"
         bucket: "{{ dhis2_project_database_bucket }}"
         object: "{{ instance.db_demo }}"
-        dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
         mode: get
       when: project is defined and instance.db_demo is defined and instance.db_demo|length
 
     - name: fetch demo db file for {{ instance.name }}
       get_url:
         url: "{{ instance.db_demo }}"
-        dest: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
         mode: 0644
       when: project is not defined and instance.db_demo is defined and instance.db_demo|length
   when: s3_snapshot is not defined
@@ -55,7 +55,7 @@
 
 
 # - name: unzip the demo db
-#   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz
+#   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz
 #   when: instance.db_demo is defined and instance.db_demo|length
 #
 -
@@ -105,7 +105,7 @@
   postgresql_db:
     name: "{{ instance.db_name }}"
     state: restore
-    target: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+    target: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:
@@ -131,7 +131,12 @@
 #   become: true
 #   become_user: "{{ postgresql_user }}"
 
-- name: remove temporary demo db file
+- name: remove temporary db file
+  file:
+    path: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
+    state: absent
+
+- name: remove old temporary db file
   file:
     path: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
     state: absent
