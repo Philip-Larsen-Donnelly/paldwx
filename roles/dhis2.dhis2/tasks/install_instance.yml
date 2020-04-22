@@ -82,6 +82,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK - PROMETHEUS"
     insertbefore: EOF
   notify: reload prometheus
+  when: inventory_hostname == "test.performance.dhis2.org"
   ignore_errors: yes
 
 
