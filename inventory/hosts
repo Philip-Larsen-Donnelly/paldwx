@@ -105,6 +105,10 @@ covid19.dhis2.org
 [unicef]
 unicef-dxp.dhis2.org
 
+# HISP-TZ
+[hispapps]
+hisp.apps.dhis2.org
+
 [coreteam:children]
 liveplay
 devteam
@@ -112,6 +116,7 @@ qateam
 emis
 metapack
 unicef
+hispapps
 
 [coreteam:vars]
 ansible_ssh_user=ubuntu

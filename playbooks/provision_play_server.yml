@@ -65,12 +65,12 @@
   - name: docker
     include_role:
       name: geerlingguy.docker
-  - name: filebeat
-    include_role:
-      name: geerlingguy.filebeat
-  - name: elastic_metricbeat
-    include_role:
-      name: kharkevich.elastic_metricbeat
+  # - name: filebeat
+  #   include_role:
+  #     name: geerlingguy.filebeat
+  # - name: elastic_metricbeat
+  #   include_role:
+  #     name: kharkevich.elastic_metricbeat
   - name: certbot
     include_role:
       name: geerlingguy.certbot
@@ -78,9 +78,9 @@
     include_role:
       name: geerlingguy.postgresql
   # prometheus and grafana for metrics
-  - name: prometheus
-    include_role:
-      name: cloudalchemy.prometheus
-  - name: grafana
-    include_role:
-      name: cloudalchemy.grafana
+  # - name: prometheus
+  #   include_role:
+  #     name: cloudalchemy.prometheus
+  # - name: grafana
+  #   include_role:
+  #     name: cloudalchemy.grafana
