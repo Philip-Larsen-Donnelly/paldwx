@@ -6,8 +6,8 @@
   tasks:
   # # create a symlink to match home location on master
   - name: Tail the log
-    command: tail -1000 /mnt/sdb/instances/2.33.3-rc/tomcat/logs/catalina.out
+    command: tail -30 /mnt/sdb/instances/2.33.3-rc/tomcat/logs/catalina.out
     register: details
     tags: google_2fa_user
 
-  - debug: msg="{{ details.stdout_lines | quote }}"
+  - debug: msg="{{ details.stdout_lines }}"
