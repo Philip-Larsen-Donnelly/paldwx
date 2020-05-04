@@ -1,12 +1,13 @@
 ---
-- hosts: smoke.dhis2.org
+- hosts: dhis2_hostname
   become: yes
   gather_facts: no
 
   tasks:
   # # create a symlink to match home location on master
-  - name: Tail the log
-    command: tail -500 /mnt/sdb/instances/2.33.3-rc/tomcat/logs/catalina.out
+  - name: Retrieve the log
+    command: tail -{{ tail_length }} {{ storage_path }}/instances/{{ dhis2_instance }}/tomcat/logs/catalina.out
     register: catalina_tail
 
-  - debug: msg="{{ (catalina_tail.stdout_lines | join("\n")  | replace('\t','    ')).split('\n') }}"
+  - name: Display the log
+    debug: msg="{{ (catalina_tail.stdout_lines | join("\n")  | replace('\t','    ')).split('\n') }}"
