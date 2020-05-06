@@ -29,7 +29,8 @@ dhis2_demo_map:
   # 2.32 development
   '2.32': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
   # 2.32 patches
-  '2.32/2.32.4-rc': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
+  '2.32/2.32.5': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
+  '2.32/2.32.5-rc': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
   '2.32/2.32.4': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
   '2.32/2.32.3': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
   '2.32/2.32.2': 'https://databases.dhis2.org/sierra-leone/2.32/dhis2-db-sierra-leone.sql.gz'
