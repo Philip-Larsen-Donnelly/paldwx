@@ -1,5 +1,5 @@
 ---
-- hosts: instance_host
+- hosts: "{{ instance_host }}"
   become: yes
   gather_facts: no
 
