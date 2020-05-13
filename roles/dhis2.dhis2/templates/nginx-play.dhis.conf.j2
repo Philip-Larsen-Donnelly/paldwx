@@ -144,6 +144,13 @@ include dhis2_instances;
 
     # appstore.dhis2.org
 
+    if ($remote_addr != "34.243.233.59") {
+          location /appstore(/.*)?$ {
+                  rewrite ^/appstore(/.*)?$ $scheme://$host/appstore_test$1 redirect;
+                  break;
+          }
+    }
+
     location ~ /appstore_test(/.*)?$ {
             location ~ ^/appstore_test/api(/.*)?$ {
                     resolver 8.8.8.8;
