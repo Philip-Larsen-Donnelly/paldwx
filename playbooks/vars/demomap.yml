@@ -19,6 +19,8 @@ dhis2_demo_map:
   # 2.33 development
   '2.33': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   # 2.33 patches
+  '2.33/2.33.4-rc': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
+  '2.33/2.33.4': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   '2.33/2.33.3-rc': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   '2.33/2.33.3': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   '2.33/2.33.2-rc': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
@@ -73,6 +75,8 @@ dhis2_demo_map:
   # 2.33 canary
   '2.33/canary/dhis2-canary-2.33.war': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   # 2.33 patches
+  '2.33/dhis2-stable-2.33.4.war': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
+  '2.33/dhis2-stable-2.33.4-rc.war': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   '2.33/dhis2-stable-2.33.3.war': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   '2.33/dhis2-stable-2.33.2.war': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
   '2.33/dhis2-stable-2.33.1.war': 'https://databases.dhis2.org/sierra-leone/2.33/dhis2-db-sierra-leone.sql.gz'
