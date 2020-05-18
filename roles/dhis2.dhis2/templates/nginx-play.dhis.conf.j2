@@ -144,15 +144,8 @@ include dhis2_instances;
 
     # appstore.dhis2.org
 
-    if ($remote_addr != "34.243.233.59") {
-          location /appstore(/.*)?$ {
-                  rewrite ^/appstore(/.*)?$ $scheme://$host/appstore_test$1 redirect;
-                  break;
-          }
-    }
-
-    location ~ /appstore_test(/.*)?$ {
-            location ~ ^/appstore_test/api(/.*)?$ {
+    location ~ /appstore(/.*)?$ {
+            location ~ ^/appstore/api(/.*)?$ {
                     resolver 8.8.8.8;
                     proxy_set_header Host apps.dhis2.org;
                     proxy_set_header X-Real-IP $remote_addr;
@@ -160,15 +153,6 @@ include dhis2_instances;
                     proxy_pass https://apps.dhis2.org/api$1$is_args$args;
             }
             return 301 https://apps.dhis2.org$1;
-    }
-
-    location /appstore {
-        proxy_pass                http://ec2-54-154-39-6.eu-west-1.compute.amazonaws.com:8082/appstore;
-        proxy_redirect            off;
-        proxy_set_header          Host               $host;
-        proxy_set_header          X-Real-IP          $remote_addr;
-        proxy_set_header          X-Forwarded-For    $proxy_add_x_forwarded_for;
-        proxy_set_header          X-Forwarded-Proto  https;
     }
 
     # metadata.dhis2.org
