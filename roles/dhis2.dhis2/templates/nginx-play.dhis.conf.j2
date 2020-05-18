@@ -145,6 +145,10 @@ include dhis2_instances;
     # appstore.dhis2.org
 
     location /appstore_old {
+
+        sub_filter "/appstore/" "/appstore_old/";
+        sub_filter_once off;
+
         proxy_pass                http://ec2-54-154-39-6.eu-west-1.compute.amazonaws.com:8082/appstore;
         proxy_redirect            off;
         proxy_set_header          Host               $host;
