@@ -4,3 +4,4 @@ storage_path: "/ebs1/home"
 # The following is needed to set up mount point (for storage_path) on an extrnal volume
 storage_device: "/dev/nvme0n1"
 project: "academy"
+instance_description: "Training instance"
