@@ -77,6 +77,9 @@ storage_path="/mnt/sdb"
 [liveplay]
 play.dhis2.org
 
+[academy]
+academy.events.dhis2.org
+
 # Education (EMIS)
 [emis]
 emis.dhis2.org
@@ -92,6 +95,12 @@ test.performance.dhis2.org
 test.databases.dhis2.org
 smoke.dhis2.org
 bigmac.dhis2.org
+
+[metaoriginal]
+who.dhis2.org
+[metaoriginal:vars]
+ansible_ssh_user=philld
+
 
 # Metadata packages
 [metapack]
@@ -112,6 +121,7 @@ hisp.apps.dhis2.org
 
 [coreteam:children]
 liveplay
+academy
 devteam
 qateam
 emis
