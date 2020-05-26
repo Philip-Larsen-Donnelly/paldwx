@@ -51,6 +51,8 @@
         mode: 0644
       when: project is not defined and instance.db_demo is defined and instance.db_demo|length
   when: s3_snapshot is not defined
+  rescue:
+    - set_fact: db_empty=true
 
 
 
@@ -110,7 +112,7 @@
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
-  when: instance.db_demo is defined and instance.db_demo|length
+  when: instance.db_demo is defined and instance.db_demo|length and db_empty is not defined
 
 - name: Execute SQL - force admin password
   postgresql_query:
