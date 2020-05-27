@@ -18,7 +18,7 @@
       set_fact:
         s3_snapshot: "{{ s3_list.s3_keys[-1] }}"
       when: s3_list.s3_keys
-  when: restore_snapshot is defined and restore_snapshot == "if_available"
+  when: restore_snapshot is defined and restore_snapshot == "latest"
 
 - name: fetch the snapshot db
   block:
