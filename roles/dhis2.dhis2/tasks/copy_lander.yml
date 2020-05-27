@@ -15,3 +15,4 @@
     force: yes
   with_items:
     - resources/css/landing.css
+    - resources/css/landing_taller.css
