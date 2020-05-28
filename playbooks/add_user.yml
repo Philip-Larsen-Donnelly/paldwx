@@ -1,12 +1,12 @@
 ---
- - hosts: instance_host
+ - hosts: "{{ instance_host }}"
    become: yes
 
    tasks:
 
    - name: Add a new user named {{ user_name }}
      user:
-          name={{ user_name }}
+          name="{{ user_name }}"
 
    - name: Add {{ user_name }} user to the sudoers
      copy:
@@ -14,7 +14,7 @@
           content: "{{ user_name }}  ALL=(ALL)  NOPASSWD: ALL"
 
    - name: Deploy SSH Key
-     authorized_key: user={{ user_name }}
+     authorized_key: user="{{ user_name }}"
                      key="{{ user_public_key }}"
                      state=present
 
