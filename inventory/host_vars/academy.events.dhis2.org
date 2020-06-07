@@ -6,3 +6,4 @@ storage_device: "/dev/nvme0n1"
 project: "academy"
 
 dhis2_lander: "-academy"
+dhis2_nginx: "-academy"
