@@ -79,6 +79,7 @@ play.dhis2.org
 
 [academy]
 academy.events.dhis2.org
+academy.demos.dhis2.org
 
 # Education (EMIS)
 [emis]

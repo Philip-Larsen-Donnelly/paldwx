@@ -1,0 +1,6 @@
+---
+# tasks file for dhis2.academy
+- name: replace the signup server config
+  copy:
+    content: "{{ academy_signup_config | to_nice_json }}"
+    dest: "/home/{{ academy_bot }}/academy-account-signup/conf/configuration.json"

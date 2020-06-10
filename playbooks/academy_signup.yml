@@ -1,0 +1,25 @@
+---
+- hosts: "{{ instance_host }}"
+  strategy: free
+  become: yes
+
+  vars_files:
+    # include the vars
+    - vars/academy.yml
+
+  pre_tasks:
+    # ensure node is installed
+    - name: nvm
+      include_role:
+        name: geerlingguy.nodejs
+    # ensure the signup service is installed
+    - name: ensure the signup service is installed
+      include_role:
+        name: dhis2.academy
+
+  tasks:
+    # replace the signup configuration
+    - name: replace the signup configuration
+      include_role:
+        name: dhis2.academy
+        tasks_from: replace_config.yml

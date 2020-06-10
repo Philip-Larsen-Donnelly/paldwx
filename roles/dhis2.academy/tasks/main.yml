@@ -1,0 +1,3 @@
+---
+# tasks file for dhis2.academy
+- include: registration_server.yml

@@ -1,0 +1,42 @@
+---
+# tasks file for dhis2.academy
+
+# add users
+- group:
+    name: "{{ academy_bot }}"
+    state: present
+
+- user:
+    name: "{{ academy_bot }}"
+    group: "{{ academy_bot }}"
+    shell: /bin/bash
+
+- name: Install PM2
+  npm:
+    name: pm2
+    global: yes
+
+- name: clone the signup service from github
+  git:
+    repo: 'https://github.com/dhis2/academy-account-signup.git'
+    dest: "/home/{{ academy_bot }}/academy-account-signup"
+    version: master
+    force: yes
+  become_user: "{{ academy_bot }}"
+  
+- name: replace the signup server config
+  copy:
+    content: "{{ academy_signup_config | to_nice_json }}"
+    dest: "/home/{{ academy_bot }}/academy-account-signup/conf/configuration.json"
+
+- name: install the dependencies for the service
+  shell: npm install
+  args:
+    chdir: "/home/{{ academy_bot }}/academy-account-signup"
+  become_user: "{{ academy_bot }}"
+
+- name: Start signup service
+  shell: pm2 start signUpServer.js -f --watch
+  args:
+    chdir: "/home/{{ academy_bot }}/academy-account-signup"
+  become_user: "{{ academy_bot }}"

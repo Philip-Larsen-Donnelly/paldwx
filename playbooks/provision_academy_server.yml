@@ -1,0 +1,86 @@
+---
+- hosts: coreteam
+  become: yes
+
+  vars_files:
+    # include the standard dhis2 beats config for logging to the ELK server
+    - vars/logging.yml
+    # include postgres config
+    - vars/postgresql.yml
+
+  pre_tasks:
+    # Create a new primary partition
+    # - parted:
+    #     device: "{{ storage_device }}"
+    #     number: 1
+    #     state: present
+    #   when: storage_device is defined
+
+    # Create a ext4 filesystem on storage device and check disk blocks.
+    - filesystem:
+        fstype: ext4
+        dev: "{{ storage_device }}"
+      when: storage_device is defined
+
+    - name: add mount point if necessary
+      mount:
+        path: "{{ storage_path }}"
+        src: "{{ storage_device }}"
+        fstype: ext4
+        opts: defaults
+        state: mounted
+      when: storage_device is defined
+
+    # create custom fact file if not existing
+    - name: "Create custom fact directory"
+      file:
+        path: "/etc/ansible/facts.d"
+        state: "directory"
+    - name: "Insert custom fact file"
+      template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+
+    - name: installing repo for Java 8 in Ubuntu
+      apt_repository: repo='ppa:openjdk-r/ppa'
+
+    - name: Ensure Pip is installed.
+      package: name="python3-pip" state=present
+
+  tasks:
+  - pip:
+      name: botocore
+  - pip:
+      name: boto3
+  - name: java
+    include_role:
+      name: geerlingguy.java
+  - name: nginx
+    include_role:
+      name: nginxinc.nginx
+  - name: git
+    include_role:
+      name: geerlingguy.git
+  - name: docker
+    include_role:
+      name: geerlingguy.docker
+  # - name: filebeat
+  #   include_role:
+  #     name: geerlingguy.filebeat
+  # - name: elastic_metricbeat
+  #   include_role:
+  #     name: kharkevich.elastic_metricbeat
+  - name: certbot
+    include_role:
+      name: geerlingguy.certbot
+  - name: postgres
+    include_role:
+      name: geerlingguy.postgresql
+  # prometheus and grafana for metrics
+  # - name: prometheus
+  #   include_role:
+  #     name: cloudalchemy.prometheus
+  # - name: grafana
+  #   include_role:
+  #     name: cloudalchemy.grafana

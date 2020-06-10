@@ -7,3 +7,50 @@ project: "academy"
 
 dhis2_lander: "-academy"
 dhis2_nginx: "-academy"
+
+academy_signup_config:
+  inviteConfigs:
+  - type: default
+    server:
+      url: https://academy.events.dhis2.org/capture
+      user: "{{ dhis2_admin_user }}"
+      password: "{{ dhis2_admin_user_password }}"
+    roles:
+    - id: UraRr44e9bc
+    groups:
+    - id: qPYfqTI89Bd
+    - id: jwBqnE3V5XY
+    - id: n1P3r8UGN0T
+    - id: gaYRH9OpYJB
+    - id: pERJoaGioD7
+    - id: Rx4u3Qhec6h
+    orgunits:
+    - id: GD7TowwI46c
+
+  - type: default
+    server:
+      url: https://academy.events.dhis2.org/analysis
+      user: "{{ dhis2_admin_user }}"
+      password: "{{ dhis2_admin_user_password }}"
+    roles:
+    - id: BNPj3EhPDLT
+    groups:
+    - id: qPYfqTI89Bd
+    - id: jwBqnE3V5XY
+    - id: n1P3r8UGN0T
+    - id: gaYRH9OpYJB
+    - id: pERJoaGioD7
+    - id: Rx4u3Qhec6h
+    orgunits:
+    - id: GD7TowwI46c
+
+  - type: customization
+    server:
+      url: https://academy.events.dhis2.org/customization
+      user: "{{ dhis2_admin_user }}"
+      password: "{{ dhis2_admin_user_password }}"
+    roles:
+    - id: Bj9rEkN3kcF
+    groups:
+    - id: WNocxRTYWp2
+    orgunitParent: GD7TowwI46c
