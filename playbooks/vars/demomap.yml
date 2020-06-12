@@ -11,6 +11,8 @@ dhis2_demo_to_war:
 dhis2_demo_map:
   # development
   'dev': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+  # development
+  'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
   '2.34': 'https://databases.dhis2.org/sierra-leone/2.34/dhis2-db-sierra-leone.sql.gz'
   # 2.34 patches
