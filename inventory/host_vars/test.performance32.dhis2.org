@@ -1,0 +1,7 @@
+---
+# storage_path is where the instances will be installed
+storage_path: "/ebs1/home"
+# The following is needed to set up mount point (for storage_path) on an extrnal volume
+storage_device: "/dev/nvme0n1"
+
+dhis2_lander: "-perf"

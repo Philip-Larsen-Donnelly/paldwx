@@ -93,6 +93,7 @@ debug.dhis2.org
 verify.dhis2.org
 empty.dhis2.org
 test.performance.dhis2.org
+test.performance32.dhis2.org
 test.databases.dhis2.org
 smoke.dhis2.org
 bigmac.dhis2.org
