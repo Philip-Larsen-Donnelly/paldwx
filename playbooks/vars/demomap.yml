@@ -1,6 +1,7 @@
 ---
 dhis2_demo_to_war:
   'dev': 'master/dev/dhis2-dev-master.war'
+  'dev-temp': 'master/dev/dhis2-dev-master.war'
   '2.34': '2.34/dhis2-stable-2.34.0-rc3.war'
   '2.33': '2.33/dev/dhis2-dev-2.33.war'
   '2.32': '2.32/dev/dhis2-dev-2.32.war'
@@ -11,6 +12,7 @@ dhis2_demo_to_war:
 dhis2_demo_map:
   # development
   'dev': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+  'dev-temp': 'https://databases.dhis2.org/temp/2020-06-24_121046_dev-android.sql.gz'
   # development
   'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
