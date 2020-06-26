@@ -129,9 +129,9 @@ def metadata_to_json():
                             for m in matching_translations:
                                 print("WARNING: Translation without base string for",resource,">",element['id'],":", m)
 
-    # mfile= open("fromMeta.json",'w')
-    # mfile.write(json.dumps(fromDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
-    # mfile.close()
+    mfile= open("fromMeta.json",'w')
+    mfile.write(json.dumps(fromDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
+    mfile.close()
 
     for locale in locales:
         locale_filename = locale_file_pattern.format(p=resource_slug, l=locale)
@@ -217,29 +217,25 @@ def json_to_metadata():
 
         # locales.merge(locale)
 
-    print("--translations from transifex: before minimise--")
-    print(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
+    # print(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
 
-    # mfile= open("toMeta.json",'w')
-    # mfile.write(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
-    # mfile.close()
+    mfile= open("toMeta.json",'w')
+    mfile.write(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
+    mfile.close()
 
     # compare downloaded translations with those pulled from DHIS2, so that we only have
     # to push back updates
     toDHIS2 = minimise_translations(fromDHIS2,locales)
 
-    print("--after minimise (removal of unchanged objects)--")
-    print(json.dumps(toDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
-    print("--done--")
-    # mfile= open("toMetaMin.json",'w')
-    # mfile.write(json.dumps(toDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
-    # mfile.close()
+    mfile= open("toMetaMin.json",'w')
+    mfile.write(json.dumps(toDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
+    mfile.close()
 
     for resource in toDHIS2:
         for id in toDHIS2[resource]:
             payload = json.dumps(toDHIS2[resource][id], sort_keys=True, indent=2, separators=(',', ': '))
             url = args.server+"/api/"+resource+"/"+id+"/translations"
-            print("PUT ",url)
+            # print("PUT ",url)
             r = requests.put(url, data=payload,auth=AUTH)
             print(r.status_code,": PUT ",url)
             print(payload)
@@ -307,6 +303,11 @@ def transifex_to_json():
     for language_code in langs:
         # print(language_code)
 
+        # We need to map language codes that DHIS2 doesn't support natively
+        # uz@Cyrl --> uz
+        # uz@Latn --> uz_UZ
+        mapped_language_code = language_code.replace("@Latn","_UZ").replace("@Cyrl","")
+
         urls = tx_stats_api.format(s=project_slug, r=resource_slug, l=language_code)
         response = requests.get(urls, auth=TX_AUTH)
         if response.status_code == requests.codes['OK']:
@@ -316,10 +317,11 @@ def transifex_to_json():
                 # If there are any translations for this language code in transifex, download them
                 print(language_code,":", trans, "translations. Downloading")
 
-                path_to_file=locale_file_pattern.format(p=args.package, l=language_code)
+                path_to_file=locale_file_pattern.format(p=args.package, l=mapped_language_code)
                 url = tx_translations_api.format(s=project_slug, r=resource_slug, l=language_code, m=tx_mode)
                 response = requests.get(url, auth=TX_AUTH)
                 if response.status_code == requests.codes['OK']:
+
                     os.makedirs(os.path.dirname(path_to_file), exist_ok=True)
                     with open(path_to_file, 'wb') as f:
                         for line in response.iter_content():
@@ -334,7 +336,7 @@ def transifex_to_json():
                     lfile.close()
 
                     locale_name = localefile.replace(locale_file_prefix.format(p=args.package),'').split('.')[0]
-                    if locale_name == language_code:
+                    if locale_name == mapped_language_code:
                         print(language_code,"has no translations in transifex. Pushing existing translations to transifex.")
 
                         url = tx_translations_update_api.format(s=project_slug, r=resource_slug, l=language_code)
