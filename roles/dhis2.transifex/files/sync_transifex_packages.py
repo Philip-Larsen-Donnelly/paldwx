@@ -217,7 +217,8 @@ def json_to_metadata():
 
         # locales.merge(locale)
 
-    # print(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
+    print("--translations from transifex: before minimise--")
+    print(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
 
     # mfile= open("toMeta.json",'w')
     # mfile.write(json.dumps(locales, sort_keys=True, indent=2, separators=(',', ': ')))
@@ -227,6 +228,9 @@ def json_to_metadata():
     # to push back updates
     toDHIS2 = minimise_translations(fromDHIS2,locales)
 
+    print("--after minimise (removal of unchanged objects)--")
+    print(json.dumps(toDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
+    print("--done--")
     # mfile= open("toMetaMin.json",'w')
     # mfile.write(json.dumps(toDHIS2, sort_keys=True, indent=2, separators=(',', ': ')))
     # mfile.close()
@@ -235,10 +239,10 @@ def json_to_metadata():
         for id in toDHIS2[resource]:
             payload = json.dumps(toDHIS2[resource][id], sort_keys=True, indent=2, separators=(',', ': '))
             url = args.server+"/api/"+resource+"/"+id+"/translations"
-            # print("PUT ",url)
+            print("PUT ",url)
             r = requests.put(url, data=payload,auth=AUTH)
             print(r.status_code,": PUT ",url)
-            # print(payload)
+            print(payload)
             if r.status_code > 204:
                 print(payload)
                 print(r.headers)
