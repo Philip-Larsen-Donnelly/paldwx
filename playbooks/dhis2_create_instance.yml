@@ -29,7 +29,7 @@
       - name: "{{ instance_name }}"
         description: "{{ instance_description | default('Demo of '+instance_war+' release',true) }}"
         state: 'present'
-        war_file: 'https://releases.dhis2.org/{{ instance_war }}/dhis.war'
+        war_file: 'https://releases.dhis2.org/{{ instance_war | replace("__ALT__","") }}/dhis.war'
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
         db_demo: "{{ dhis2_demo_map[instance_war] if use_demo == 'YES' else '' }}"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"

@@ -12,7 +12,7 @@ dhis2_demo_to_war:
 dhis2_demo_map:
   # development
   'dev': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
-  'dev-temp': 'https://databases.dhis2.org/temp/2020-06-24_121046_dev-android.sql.gz'
+  'dev__ALT__': 'https://databases.dhis2.org/temp/2020-06-24_121046_dev-android.sql.gz'
   # development
   'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
