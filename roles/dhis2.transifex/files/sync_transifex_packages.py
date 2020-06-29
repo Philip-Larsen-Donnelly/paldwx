@@ -14,6 +14,7 @@ import argparse
 import os
 import glob
 import sys
+import tempfile
 
 parser = argparse.ArgumentParser(description='Pull translations from dhis2 API and create files for transifex.')
 parser.add_argument('-u','--user', action="store", help='dhis2 user', required=True)
@@ -25,12 +26,22 @@ parser.add_argument('-j','--project', action="store", help='dhis2 project name',
 parser.add_argument('-t','--tx_token', action="store", help='transifex api token', required=True)
 args = parser.parse_args()
 
-localisation_dir = "i18n"
-locale_file_pattern = localisation_dir + "/{p}_{l}.json"
-source_file_pattern = localisation_dir + "/{p}.json"
+localisation_dir = tempfile.TemporaryDirectory(prefix="i18n")
+# localisation_dir = "i18n"
+locale_file_pattern = localisation_dir.name + "/{p}_{l}.json"
+source_file_pattern = localisation_dir.name + "/{p}.json"
 
-locale_file_glob_pattern = localisation_dir + "/{p}_*.json"
-locale_file_prefix = localisation_dir + "/{p}_"
+locale_file_glob_pattern = localisation_dir.name + "/{p}_*.json"
+locale_file_prefix = localisation_dir.name + "/{p}_"
+
+#
+# localisation_dir = "i18n"
+# locale_file_pattern = localisation_dir + "/{p}_{l}.json"
+# source_file_pattern = localisation_dir + "/{p}.json"
+#
+# locale_file_glob_pattern = localisation_dir + "/{p}_*.json"
+# locale_file_prefix = localisation_dir + "/{p}_"
+
 
 # Transifex
 # project_slug='meta-who-packages'
@@ -48,6 +59,11 @@ metadata_extract_config_root=args.package_root
 metadata_extract_config_suffix="_export_conf.json"
 excluded_objects=["organisationUnits","users","organisationUnit","user"]
 
+
+# We need to map language codes that DHIS2 doesn't support natively
+# uz@Cyrl --> uz
+# uz@Latn --> uz_UZ
+langmap={'uz@Cyrl':'uz','uz@Latn':'uz_UZ'}
 
 AUTH=(args.user, args.password)
 TX_AUTH=('api',args.tx_token)
@@ -116,13 +132,15 @@ def metadata_to_json():
                             locales['source'][resource][element['id']][transFieldKey] = element[transField]
 
                             for m in matching_translations:
-                                if m['locale'] not in locales:
-                                    locales[m['locale']]={}
-                                if resource not in locales[m['locale']]:
-                                    locales[m['locale']][resource] = {}
-                                if element['id'] not in locales[m['locale']][resource]:
-                                    locales[m['locale']][resource][element['id']] = {}
-                                locales[m['locale']][resource][element['id']][transFieldKey] = m['value']
+
+                                if m['locale'] not in langmap.keys():
+                                    if m['locale'] not in locales:
+                                        locales[m['locale']]={}
+                                    if resource not in locales[m['locale']]:
+                                        locales[m['locale']][resource] = {}
+                                    if element['id'] not in locales[m['locale']][resource]:
+                                        locales[m['locale']][resource][element['id']] = {}
+                                    locales[m['locale']][resource][element['id']][transFieldKey] = m['value']
                         else:
                             # check and warn if we have translations with no base string
                             matching_translations=[m for m in translations if m['property'] == transFieldKey]
@@ -183,7 +201,7 @@ def minimise_translations(in_trans, out_trans):
             if len(delta[k]) == 0:
                 delta.pop(k,None)
         else:
-            return {k : out_trans[k]}
+            delta[k] = out_trans[k]
 
     return delta
 
@@ -238,7 +256,7 @@ def json_to_metadata():
             # print("PUT ",url)
             r = requests.put(url, data=payload,auth=AUTH)
             print(r.status_code,": PUT ",url)
-            print(payload)
+            # print(payload)
             if r.status_code > 204:
                 print(payload)
                 print(r.headers)
@@ -306,7 +324,10 @@ def transifex_to_json():
         # We need to map language codes that DHIS2 doesn't support natively
         # uz@Cyrl --> uz
         # uz@Latn --> uz_UZ
-        mapped_language_code = language_code.replace("@Latn","_UZ").replace("@Cyrl","")
+        # mapped_language_code = language_code.replace("@Latn","_UZ").replace("@Cyrl","")
+        mapped_language_code = language_code
+        if language_code in langmap.keys():
+            mapped_language_code = langmap[language_code]
 
         urls = tx_stats_api.format(s=project_slug, r=resource_slug, l=language_code)
         response = requests.get(urls, auth=TX_AUTH)
