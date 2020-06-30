@@ -139,7 +139,9 @@
   until: result.status in [200, 401]
   retries: 30
   delay: 10
-  when: instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]
+  when: (instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]) and
+        ((project is not defined and instance.db_demo is defined and instance.db_demo|length != 0) or
+        (project == "sierra-leone"))
 
 # === Wait until we can reach the instance before finishing the job
 - name: ensure instance {{ inventory_hostname }}/{{ instance.name }}/api is up before finishing job

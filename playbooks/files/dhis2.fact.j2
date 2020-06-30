@@ -8,10 +8,13 @@ fact={}
 inst={}
 tomcat={"next_port":""}
 activemq={"next_port":""}
+artemis={"next_port":""}
 tomcat_start_port=8100
 t_ports=[]
-activemq_start_port=15680
+activemq_start_port=15880
 a_ports=[]
+artemis_start_port=25700
+art_ports=[]
 
 # get the list of instances
 instances=glob.glob("{{ storage_path }}/instances/*")
@@ -55,6 +58,7 @@ for i in instances:
         try:
             t_ports.append(i_facts["tomcat_port"])
             a_ports.append(i_facts["activemq_port"])
+            art_ports.append(i_facts["artemis"])
         except:
             pass
 
@@ -71,9 +75,16 @@ for a in xrange(activemq_start_port, activemq_start_port + len(a_ports) + 1):
         activemq["next_port"] = a
         break
 
+for a in xrange(artemis_start_port, artemis_start_port + len(art_ports) + 1):
+    use = '{}'.format(a)
+    if not use in art_ports:
+        artemis["next_port"] = a
+        break
+
 fact["instances"]=inst
 fact["tomcat"]=tomcat
 fact["activemq"]=activemq
+fact["artemis"]=artemis
 
 # output the facts
 print json.dumps(fact)

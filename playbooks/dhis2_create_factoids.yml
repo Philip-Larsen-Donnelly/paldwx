@@ -80,6 +80,7 @@
           db_demo: "{{ single_instance.value.db_demo | default('-') }}"
           tomcat_port: "{{ single_instance.value.tomcat_port | default('-') }}"
           activemq_port: "{{ single_instance.value.activemq_port | default('-') }}"
+          artemis_port: "{{ ansible_local.dhis2.artemis.next_port | default('-') }}"
           # set monitoring to true to generate metrics for prometheus/grafana
           monitoring: "{{ single_instance.value.monitoring | default('NO') }}"
           hibernate_monitoring: "{{ single_instance.value.hibernate_monitoring | default('NO') }}"

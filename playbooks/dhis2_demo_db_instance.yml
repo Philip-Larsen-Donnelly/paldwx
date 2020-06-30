@@ -42,6 +42,7 @@
         db_demo: "{{ project }}/{{ instance_name }}/dhis2-db-sierra-leone.sql.gz"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
+        artemis_port: "{{ ansible_local.dhis2.artemis.next_port }}"
         # set monitoring to true to generate metrics for prometheus/grafana
         monitoring: "NO"
         hibernate_monitoring: "NO"

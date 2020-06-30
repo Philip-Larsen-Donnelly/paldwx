@@ -59,9 +59,10 @@ filestore.secret = {{ dhis2_filestore.secret | default('') }}
 
 
 # ----------------------------------------------------------------------
-# ActiveMQ
+# ActiveMQ /artemis
 # ----------------------------------------------------------------------
 amqp.port = {{ instance.activemq_port }}
+artemis.port = {{ instance.artemis_port }}
 
 # ----------------------------------------------------------------------
 # Node
