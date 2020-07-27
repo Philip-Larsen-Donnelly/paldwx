@@ -86,7 +86,7 @@ Only one instance of a specific DB may be deployed at one time. Remember to comm
         cellContents += "<a href=\"https://{{ inventory_hostname }}/" + data.name + "\" class=\"instance\">" + data.name + "</a>"
         cellContents += "<div class=\"description\">" + data.description + "</div>"
         // cellContents += "<div class=\"label agel age\">deployed</div>"
-        cellContents += "<div class=\"aget age\">" + moment().from(data.war_date,true) + "</div>"
+        cellContents += "<div class=\"aget age\">" + moment().from(data.war_date+"+00",true) + "</div>"
 
         cellContents +=  "</div></div><div class=\"details\">"
         cellContents +=  "<div class=\"container_d\">"
