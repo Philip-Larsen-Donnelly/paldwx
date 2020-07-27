@@ -15,6 +15,11 @@
         state: "directory"
     - name: "Insert custom fact file"
       template:
+        src: "files/dhis2.fact.j2"
+        dest: /etc/ansible/facts.d/dhis2.fact
+        mode: 0755
+    - name: "Insert custom fact file"
+      template:
         src: "files/dhis2public.fact.j2"
         dest: /etc/ansible/facts.d/dhis2public.fact
         mode: 0755
