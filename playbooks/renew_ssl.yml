@@ -1,0 +1,9 @@
+---
+- hosts: coreteam
+  become: yes
+  gather_facts: no
+
+
+  tasks:
+  - name: Renew ssl certificate if necessary (including stopping and starting nginx)
+    shell: certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
