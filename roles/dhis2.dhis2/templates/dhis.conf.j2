@@ -42,7 +42,7 @@ connection.schema = update
 filestore.provider = {{ dhis2_filestore.type | default('filesystem') }}
 
 # Directory / bucket name. Corresponds to folder within external directory on file system and 'bucket' on AWS S3.
-filestore.container = dhis2-{{ instance.db_name }}-store
+filestore.container = dhis2-{{ instance.db_name|replace("_", "-")  }}-store
 
 {% if fs_type == 'aws-s3' %}
 # The following configuration is applicable only on non-filesystem providers (AWS S3).
