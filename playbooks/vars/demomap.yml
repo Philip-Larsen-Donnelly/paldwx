@@ -8,6 +8,14 @@ dhis2_demo_to_war:
   '2.31': '2.31/dhis2-stable-2.31-eos.war'
   '2.30': '2.30/dev/dhis2-dev-2.30.war'
 
+dhis2_demo_to_latest:
+  'dev': 'dev'
+  '2.34.1': '2.34'
+  '2.33.6': '2.33'
+  '2.32.6': '2.33'
+  '2.31': '2.31'
+  '2.30': '2.30'
+
 
 dhis2_demo_map:
   # development
