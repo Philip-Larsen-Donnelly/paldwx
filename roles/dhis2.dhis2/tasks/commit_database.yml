@@ -35,7 +35,7 @@
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: "{{ dhis2_project_database_bucket }}"
-    object: "{{ instance.db_latest_demo }}"
+    object: "{{ dhis2_instances.db_latest_demo }}"
     src: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     mode: put
     metadata:
@@ -45,8 +45,8 @@
       war_file: "{{ instance.war_file }}"
   when:
     - project == "sierra-leone"
-    - instance.db_latest_demo is defined
-    - instance.db_latest_demo != instance.db_demo
+    - dhis2_instances.db_latest_demo is defined
+    - dhis2_instances.db_latest_demo != instance.db_demo
 
 
 - name: remove local dump file
