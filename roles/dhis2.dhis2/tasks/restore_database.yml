@@ -127,6 +127,16 @@
     ansible_ssh_pipelining: true
   when: dhis2_admin_user_password_hash is defined
 
+- name: Execute SQL - fix sharing for COs
+  postgresql_query:
+    db: "{{ instance.db_name }}"
+    query: UPDATE dataelementcategoryoption SET publicaccess = 'rwrw----'
+  become: true
+  become_user: "{{ postgresql_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  when: co_access_fix is defined
+
 
 # - name: Execute SQL - make sure all users have up-to-date password
 #   shell: "psql -d {{ instance.db_name }} -c 'UPDATE users SET passwordlastupdated = \"{{ db_date }}\"'"
