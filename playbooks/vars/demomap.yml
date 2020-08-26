@@ -2,6 +2,7 @@
 dhis2_demo_to_war:
   'dev': 'master/dev/dhis2-dev-master.war'
   'dev-temp': 'master/dev/dhis2-dev-master.war'
+  '2.35': '2.35/dev/dhis2-dev-2.35.war'
   '2.34.1': '2.34/dhis2-stable-2.34.1.war'
   '2.33.6': '2.33/dhis2-stable-2.33.6.war'
   '2.32.6': '2.32/dhis2-stable-2.32.6.war'
@@ -10,6 +11,7 @@ dhis2_demo_to_war:
 
 dhis2_demo_to_dev:
   'dev': 'dev'
+  '2.35': '2.35'
   '2.34.1': '2.34'
   '2.33.6': '2.33'
   '2.32.6': '2.32'
@@ -23,6 +25,8 @@ dhis2_demo_map:
   'dev__ALT__': 'https://databases.dhis2.org/temp/2020-06-24_121046_dev-android.sql.gz'
   # development
   'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+  # 2.34 development
+  '2.35': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
   '2.34': 'https://databases.dhis2.org/sierra-leone/2.34/dhis2-db-sierra-leone.sql.gz'
   # 2.34 patches
@@ -83,6 +87,8 @@ dhis2_demo_map:
   # =========================
 
   # development
+  # 2.35 development
+  '2.35/dev/dhis2-dev-2.35.war': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
   '2.34/dev/dhis2-dev-2.34.war': 'https://databases.dhis2.org/sierra-leone/2.34/dhis2-db-sierra-leone.sql.gz'
   # 2.34 canary
