@@ -47,10 +47,10 @@ for a in xrange(activemq_start_port, activemq_start_port + len(a_ports) + 1):
         activemq["next_port"] = a
         break
 
-for a in xrange(artemis_start_port, artemis_start_port + len(art_ports) + 1):
-    use = '{}'.format(a)
+for r in xrange(artemis_start_port, artemis_start_port + len(art_ports) + 1):
+    use = '{}'.format(r)
     if not use in art_ports:
-        artemis["next_port"] = a
+        artemis["next_port"] = r
         break
 
 fact["instances"]=inst
