@@ -27,8 +27,10 @@ dhis2_demo_map:
   'INVESTIGATE_DEADLOCK_ON_EVENT_UPDATE': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
   # development
   'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
-  # 2.34 development
-  '2.35': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
+  # 2.35 development
+  '2.35': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
+  # 2.35 patches
+  '2.35/2.35.0-rc': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
   '2.34': 'https://databases.dhis2.org/sierra-leone/2.34/dhis2-db-sierra-leone.sql.gz'
   # 2.34 patches
@@ -91,6 +93,7 @@ dhis2_demo_map:
   # development
   # 2.35 development
   '2.35/dev/dhis2-dev-2.35.war': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
+  '2.35/dhis2-stable-2.35.0-rc.war': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
   '2.34/dev/dhis2-dev-2.34.war': 'https://databases.dhis2.org/sierra-leone/2.34/dhis2-db-sierra-leone.sql.gz'
   # 2.34 canary
