@@ -10,6 +10,14 @@
 
 
 #=============================================================================
+[remspace]
+remspace.absentmind.no
+
+[remspace:vars]
+ansible_ssh_user=philld
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_python_interpreter=/usr/bin/python3
+
 # logging server (ELK stack)
 [elk]
 logs.dhis2.org
@@ -27,6 +35,7 @@ ansible_python_interpreter=/usr/bin/python3
 # ansible AWX server
 [awx]
 awx.dhis2.org
+awx-new.dhis2.org
 
 [awx:vars]
 ansible_ssh_user=ubuntu
@@ -78,6 +87,7 @@ storage_path="/mnt/sdb"
 play.dhis2.org
 
 [academy]
+academy.aggregate.dhis2.org
 academy.events.dhis2.org
 academy.demos.dhis2.org
 
