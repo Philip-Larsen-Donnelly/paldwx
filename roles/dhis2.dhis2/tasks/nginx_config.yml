@@ -78,5 +78,12 @@
     - stopped.html
     - resources/css/landing.css
     - resources/css/landing_taller.css
+
+- name: add error pages
+  template:
+    src: "{{ item }}.js"
+    dest: "/usr/share/nginx/html/{{ item }}"
+    mode: 0644
+  with_items:
     - 404.html
     - 50x.html
