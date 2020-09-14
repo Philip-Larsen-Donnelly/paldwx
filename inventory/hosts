@@ -85,6 +85,7 @@ storage_path="/mnt/sdb"
 
 [liveplay]
 play.dhis2.org
+prep.dhis2.org
 
 [academy]
 academy.aggregate.dhis2.org
