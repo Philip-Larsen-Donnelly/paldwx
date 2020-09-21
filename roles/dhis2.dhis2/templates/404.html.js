@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0024)https://debug.dhis2.org/ -->
 <html><head>
-<title>Deploying war</title>
+<title>Error 404</title>
 <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
 <link rel="shortcut icon" href="resources/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/all.css">
