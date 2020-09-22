@@ -27,6 +27,7 @@ dhis2_demo_map:
   'INVESTIGATE_DEADLOCK_ON_EVENT_UPDATE': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
   # development
   'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+  'GET_TEI_USE_FIXED_POOL': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   # 2.35 development
   '2.35': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
   # 2.35 patches
