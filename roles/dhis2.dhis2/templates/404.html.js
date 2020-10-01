@@ -67,7 +67,7 @@ a {
 
 <p style="margin:20px;">Hi, I'm <a href="https://www.youtube.com/watch?v=ntRvdCcJGaQ">Pivvy</a>! I couldn't find the page you are looking for.</p>
 
-<p>Maybe try going back to the <a href="https://{{ instance_host }}">{{ instance_host }} home page</a>?</p>
+<p>Maybe try going back to the <a href="https://{{ inventory_hostname }}">{{ inventory_hostname }} home page</a>?</p>
 </div>
 
 

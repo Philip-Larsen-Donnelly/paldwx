@@ -64,7 +64,7 @@ a {
   <h2 >Oops! Something went wrong!</h2>
 
     <i class="fa fa-house-damage fa-3x" style="color:#393D4D"></i>
-<p style="margin:20px;">We cannot serve the page you requested. Try again later or go back to the <a href="https://{{ instance_host }}">home page</a>.</p>
+<p style="margin:20px;">We cannot serve the page you requested. Try again later or go back to the <a href="https://{{ inventory_hostname }}">home page</a>.</p>
 </div>
 
 
