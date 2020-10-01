@@ -46,8 +46,11 @@
 
 - name: create resources directory
   file:
-    path: /usr/share/nginx/html/resources/css
+    path: "{{ item }}"
     state: directory
+  with_items:
+    - /usr/share/nginx/html/resources/css
+    - /usr/share/nginx/html/resources/images
 
 - name: add favicon
   get_url:
