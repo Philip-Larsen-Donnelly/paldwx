@@ -32,6 +32,23 @@
     #     name: boto3
 
   tasks:
+
+    # check that the instance_name exists on the host
+    - name: check instance name
+      set_fact:
+        instance_exists: "{{ single_instance.name }}"
+      loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
+      loop_control:
+        loop_var: single_instance
+      when:
+        - single_instance.name is regex(instance_name, match_type='fullmatch')
+
+    - name: fail the play if there is no matching instance
+      fail:
+        msg: "Cannot find an instance matching the instance_name '{{ instance_name }}' on host {{ instance_host }}."
+      when: instance_exists is undefined
+
+
     # remove the instance
     - name: remove dhis2 instance
       include_role:
@@ -49,7 +66,7 @@
           db_demo: "{{ single_instance.db_demo }}"
           tomcat_port: "{{ single_instance.tomcat_port }}"
       when:
-        - single_instance.name is match(instance_name)
+        - single_instance.name is regex(instance_name, match_type='fullmatch')
         - instance_action == 'remove'
 
     - name: check for snapshot
@@ -81,7 +98,23 @@
       loop_control:
         loop_var: single_instance
       vars:
+        instance: "{{ single_instance | combine({'war_file': new_war_file}) }}"
+      when:
+        - single_instance.name is regex(instance_name, match_type='fullmatch')
+        - instance_action  != 'remove'
+        - new_war_file is defined and new_war_file|length != 0
+
+    # start, stop, restart, reset(DB, war, both), save_snapshot, commit_db
+    - name: control dhis2 instance {{ instance_action }}
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: control.yml
+      loop: "{{ ansible_local.dhis2public.instances|default([]) }}"
+      loop_control:
+        loop_var: single_instance
+      vars:
         instance: "{{ single_instance }}"
       when:
-        - single_instance.name is match(instance_name)
+        - single_instance.name is regex(instance_name, match_type='fullmatch')
         - instance_action  != 'remove'
+        - new_war_file is not defined or new_war_file|length == 0
