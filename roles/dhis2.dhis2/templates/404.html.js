@@ -61,12 +61,14 @@ a {
 
 
 <div class="intro">
-  <h2 >Oops! Something went wrong!</h2>
+  <h2>page not found</h2>
 
-    <i class="fa fa-car-crash fa-3x" style="color:#393D4D"></i>
-<p style="margin:20px;">We cannot serve the page you requested. Try going back to the <a href="https://{{ instance_host }}">home page</a>.</p>
+<p><img src="resources/images/pivvy.png" width="300px"></p>
+
+<p style="margin:20px;">Hi, I'm <a href="https://www.youtube.com/watch?v=ntRvdCcJGaQ">Pivvy</a>! I couldn't find the page you are looking for.</p>
+
+<p>Maybe try going back to the <a href="https://{{ instance_host }}">{{ instance_host }} home page</a>?</p>
 </div>
-
 
 
 </div>

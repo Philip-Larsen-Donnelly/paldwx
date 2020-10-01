@@ -78,6 +78,7 @@
     - stopped.html
     - resources/css/landing.css
     - resources/css/landing_taller.css
+    - resources/images/pivvy.png
 
 - name: add error pages
   template:
