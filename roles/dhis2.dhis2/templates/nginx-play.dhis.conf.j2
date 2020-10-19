@@ -79,7 +79,7 @@ location /2.35/ {
 }
 
 location /2.35 {
-  rewrite ^/2.35([^d]*.*)$ $scheme://$host/2.35.0/$1 redirect;
+  rewrite ^/2.35[\d\./]*(.*)$ $scheme://$host/2.35.0/$1 redirect;
   break;
 }
 
@@ -90,7 +90,7 @@ location /2.34/ {
 }
 
 location /2.34 {
-  rewrite ^/2.34([^d]*.*)$ $scheme://$host/2.34.1/$1 redirect;
+  rewrite ^/2.34[\d\./]*(.*)$ $scheme://$host/2.34.1/$1 redirect;
   break;
 }
 
@@ -101,7 +101,7 @@ location /2.33/ {
 }
 
 location /2.33 {
-  rewrite ^/2.33([^d]*.*)$ $scheme://$host/2.33.6/$1 redirect;
+  rewrite ^/2.33[\d\./]*(.*)$ $scheme://$host/2.33.6/$1 redirect;
   break;
 }
 
@@ -111,7 +111,7 @@ location /2.32/ {
 }
 
 location /2.32 {
-  rewrite ^/2.32([^d]*.*)$ $scheme://$host/2.32.6/$1 redirect;
+  rewrite ^/2.32[\d\./]*(.*)$ $scheme://$host/2.32.6/$1 redirect;
   break;
 }
 
@@ -121,7 +121,7 @@ location /2.31/ {
 }
 
 location /2.31 {
-  rewrite ^/2.31([^d]*.*)$ $scheme://$host/2.31.9/$1 redirect;
+  rewrite ^/2.31[\d\./]*(.*)$ $scheme://$host/2.31.9/$1 redirect;
   break;
 }
 
