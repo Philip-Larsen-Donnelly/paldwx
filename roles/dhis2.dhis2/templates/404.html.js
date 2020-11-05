@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<!-- saved from url=(0024)https://debug.dhis2.org/ -->
-<html><head>
-<title>Error 404</title>
+<html>
+<head>
+<title>{{ inventory_hostname }}: 404 Not Found</title>
 <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
-<link rel="shortcut icon" href="resources/favicon.ico" type="image/x-icon">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/all.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/v4-shims.css">
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="shortcut icon" href="/resources/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/v4-shims.css">
+<link rel="stylesheet" href="resources/css/pivvy.css">
+<!--[if IE]>
+  <link rel="stylesheet" type="text/css" href="resources/css/pivvy-ie.css">
+<![endif]-->
 <style>
 body {
   font-family: 'Open Sans', Tahoma, Arial, sans-serif;
@@ -27,7 +32,7 @@ body {
   line-height: 1.6em;
   color: #666;
 }
-h2 {
+h1, h2 {
   color: #222;
   font-size: 1.7em;
   text-align: center;
@@ -36,9 +41,15 @@ h2 {
   padding: 80px 0 30px 0;
   text-align: center;
 }
-
-.intro .h2{
+.intro .h2 {
   text-align: center;
+}
+.logo {
+  width: 150px;
+  margin-left: 15px;
+  float: left;
+  margin-right: 20px;
+  margin-top: -10px;
 }
 a {
   text-decoration: none;
@@ -52,18 +63,33 @@ a {
     margin-right: 6px;
   }
 }
-</style>
-</head>
+</style></head>
 <body>
 <div id="topBar"></div>
-<img src="resources/dhis2-logo-rgb-positive.png" style="width:150px;margin-left:15px;float:left;margin-right: 20px;margin-top:-10px;">
+<img src="resources/dhis2-logo-rgb-positive.png" class="logo">
 <div id="container">
 
-
 <div class="intro">
-  <h2>page not found</h2>
 
-<p><img src="resources/images/pivvy.png" width="300px"></p>
+<h1>page not found</h1>
+
+<div class="pivvy">
+  <img class="body" src="resources/images/dhis2-logo.png">
+  <div class="eye-lid left-eye-lid">
+    <div class="eyes left-eye">
+      <div class="eye stare"></div>
+    </div>
+  </div>
+  <div class="eye-lid right-eye-lid">
+    <div class="eyes right-eye">
+      <div class="eye stare"></div>
+    </div>
+  </div>
+  <img class="eyebrow left-eyebrow" src="resources/images/eyebrow.png">
+  <img class="eyebrow right-eyebrow" src="resources/images/eyebrow.png">
+  <img class="mouth open" src="resources/images/mouth-open.png">
+  <img class="mouth closed hidden" src="resources/images/mouth-slight-smile.png">
+</div>
 
 <p style="margin:20px;">Hi, I'm <a href="https://www.youtube.com/watch?v=ntRvdCcJGaQ">Pivvy</a>! I couldn't find the page you are looking for.</p>
 
@@ -73,5 +99,6 @@ a {
 
 </div>
 
-
-</body></html>
+</body>
+<script type="text/javascript" src="resources/js/pivvy.js"></script>
+</html>

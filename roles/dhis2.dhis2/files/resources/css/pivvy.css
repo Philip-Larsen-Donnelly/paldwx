@@ -1,0 +1,156 @@
+.spacer {
+  position: relative;
+  opacity: 0;
+}
+.pivvy {
+  position: relative;
+  box-sizing: content-box;
+  z-index: 1000;
+  top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  width: 40%;
+  text-align: center;
+}
+.body {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  position: relative;
+  transform-origin: bottom center;
+  animation: bouncebody alternate infinite 1200ms 40ms ease-in-out;
+}
+.eyebrow {
+  position: absolute;
+  top: -7%;
+  width: 50%;
+}
+.left-eyebrow {
+  left: -8%;
+  transform: rotate(-30deg);
+  animation: bounce-left alternate infinite 4000ms 40ms ease-in-out;
+}
+.right-eyebrow {
+  left: 60%;
+  transform: scaleX(-1) rotate(-30deg);
+  animation: bounce-right alternate infinite 4000ms 40ms ease-in-out;
+}
+.left-eye, .right-eye {
+  left: 15%;
+}
+.left-eye-lid {
+  left: 10%;
+}
+.right-eye-lid {
+  left: 50%;
+}
+.eyes, .eye-lid {
+  text-align: center;
+  display: flex;
+  position: absolute;
+  top: 10%;
+}
+.eyes {
+  width: 60%;
+  height: 70%;
+}
+.eye {
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  width: 80%;
+  height: 75%;
+  background-color: black;
+  border-radius: 50%;
+}
+.eye-lid {
+  width: 40%;
+  height: 40%;
+  background-color: #eee;
+  border-radius: 60% 60% 60% 60% / 72% 72% 48% 48%;
+  animation: blink forwards infinite 10s ease-in-out;
+}
+.eye:after { /*white shadow*/
+  --pupil-size: 25%;
+  position: absolute;
+  width: var(--pupil-size);
+  height: var(--pupil-size);
+  background: #bee5ff;
+  border-radius: 50%;
+  content: " ";
+}
+.eyes.stare {
+  transform: rotate(0) !important;
+  transition: all 0.05s;
+}
+.eye.stare {
+  top: 15%;
+  left: 16%;
+  transition: all 0.05s;
+}
+.eye.stare:after {
+  top: 34%;
+  left: 38%;
+}
+.eye.look {
+  top: 0;
+  left: 0;
+  transition: all 0.05s;
+}
+.eye.look:after {
+  top: 15%;
+  left: 18%;
+}
+.mouth {
+  position: absolute;
+}
+.mouth.open {
+  top: 52%;
+  left: 40%;
+  width: 20%;
+}
+.mouth.closed {
+  top: 57%;
+  left: 30%;
+  width: 40%;
+}
+.hidden {
+  display: none;
+}
+
+@media (max-width: 650px) {
+  .pivvy {
+    width: 50%;
+  }
+}
+@media (min-width: 651px) and (max-width: 1000px) {
+  .pivvy {
+    width: 40%;
+  }
+}
+@media (min-width: 1001px) {
+  .pivvy {
+    width: 35%;
+  }
+}
+@keyframes blink {
+  0%, 2%, 60%, 62%, 100% { transform: scaleX(1) scaleY(1); } 
+  1%, 61% { transform: scaleX(1.3) scaleY(0.1); } 
+}
+
+@keyframes bounce-left { 
+  to { transform: rotate(-15deg) } 
+}
+
+@keyframes bounce-right { 
+  to { transform: scaleX(-1) rotate(-15deg) } 
+}
+
+@keyframes bouncebody { 
+  to { transform: scaleX(1.03) scaleY(0.97); } 
+}
+
+@keyframes antena_d { 50% {transform: rotate(20deg);} }
+@keyframes antena_e { 50% {transform: rotate(-20deg);} }
