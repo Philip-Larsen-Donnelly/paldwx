@@ -73,15 +73,13 @@
 - name: add maintenance pages
   copy:
     src: "{{ item }}"
-    dest: "/usr/share/nginx/html/{{ item }}"
+    dest: "/usr/share/nginx/html/"
     mode: 0644
   with_items:
     - restore_db.html
     - deploy_war.html
     - stopped.html
-    - resources/css/landing.css
-    - resources/css/landing_taller.css
-    - resources/images/pivvy.png
+    - resources
 
 - name: add error pages
   template:
