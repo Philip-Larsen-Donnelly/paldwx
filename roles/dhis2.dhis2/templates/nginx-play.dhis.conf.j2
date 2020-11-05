@@ -115,17 +115,6 @@ location /2.32 {
   break;
 }
 
-location /2.31/ {
-  rewrite ^/2.31/(.*)$ $scheme://$host/2.31.9/$1 redirect;
-  break;
-}
-
-location /2.31 {
-  rewrite ^/2.31[\d\./]*(.*)$ $scheme://$host/2.31.9/$1 redirect;
-  break;
-}
-
-
 
 include dhis2_instances;
 
