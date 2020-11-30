@@ -1,0 +1,77 @@
+---
+
+- name: Pull default Docker image
+  docker_image:
+    name: "{{ locust_container_image }}"
+    source: pull
+  when: dhis2_locust_action != "remove"
+
+- name: Create default container
+  docker_container:
+    name: "{{ locust_container_name }}"
+    image: "{{ locust_container_image }}"
+    state: started
+    env:
+     - "--host:{{ instance_host }}/{{ locust_container_name }}"
+    ports:
+     # Publish container port 8089 as host port dhis2_locust_web_port etc.
+     - "8089:{{ dhis2_locust_web_port }}"
+     - "5557:{{ dhis2_locust_master_port }}"
+     - "5558:{{ dhis2_locust_other_port }}"
+  when: dhis2_locust_action == "start"
+
+- name: Restart the container
+  docker_container:
+    name: "{{ locust_container_name }}"
+    image: "{{ locust_container_image }}"
+    state: started
+    restart: yes
+    env:
+      "--host": "{{ instance_host }}/{{ locust_container_name }}"
+    ports:
+     # Publish container port 8089 as host port dhis2_locust_web_port etc.
+     - "8089:{{ dhis2_locust_web_port }}"
+     - "5557:{{ dhis2_locust_master_port }}"
+     - "5558:{{ dhis2_locust_other_port }}"
+  when: dhis2_locust_action == "restart"
+
+- name: add locustio instance to nginx config
+  blockinfile:
+    path: "/etc/nginx/dhis2_instances"
+    block: |
+        location /{{ locust_container_name }}/ {
+            proxy_pass                http://127.0.0.1:{{ dhis2_locust_web_port }}/;
+            proxy_redirect $scheme://$host:$server_port/ /{{ locust_container_name }}/;
+        }
+
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ locust_container_name }}"
+    insertbefore: "# END DHIS2-INSTANCES:"
+    state: present
+  notify: reload nginx
+  when: dhis2_locust_action == "start"
+
+- name: Stop the container
+  docker_container:
+    name: "{{ locust_container_name }}"
+    state: stopped
+  when: dhis2_locust_action == "stop"
+
+
+- name: Remove container
+  docker_container:
+    name: "{{ locust_container_name }}"
+    state: absent
+  when: dhis2_locust_action == "remove"
+
+- name: remove locustio instance from nginx config
+  blockinfile:
+    path: "/etc/nginx/dhis2_instances"
+    block: |
+        location /{{ locust_container_name }} {
+            proxy_pass                http://127.0.0.1:{{ dhis2_locust_web_port }}/{{ locust_container_name }};
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ locust_container_name }}"
+    insertbefore: "# END DHIS2-INSTANCES:"
+    state: absent
+  notify: reload nginx
+  when: dhis2_locust_action == "remove"

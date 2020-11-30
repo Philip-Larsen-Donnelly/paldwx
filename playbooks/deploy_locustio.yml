@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+
+  tasks:
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    # start, stop, restart, remove
+    - name: control locustio instance {{ instance_action }}
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: locustio.yml
