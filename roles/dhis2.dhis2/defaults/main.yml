@@ -116,3 +116,8 @@ googleapis_client_email: ''
 googleapis_client_id: ''
 
 java_opts: "-Xmx1500m -Xms1000m"
+
+locust_container_name: locustio
+locust_container_image: dhis2/locustio:latest
+dhis2_locust_web_port: 8089
+dhis2_locust_master_port: 5557

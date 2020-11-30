@@ -11,13 +11,11 @@
     name: "{{ locust_container_name }}"
     image: "{{ locust_container_image }}"
     state: started
-    env:
-     - "--host:{{ instance_host }}/{{ locust_container_name }}"
     ports:
      # Publish container port 8089 as host port dhis2_locust_web_port etc.
      - "8089:{{ dhis2_locust_web_port }}"
      - "5557:{{ dhis2_locust_master_port }}"
-     - "5558:{{ dhis2_locust_other_port }}"
+     - "5558:{{ dhis2_locust_master_port + 1 }}"
   when: dhis2_locust_action == "start"
 
 - name: Restart the container
@@ -26,13 +24,6 @@
     image: "{{ locust_container_image }}"
     state: started
     restart: yes
-    env:
-      "--host": "{{ instance_host }}/{{ locust_container_name }}"
-    ports:
-     # Publish container port 8089 as host port dhis2_locust_web_port etc.
-     - "8089:{{ dhis2_locust_web_port }}"
-     - "5557:{{ dhis2_locust_master_port }}"
-     - "5558:{{ dhis2_locust_other_port }}"
   when: dhis2_locust_action == "restart"
 
 - name: add locustio instance to nginx config
