@@ -1,5 +1,8 @@
 ---
 
+- name: ensure docker is running
+  service: name=docker state=started
+
 - name: Pull default Docker image
   docker_image:
     name: "{{ locust_container_image }}"
