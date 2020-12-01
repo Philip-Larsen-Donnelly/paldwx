@@ -16,9 +16,9 @@
     state: started
     ports:
      # Publish container port 8089 as host port dhis2_locust_web_port etc.
-     - "8089:{{ dhis2_locust_web_port }}"
-     - "5557:{{ dhis2_locust_master_port }}"
-     - "5558:{{ dhis2_locust_master_port + 1 }}"
+     - "{{ dhis2_locust_web_port }}:8089"
+     - "{{ dhis2_locust_master_port }}:5557"
+     - "{{ dhis2_locust_master_port + 1 }}:5558"
   when: dhis2_locust_action == "start"
 
 - name: Restart the container
