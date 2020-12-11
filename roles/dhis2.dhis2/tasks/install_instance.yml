@@ -101,3 +101,10 @@
   delay: 10
   when: (project is not defined and instance.db_demo is defined and instance.db_demo|length != 0) or (project == "sierra-leone")
   ignore_errors: yes
+
+
+# === Run API requests if defined ==============
+- name: Run API requests
+  include: api_prepare_calls.yml
+  when: API_REQUESTS is defined and ( API_REQUESTS | length != 0) and
+        dhis2_api_requests is defined and ( dhis2_api_requests | length != 0)

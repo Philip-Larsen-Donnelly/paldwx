@@ -108,6 +108,11 @@ dhis2_prometheus_user_password: !vault |
 dhis2_db_owner_default: dhis
 dhis2_db_owner_password_default: dhis24ever
 
+API_REQUESTS: []
+API_REQUEST_FILES: {}
+dhis2_api_requests: []
+
+
 # googleapis - for google earth layers in maps
 googleapis_project_id: ''
 googleapis_private_key_id: ''

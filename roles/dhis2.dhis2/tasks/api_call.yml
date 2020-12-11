@@ -1,0 +1,39 @@
+---
+
+# payload is fully defined in the body, use that
+- name: "Use defined payload for request: {{ request_name }}"
+  uri:
+    url: https://{{ inventory_hostname }}/{{ instance.name }}/{{ request.path }}
+    method: "{{ request.method }}"
+    user: "{{ dhis2_admin_user }}"
+    password: "{{ dhis2_admin_user_password }}"
+    force_basic_auth: yes
+    body_format: "{{ request.body_format }}"
+    body: "{{ request.body }}"
+    status_code: [200,201,202,203,204]
+  register: result
+  ignore_errors: "{{ request.ignore_errors | default('no') }}"
+  when: request.body is defined
+
+
+# alternatively, the payload is a file, so use that
+- name: "Use a specified file for request: {{ request_name }}"
+  uri:
+    url: https://{{ inventory_hostname }}/{{ instance.name }}/{{ request.path }}
+    method: "{{ request.method }}"
+    user: "{{ dhis2_admin_user }}"
+    password: "{{ dhis2_admin_user_password }}"
+    force_basic_auth: yes
+    src: "{{ '/tmp/dhis2-API-'+(request.url | hash('md5'))+'.'+(request.url | splitext | last ) }}"
+    remote_src: yes
+    status_code: [200,201,202,203,204]
+    headers:
+      Content-Type: application/json
+  register: result
+  ignore_errors: "{{ request.ignore_errors | default('no') }}"
+  when: request.url is defined
+
+
+- name: response
+  debug:
+    msg: "{{ result }}"

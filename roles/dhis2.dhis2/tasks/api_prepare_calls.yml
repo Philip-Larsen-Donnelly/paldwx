@@ -1,0 +1,40 @@
+---
+
+
+- name: retrieve any remote files
+  get_url:
+    url: "{{ API_REQUESTS[request].url }}"
+    dest: "/tmp/dhis2-API-{{ request_body_local }}.{{ request_extension }}"
+    mode: 0644
+    force: yes
+  loop: "{{ dhis2_api_requests }}"
+  loop_control:
+    loop_var: request
+  vars:
+    request_body_local: "{{ API_REQUESTS[request].url | hash('md5') }}"
+    request_extension: "{{ API_REQUESTS[request].url | splitext | last }}"
+  when: request in API_REQUESTS and
+        API_REQUESTS[request].url is defined
+
+
+- name: Run commands against the API
+  include: api_call.yml
+  loop: "{{ dhis2_api_requests }}"
+  vars:
+    request: "{{ API_REQUESTS[item] }}"
+    request_name: "{{ item }}"
+  when: item in API_REQUESTS
+
+
+- name: remove remote files
+  file:
+    path: "/tmp/dhis2-API-{{ request_body_local }}.{{ request_extension }}"
+    state: absent
+  loop: "{{ dhis2_api_requests }}"
+  loop_control:
+    loop_var: request
+  vars:
+    request_body_local: "{{ API_REQUESTS[request].url | hash('md5') }}"
+    request_extension: "{{ API_REQUESTS[request].url | splitext | last }}"
+  when: request in API_REQUESTS and
+        API_REQUESTS[request].url is defined

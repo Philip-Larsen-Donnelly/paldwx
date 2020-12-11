@@ -1,0 +1,17 @@
+---
+- hosts: "{{ instance_host }}"
+  strategy: free
+  become: yes
+
+
+  vars:
+    instance:
+      name: "{{ instance_name }}"
+
+
+  tasks:
+
+    - name: dhis2 api requests
+      include_role:
+        name: dhis2.dhis2
+        tasks_from: api_prepare_calls.yml
