@@ -136,7 +136,7 @@
 - name: add glowroot conf
   template:
     src: "admin.json.j2"
-    dest: "{{ storage }}/glowroot/{{ instance.name }}/admin.json"}}"
+    dest: "{{ storage }}/glowroot/{{ instance.name }}/admin.json}}"
     group: "{{ dhis2_user }}"
     mode: 0644
 
