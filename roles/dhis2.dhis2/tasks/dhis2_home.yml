@@ -20,6 +20,12 @@
     fs_type: "{{ dhis2_filestore.type }}"
 
 # deploy standalone tomcat instance for each dhis2 instance
+# - name: create temporary directory for tomcat download
+#   tempfile:
+#     state: directory
+#     suffix: tc_temp
+#   register: tomcat_temp
+
 - name: download tomcat
   unarchive:
     src: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.tar.gz
@@ -37,6 +43,12 @@
 - command: cp -r /tmp/apache-tomcat-8.5.50 {{ storage }}/instances/{{ instance.name }}/tomcat
   args:
     creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
+
+# - name: remove temporary tomcat directory
+#   file:
+#     path: "{{ tomcat_temp.path }}"
+#     state: absent
+#   when: tomcat_temp.path is defined
 
 - name: remove bundled webapps
   shell: /bin/rm -rf {{ storage }}/instances/{{ instance.name }}/tomcat/webapps/*
@@ -83,7 +95,7 @@
     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/setclasspath.sh"
     block: |
       export DHIS2_HOME='{{ storage }}/instances/{{ instance.name }}/home'
-      export JAVA_OPTS='{{ java_opts }} -Djava.security.egd=file:/dev/./urandom'
+      export JAVA_OPTS='{{ java_opts }} -Dglowroot.agent.id={{ instance.name }} -Djava.security.egd=file:/dev/./urandom'
       export CATALINA_PID='/var/run/tomcat/{{ instance.name }}.pid'
 
 - file:

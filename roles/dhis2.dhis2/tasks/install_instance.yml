@@ -75,16 +75,16 @@
 - name: "make sure we have all the facts"
   setup: ~
 
-- name: add scraper to prometheus
-  blockinfile:
-    path: "{{ prometheus_config_dir }}/prometheus.yml"
-    content: '{{ scraper_content }}'
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - PROMETHEUS"
-    insertbefore: EOF
-  notify: reload prometheus
-  when: inventory_hostname == "test.performance.dhis2.org" or
-        inventory_hostname == "test.performance32.dhis2.org"
-  ignore_errors: yes
+# - name: add scraper to prometheus
+#   blockinfile:
+#     path: "{{ prometheus_config_dir }}/prometheus.yml"
+#     content: '{{ scraper_content }}'
+#     marker: "# {mark} ANSIBLE MANAGED BLOCK - PROMETHEUS"
+#     insertbefore: EOF
+#   notify: reload prometheus
+#   when: inventory_hostname == "test.performance.dhis2.org" or
+#         inventory_hostname == "test.performance32.dhis2.org"
+#   ignore_errors: yes
 
 
 - name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
