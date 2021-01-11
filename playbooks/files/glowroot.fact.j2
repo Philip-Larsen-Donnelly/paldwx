@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for i in {4000..4050}
+do
+	if [ "`grep $i {{ glowroot_home_dir }}/*/admin.json`" == "" ];then
+		echo $i
+	  break
+	fi
+done

@@ -54,6 +54,9 @@
             proxy_set_header          X-Forwarded-Proto  https;
             #proxy_cache               dhis;
         }
+        location /glowroot/{{ instance.name }} {
+            proxy_pass                http://127.0.0.1:{{ instance.glowroot_port }}/glowroot/{{ instance.name }};
+        }
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     state: "{{ instance.state }}"
   notify: reload nginx

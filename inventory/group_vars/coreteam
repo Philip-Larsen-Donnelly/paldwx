@@ -60,6 +60,19 @@ grafana_datasources:
 grafana_url: "https://{{ ansible_host }}/grafana"
 grafana_domain: "{{ inventory_hostname }}"
 
+
+glowroot_install_dir: '{{ storage_path }}'
+glowroot_home_dir: "{{ glowroot_install_dir }}/glowroot"
+glowroot_owner: 'root'
+glowroot_group: 'glowroot'
+
+glowroot_port: 4000
+glowroot_bind_address: '127.0.0.1'
+glowroot_context_path: '/glowroot'
+glowroot_group_members:
+- 'dhis'
+
+
 # googleapis
 googleapis_project_id: !vault |
           $ANSIBLE_VAULT;1.2;AES256;dev
@@ -209,7 +222,7 @@ aws_access_key: !vault |
           63666563316333623337336439313161343935303231323261306534303031316137393536336634
           6331313036333763310a356530666334333530383736363464613232363364613832626339396463
           35303431346565326330396231653961373235333232336233363962353261326631
-          
+
 aws_secret_key: !vault |
           $ANSIBLE_VAULT;1.2;AES256;dev
           33336334316539643161356133333234656237633339383864323431333862373263663566353836

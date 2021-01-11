@@ -128,6 +128,18 @@
     dest: "{{ storage }}/instances/{{ instance.name }}/home/dhis-google-auth.json"
     mode: 0644
 
+- file:
+    path: "{{ storage }}/glowroot/{{ instance.name }}"
+    group: "{{ dhis2_user }}"
+    recurse: yes
+
+- name: add glowroot conf
+  template:
+    src: "admin.json.j2"
+    dest: "{{ storage }}/glowroot/{{ instance.name }}/admin.json"}}"
+    group: "{{ dhis2_user }}"
+    mode: 0644
+
 
 # - name: add the instance tomcat logs to filebeat
 #   replace:
