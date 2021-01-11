@@ -26,7 +26,7 @@
 <div id="instance-table"></div>
 <br><br>
 
-<div class="intro">Other links:</div>
+<!-- <div class="intro">Other links:</div>
 
 <table style="width: 100%">
 <tr>
@@ -41,7 +41,7 @@
   </td>
   <td>Performance monitoring with Glowroot</td>
 </tr>
-</table>
+</table> -->
 
 </div>
 </body>
@@ -87,7 +87,8 @@
         rowTable.style.width = "100%";
 
 				var catlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/" + data.name + "/',kind:kuery)\">catalina.out</a>";
-				var nlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
+        var nlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
+        var glowlink = "<a class=\"log\" href=\"https://{{ inventory_hostname }}/glowroot/{{ instance.name }}\">glowroot</a>";
         var dicon = "<img src=\"resources/dhis2-icon-rgb-positive.png\" style=\"width:22px;\"> "
 
         cellContents =  "<div class=\"base\">"
@@ -109,7 +110,7 @@
         cellContents += "<div class=\"label installer\">owner: </div>"
         cellContents += "<div class=\"file installer\">" + data.installed_by + "</div>"
         cellContents += "<div class=\"label logs\">logs: </div>"
-        cellContents += "<div class=\"file logs\">" + catlink + nlink+ "</div>"
+        cellContents += "<div class=\"file logs\">" + glowroot + "</div>"
         cellContents += "<div class=\"attributes\"><span class=\"attribute\">postgresql-10</span><span class=\"attribute\">tomcat-8.5.50</span><span class=\"attribute\">jvm-8</span></div>"
         cellContents += "</div></div>"
 
