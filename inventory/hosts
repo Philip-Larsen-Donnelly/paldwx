@@ -100,10 +100,14 @@ emis.dhis2.org
 [devteam]
 debug.dhis2.org
 
+[qareal]
+test.performance.dhis2.org
+[qareal:vars]
+ansible_ssh_user=root
+
 [qateam]
 verify.dhis2.org
 empty.dhis2.org
-test.performance.dhis2.org
 test.performance32.dhis2.org
 test.databases.dhis2.org
 smoke.dhis2.org
@@ -137,6 +141,7 @@ hisp.apps.dhis2.org
 liveplay
 academy
 devteam
+qareal
 qateam
 emis
 metapack
