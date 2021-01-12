@@ -88,7 +88,7 @@
 
 				var catlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:/" + data.name + "/',kind:kuery)\">catalina.out</a>";
         var nlink = "<a class=\"log\" href=\"https://logs.dhis2.org/app/infra#/logs?_g=()&logFilter=(expression:'host.name:{{ inventory_hostname.split(".")[0] | lower }} and source:*nginx* and message:/" + data.name + "/',kind:kuery)\">nginx</a>";
-        var glowlink = "<a class=\"log\" href=\"https://{{ inventory_hostname }}/glowroot/{{ instance.name }}\">glowroot</a>";
+        var glowlink = "<a class=\"log\" href=\"https://{{ inventory_hostname }}/{{ instance.name }}_glowroot\">glowroot</a>";
         var dicon = "<img src=\"resources/dhis2-icon-rgb-positive.png\" style=\"width:22px;\"> "
 
         cellContents =  "<div class=\"base\">"
