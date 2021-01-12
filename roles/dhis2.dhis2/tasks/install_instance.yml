@@ -10,7 +10,9 @@
 - include: nginx_config.yml
 
 - include: glowroot.yml
-  when: instance.glowroot_port is defined
+  when:
+    - instance.glowroot_port is defined
+    - dhis2_user is defined
 
   # handler to restart tomcat?
 # =========================
