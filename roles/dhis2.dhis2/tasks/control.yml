@@ -32,7 +32,9 @@
 
 
 - include: glowroot.yml
-  when: instance.glowroot_port is defined
+  when:
+    - instance.glowroot_port is defined
+    - dhis2_user is defined
 
 
 # === repair flyway if necessary  (flyway.repair_before_migration=true)

@@ -2,7 +2,7 @@
 
 - file:
     path: "{{ storage }}/glowroot/agent-{{ instance.name }}"
-    group: "{{ dhis2_user | default('dhis2') }}"
+    group: "{{ dhis2_user }}"
     recurse: yes
   when: instance.state != 'absent'
 
@@ -10,7 +10,7 @@
   template:
     src: "admin.json.j2"
     dest: "{{ storage }}/glowroot/agent-{{ instance.name }}/admin.json"
-    group: "{{ dhis2_user | default('dhis2') }}"
+    group: "{{ dhis2_user }}"
     mode: 0644
   when: instance.state != 'absent'
 
