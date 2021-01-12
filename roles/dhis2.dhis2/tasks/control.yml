@@ -34,6 +34,17 @@
 - include: glowroot.yml
   when: instance.glowroot_port is defined
 
+
+# === repair flyway if necessary  (flyway.repair_before_migration=true)
+- name: set flyway repair flag
+  lineinfile:
+    path: "{{ storage }}/instances/{{ instance.name }}/home/dhis.conf"
+    regexp: '^flyway.repair_before_migration'
+    line: flyway.repair_before_migration=true
+  when:
+    - flyway_repair | bool
+
+
 # === Stop instance ==========
 # stop the instance if running
 - name: stop the instance
@@ -167,3 +178,13 @@
   retries: 30
   delay: 10
   when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]
+
+
+# === repair flyway if necessary  (flyway.repair_before_migration=true)
+- name: remove flyway repair flag
+  lineinfile:
+    path: "{{ storage }}/instances/{{ instance.name }}/home/dhis.conf"
+    regexp: '^flyway.repair_before_migration'
+    line: flyway.repair_before_migration=false
+  when:
+    - flyway_repair | bool
