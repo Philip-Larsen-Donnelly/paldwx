@@ -23,7 +23,7 @@
   vars:
     db_save_suffix: "_REMOVED"
   when:
-    - backup_on_removal is not defined or ((backup_on_removal | bool) != true)
+    - backup_on_removal is not defined or ((backup_on_removal | bool) == true)
 
 
 # === update nginx =========
