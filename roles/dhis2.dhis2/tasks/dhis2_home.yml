@@ -90,12 +90,23 @@
     mode: 0600
     #notify: restart tomcat
 
+
+- name: set glowroot java opts on
+  set_fact:
+    glowroot_opts: "-javaagent:{{ storage }}/glowroot/glowroot.jar -Dglowroot.agent.id={{ instance.name }} "
+  when: glowroot_on is defined and glowroot_on | bool
+
+- name: set glowroot java opts off
+  set_fact:
+    glowroot_opts: ""
+  when: glowroot_on is not defined or (glowroot_on | bool) == false
+
 - name: set tomcat environment
   blockinfile:
     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/setclasspath.sh"
     block: |
       export DHIS2_HOME='{{ storage }}/instances/{{ instance.name }}/home'
-      export JAVA_OPTS='{{ java_opts }} -Dglowroot.agent.id={{ instance.name }} -Djava.security.egd=file:/dev/./urandom'
+      export JAVA_OPTS='{{ java_opts }} {{ glowroot_opts }} -Djava.security.egd=file:/dev/./urandom'
       export CATALINA_PID='/var/run/tomcat/{{ instance.name }}.pid'
 
 - file:
