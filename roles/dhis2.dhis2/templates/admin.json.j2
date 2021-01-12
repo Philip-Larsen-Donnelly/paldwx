@@ -23,7 +23,7 @@
   "web": {
     "port": {{ instance.glowroot_port  | default(4000) }},
     "bindAddress": "127.0.0.1",
-    "contextPath": "/glowroot/{{ instance.name }}",
+    "contextPath": "/{{ instance.name }}_glowroot",
     "sessionTimeoutMinutes": 30,
     "sessionCookieName": "GLOWROOT_SESSION_ID"
   },
