@@ -32,9 +32,6 @@
             proxy_set_header          X-Forwarded-Proto  https;
             #proxy_cache               dhis;
         }
-        location /glowroot/{{ instance.name }} {
-            proxy_pass                http://127.0.0.1:{{ instance.glowroot_port | default(4000) }}/glowroot/{{ instance.name }};
-        }
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     insertbefore: "# END DHIS2-INSTANCES:"
     state: "{{ instance.state }}"

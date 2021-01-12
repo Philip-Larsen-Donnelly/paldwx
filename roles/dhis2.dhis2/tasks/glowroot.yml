@@ -1,0 +1,31 @@
+---
+
+- file:
+    path: "{{ storage }}/glowroot/agent-{{ instance.name }}"
+    group: "{{ dhis2_user }}"
+    recurse: yes
+  when: instance.state != 'absent'
+
+- name: add glowroot conf
+  template:
+    src: "admin.json.j2"
+    dest: "{{ storage }}/glowroot/agent-{{ instance.name }}/admin.json"
+    group: "{{ dhis2_user }}"
+    mode: 0644
+  when: instance.state != 'absent'
+
+- name: add glowroot to nginx
+  blockinfile:
+    path: "/etc/nginx/dhis2_instances"
+    block: |
+        location /glowroot/{{ instance.name }} {
+            proxy_pass                http://127.0.0.1:{{ instance.glowroot_port  | default(4000)}}/glowroot/{{ instance.name }};
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}-glowroot"
+    state: "{{ instance.state }}"
+  notify: reload nginx
+
+- name: reload nginx
+  systemd:
+    state: reloaded
+    name: nginx
