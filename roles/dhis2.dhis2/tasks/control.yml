@@ -42,6 +42,7 @@
     regexp: '^flyway.repair_before_migration'
     line: flyway.repair_before_migration=true
   when:
+    - flyway_repair is defined
     - flyway_repair | bool
 
 
@@ -186,5 +187,3 @@
     path: "{{ storage }}/instances/{{ instance.name }}/home/dhis.conf"
     regexp: '^flyway.repair_before_migration'
     line: flyway.repair_before_migration=false
-  when:
-    - flyway_repair | bool
