@@ -1,17 +1,27 @@
 ---
 
 - file:
-    path: "{{ storage }}/glowroot/agent-{{ instance.name }}"
+    path: "{{ storage }}/glowroot/agent-{{ instance.name }}/{{ item }}"
+    owner: "{{ dhis2_user }}"
     group: "{{ dhis2_user }}"
     recurse: yes
     state: "{{ 'directory' if instance.state == 'present' else 'absent'}}"
+  with_items:
+    - data
+    - logs
+    - tmp
+
 
 - name: add glowroot conf
   template:
-    src: "admin.json.j2"
-    dest: "{{ storage }}/glowroot/agent-{{ instance.name }}/admin.json"
+    src: "{{ item }}.json.j2"
+    dest: "{{ storage }}/glowroot/agent-{{ instance.name }}/{{ item }}.json"
+    owner: "{{ dhis2_user }}"
     group: "{{ dhis2_user }}"
     mode: 0644
+  with_items:
+    - admin
+    - config
   when: instance.state != 'absent'
 
 - name: add glowroot to nginx
