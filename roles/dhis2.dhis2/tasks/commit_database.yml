@@ -4,7 +4,7 @@
     owner: "{{ postgresql_user }}"
     group: "{{ postgresql_user }}"
     recurse: yes
-    state: "present"
+    state: "directory"
 
 # download the demo db (if not empty param)
 - name: get the current date time
