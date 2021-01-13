@@ -14,31 +14,34 @@
   postgresql_db:
     name: "{{ instance.db_name }}"
     state: dump
-    target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
-    target_opts: "-T analytics* -T _*"
+    target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ db_dump_format }}"
+    target_opts: "{{ dump_options }}"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
+    dump_options: "{{ '-Fc -Z 9 -T analytics* -T _*' if db_dump_format == 'pgc' else '-T analytics* -T _*' }}"
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
-- set_fact: save_suffix="{{ db_save_suffix | default('') }}"
+# - set_fact: save_suffix="{{ db_save_suffix | default('') }}"
 
 - name: copy the snapshot to s3
   aws_s3:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: dhis2-database-backups
-    object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}{{ save_suffix }}.sql.gz"
-    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}{{ save_suffix }}.{{ db_dump_format }}"
+    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ db_dump_format }}"
     mode: put
     metadata:
       saved_by: "{{ awx_user_name | default('unknown') }}"
       comment: "{{ db_snapshot_comment | default('none') }}"
       original_source: "{{ instance.db_demo }}"
       war_file: "{{ instance.war_file }}"
+  vars:
+    save_suffix: "{{ db_save_suffix | default('') }}"
 
 - name: remove local dump file
   file:
-    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ db_dump_format }}"
     state: absent

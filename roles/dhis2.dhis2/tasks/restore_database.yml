@@ -20,34 +20,46 @@
       when: s3_list.s3_keys
   when: restore_snapshot is defined and restore_snapshot == "latest"
 
+- debug:
+    msg: "{{ s3_snapshot }}"
+  when: s3_snapshot is defined
+
 - name: fetch the snapshot db
   block:
+    - name: store db fetch format
+      set_fact:
+        this_fetch_format: "{{ 'pgc' if s3_snapshot is regex('.*pgc') else 'sql.gz' }}"
+
     - name: fetch demo db file for snapshot
       aws_s3:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
         bucket: dhis2-database-backups
         object: "{{ s3_snapshot }}"
-        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
+        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: get
   when: s3_snapshot is defined
 
 - name: fetch the baseline db
   block:
+    - name: store db fetch format
+      set_fact:
+        this_fetch_format: "{{ 'pgc' if instance.db_demo is regex('.*pgc') else 'sql.gz' }}"
+
     - name: fetch demo db file for project
       aws_s3:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
         bucket: "{{ dhis2_project_database_bucket }}"
         object: "{{ instance.db_demo }}"
-        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
+        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: get
       when: project is defined and instance.db_demo is defined and instance.db_demo|length
 
     - name: fetch demo db file for {{ instance.name }}
       get_url:
         url: "{{ instance.db_demo }}"
-        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
+        dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: 0644
       when: project is not defined and instance.db_demo is defined and instance.db_demo|length
   when: s3_snapshot is not defined
@@ -57,7 +69,7 @@
 
 
 # - name: unzip the demo db
-#   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz
+#   command: gunzip -f {{ storage }}/instances/{{ instance.name }}/temp_db.{{ db_dump_format }}
 #   when: instance.db_demo is defined and instance.db_demo|length
 #
 -
@@ -104,14 +116,16 @@
         state: "{{ instance.state | default('present')  }}"
 
 - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
-  postgresql_db:
+  community.postgresql.postgresql_db:
     name: "{{ instance.db_name }}"
     state: restore
-    target: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
+    target: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
+    target_opts: "{{ restore_options }}"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
+    restore_options: "{{ ('-j '+db_restore_threads) if this_fetch_format == 'pgc' else '' }}"
   when: instance.db_demo is defined and instance.db_demo|length and db_empty is not defined
 
 - name: Execute SQL - force admin password
@@ -145,12 +159,12 @@
 
 - name: remove temporary db file
   file:
-    path: "{{ storage }}/instances/{{ instance.name }}/temp_db.sql.gz"
+    path: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format | default('sql.gz') }}"
     state: absent
 
 - name: remove old temporary db file
   file:
-    path: "{{ storage }}/instances/{{ instance.name }}/demo_db.sql.gz"
+    path: "{{ storage }}/instances/{{ instance.name }}/demo_db.{{ this_fetch_format | default('sql.gz') }}"
     state: absent
 
 

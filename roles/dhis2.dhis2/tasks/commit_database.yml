@@ -10,11 +10,15 @@
 - name: get the current date time
   set_fact: db_snap_date="{{lookup('pipe','date \"+%Y-%m-%d_%H%M%S\"')}}"
 
+- name: store db commit format
+  set_fact:
+    commit_dump_format: "{{ 'pgc' if instance.db_demo is regex('.*pgc') else 'sql.gz' }}"
+
 - name: Dump database snapshot (without analytics) to a file (with compression)
   postgresql_db:
     name: "{{ instance.db_name }}"
     state: dump
-    target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     target_opts: "-T analytics* -T _*"
   become: true
   become_user: "{{ postgresql_user }}"
@@ -29,7 +33,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: "{{ dhis2_project_database_bucket }}"
     object: "{{ instance.db_demo }}"
-    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     mode: put
     metadata:
       saved_by: "{{ awx_user_name | default('unknown') }}"
@@ -43,7 +47,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: "{{ dhis2_project_database_bucket }}"
     object: "{{ db_dev_demo }}"
-    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     mode: put
     metadata:
       saved_by: "{{ awx_user_name | default('unknown') }}"
@@ -58,5 +62,5 @@
 
 - name: remove local dump file
   file:
-    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     state: absent
