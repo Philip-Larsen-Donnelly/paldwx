@@ -1,4 +1,11 @@
 ---
+- file:
+    path: "{{ storage }}/tmp"
+    owner: "{{ postgresql_user }}"
+    group: "{{ postgresql_user }}"
+    recurse: yes
+    state: "present"
+
 # download the demo db (if not empty param)
 - name: get the current date time
   set_fact: db_snap_date="{{lookup('pipe','date \"+%Y-%m-%d_%H%M%S\"')}}"
@@ -7,7 +14,7 @@
   postgresql_db:
     name: "{{ instance.db_name }}"
     state: dump
-    target: "{{ storage }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     target_opts: "-T analytics* -T _*"
   become: true
   become_user: "{{ postgresql_user }}"
@@ -23,7 +30,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: dhis2-database-backups
     object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}{{ save_suffix }}.sql.gz"
-    src: "{{ storage }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     mode: put
     metadata:
       saved_by: "{{ awx_user_name | default('unknown') }}"
@@ -33,5 +40,5 @@
 
 - name: remove local dump file
   file:
-    path: "{{ storage }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     state: absent
