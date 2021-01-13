@@ -7,7 +7,7 @@
   postgresql_db:
     name: "{{ instance.db_name }}"
     state: dump
-    target: /tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz
+    target: "{{ storage }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     target_opts: "-T analytics* -T _*"
   become: true
   become_user: "{{ postgresql_user }}"
@@ -23,7 +23,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: dhis2-database-backups
     object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}{{ save_suffix }}.sql.gz"
-    src: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    src: "{{ storage }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     mode: put
     metadata:
       saved_by: "{{ awx_user_name | default('unknown') }}"
@@ -33,5 +33,5 @@
 
 - name: remove local dump file
   file:
-    path: "/tmp/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
+    path: "{{ storage }}/{{ db_snap_date }}_{{ instance.name }}.sql.gz"
     state: absent
