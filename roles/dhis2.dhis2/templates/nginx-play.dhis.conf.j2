@@ -35,6 +35,7 @@ server {
     proxy_buffer_size         128k;
     proxy_buffers             8 128k;
     proxy_busy_buffers_size   256k;
+    proxy_read_timeout        3600;
 
     # Set SameSite cookie to Lax
     proxy_cookie_path         ~*^/(.*) "/$1; SameSite=Lax";
