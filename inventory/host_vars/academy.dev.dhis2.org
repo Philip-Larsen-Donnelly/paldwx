@@ -1,0 +1,9 @@
+---
+# storage_path is where the instances will be installed
+storage_path: "/mnt/sdb"
+# The following is needed to set up mount point (for storage_path) on an extrnal volume
+storage_device: "/dev/sdb"
+project: "academy"
+
+dhis2_lander: "-academy"
+dhis2_nginx: "-academy"
