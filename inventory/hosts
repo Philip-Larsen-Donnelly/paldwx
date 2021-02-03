@@ -93,6 +93,10 @@ academy.aggregate.dhis2.org
 academy.events.dhis2.org
 academy.demos.dhis2.org
 
+# Logistics (LMIS)
+[lmis]
+lmis.integration.dhis2.org
+
 # Education (EMIS)
 [emis]
 emis.dhis2.org
@@ -143,6 +147,7 @@ devteam
 qareal
 qateam
 emis
+lmis
 metapack
 unicef
 hispapps
