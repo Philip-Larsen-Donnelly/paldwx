@@ -12,7 +12,7 @@ Environment='DHIS2_HOME={{ storage }}/instances/{{ instance.name }}/home'
 Environment='CATALINA_PID=/var/run/tomcat/{{ instance.name }}.pid'
 Environment='CATALINA_HOME={{ storage }}/instances/{{ instance.name }}/tomcat'
 Environment='CATALINA_BASE={{ storage }}/instances/{{ instance.name }}/tomcat'
-Environment='CATALINA_OPTS=-Xms1024M -Xmx2048M -XX:+UseParallelGC -server'
+# Environment='CATALINA_OPTS=-Xms1024M -Xmx2048M -XX:+UseParallelGC -server'
 # Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
 
 # Needed to make use of Tomcat Native Library
