@@ -105,9 +105,9 @@
   blockinfile:
     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/setclasspath.sh"
     block: |
-      export DHIS2_HOME='{{ storage }}/instances/{{ instance.name }}/home'
-      export CATALINA_OPTS='{{ java_opts }} {{ glowroot_opts }} -XX:+UseParallelGC -server -Djava.security.egd=file:/dev/./urandom $CATALINA_OPTS'
-      export CATALINA_PID='/var/run/tomcat/{{ instance.name }}.pid'
+      export DHIS2_HOME="{{ storage }}/instances/{{ instance.name }}/home"
+      export CATALINA_OPTS="{{ java_opts }} {{ glowroot_opts }} -XX:+UseParallelGC -server -Djava.security.egd=file:/dev/./urandom $CATALINA_OPTS"
+      export CATALINA_PID="/var/run/tomcat/{{ instance.name }}.pid"
 
 - file:
     path: "/var/run/tomcat"
