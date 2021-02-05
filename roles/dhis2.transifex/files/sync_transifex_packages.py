@@ -321,7 +321,7 @@ def transifex_to_json():
         # print(langs)
 
     for language_code in langs:
-        # print(language_code)
+        print(language_code)
 
         # We need to map language codes that DHIS2 doesn't support natively
         # uz@Cyrl --> uz
@@ -333,6 +333,7 @@ def transifex_to_json():
 
         urls = tx_stats_api.format(s=project_slug, r=resource_slug, l=language_code)
         response = requests.get(urls, auth=TX_AUTH)
+        print(response.text())
         if response.status_code == requests.codes['OK']:
             trans=response.json()['translated_entities']
 
