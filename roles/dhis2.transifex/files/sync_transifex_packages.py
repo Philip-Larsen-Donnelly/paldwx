@@ -360,7 +360,7 @@ def transifex_to_json():
                     lfile.close()
 
                     locale_name = localefile.replace(locale_file_prefix.format(p=args.package),'').split('.')[0]
-                    if language_code = "fr":
+                    if language_code == "fr":
                         print("locale file:",lfile)
                         print("locale name:",locale_name)
                     if locale_name == mapped_language_code:
