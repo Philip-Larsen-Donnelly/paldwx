@@ -102,8 +102,10 @@ def metadata_to_json():
     locales["source"]={}
     for resource in translatable_fields:
         if resource not in excluded_objects:
-            print(resource, translatable_fields[resource])
-            collection = (requests.get(args.server+"/api/"+resource+".json"+"?fields=:all&paging=false",auth=AUTH)).json()[resource]
+            tfs = ''
+            for transField in translatable_fields[resource]:
+                tfs += ','+transField
+            collection = (requests.get(args.server+"/api/"+resource+".json"+"?fields=id,translations"+tfs+"&paging=false",auth=AUTH)).json()[resource]
             for element in collection:
                 if element['id'] in package_ids:
                     # print(element['id'])
