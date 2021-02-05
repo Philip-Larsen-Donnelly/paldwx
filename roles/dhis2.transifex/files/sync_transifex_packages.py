@@ -333,7 +333,7 @@ def transifex_to_json():
 
         urls = tx_stats_api.format(s=project_slug, r=resource_slug, l=language_code)
         response = requests.get(urls, auth=TX_AUTH)
-        print(response.text)
+
         if response.status_code == requests.codes['OK']:
             trans=response.json()['translated_entities']
 
@@ -360,6 +360,9 @@ def transifex_to_json():
                     lfile.close()
 
                     locale_name = localefile.replace(locale_file_prefix.format(p=args.package),'').split('.')[0]
+                    if language_code = "fr":
+                        print("locale file:",lfile)
+                        print("locale name:",locale_name)
                     if locale_name == mapped_language_code:
                         print(language_code,"has no translations in transifex. Pushing existing translations to transifex.")
 
