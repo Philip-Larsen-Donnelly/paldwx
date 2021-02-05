@@ -339,13 +339,13 @@ def transifex_to_json():
             else:
                 # If there are no translations currently in transifex, check if we have some existing
                 # translations from DHIS2 and push them to transifex
-                for localefile in glob.iglob(locale_file_glob_pattern.format(p=args.package)):
+                for localefile in glob.iglob(locale_file_glob_pattern.format(p=resource_slug)):
 
                     lfile=open(localefile,'r')
                     locale = json.load(lfile)
                     lfile.close()
 
-                    locale_name = localefile.replace(locale_file_prefix.format(p=args.package),'').split('.')[0]
+                    locale_name = localefile.replace(locale_file_prefix.format(p=resource_slug),'').split('.')[0]
                     if locale_name == mapped_language_code:
                         print(language_code,"has no translations in transifex. Pushing existing translations to transifex.")
 
