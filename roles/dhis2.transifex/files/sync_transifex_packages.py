@@ -157,8 +157,8 @@ def metadata_to_json():
         locale_filename = locale_file_pattern.format(p=resource_slug, l=locale)
         if locale == "source":
             locale_filename = source_file_pattern.format(p=resource_slug)
-        # print("file:",locale_filename)
-        # print("locale:",locale)
+        print("file:",locale_filename)
+        print("locale:",locale)
         os.makedirs(os.path.dirname(locale_filename), exist_ok=True)
         jsonfile= open(locale_filename,'w')
         jsonfile.write(json.dumps(locales[locale] , sort_keys=True, indent=2, separators=(',', ': ')))
