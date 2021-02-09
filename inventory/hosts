@@ -10,13 +10,7 @@
 
 
 #=============================================================================
-[remspace]
-remspace.absentmind.no
 
-[remspace:vars]
-ansible_ssh_user=philld
-ansible_ssh_private_key_file=~/.ssh/id_rsa
-ansible_python_interpreter=/usr/bin/python3
 
 # logging server (ELK stack)
 [elk]
@@ -116,7 +110,6 @@ empty.dhis2.org
 test.performance32.dhis2.org
 test.databases.dhis2.org
 smoke.dhis2.org
-bigmac.dhis2.org
 
 [metaoriginal]
 who.dhis2.org
@@ -130,7 +123,6 @@ who-dev.dhis2.org
 who-demos.dhis2.org
 who.sandbox.dhis2.org
 covid19.dhis2.org
-ks.demo.dhis2.org
 
 # Unicef Data eXchange Platform
 [unicef]
