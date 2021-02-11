@@ -107,3 +107,14 @@ monitoring.hibernate.enabled = on
 {% endif %}
 
 {% endif %}
+
+{% if instance.name == "10337" %}
+
+oidc.oauth2.login.enabled = on
+oidc.logout.redirect_url = https://{{ inventory_hostname }}/{{ instance.name }}
+oidc.provider.google.redir_baseurl = https://{{ inventory_hostname }}/{{ instance.name }}
+oidc.provider.google.client_id = 1019417002544-mqa7flk4mjohrgsbg9bta9bvluoj85o0.apps.googleusercontent.com
+oidc.provider.google.client_secret = zxlkf3bg7aWXX_vphDJVdnLS
+oidc.provider.google.mapping_claim = email
+
+{% endif %}
