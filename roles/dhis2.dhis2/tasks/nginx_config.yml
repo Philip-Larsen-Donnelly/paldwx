@@ -83,9 +83,16 @@
 
 - name: add error pages
   template:
-    src: "{{ item }}.js"
+    src: "{{ item }}.j2"
     dest: "/usr/share/nginx/html/{{ item }}"
     mode: 0644
   with_items:
+    - 4xx.html
+    - 400.html
+    - 401.html
+    - 402.html
+    - 403.html
     - 404.html
-    - 50x.html
+    - 5xx.html
+    - 500.html
+    - 502.html

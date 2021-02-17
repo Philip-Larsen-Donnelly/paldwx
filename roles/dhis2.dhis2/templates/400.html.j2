@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ inventory_hostname }}: 400 Bad Request</title>
+<meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="shortcut icon" href="/resources/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/v4-shims.css">
+<link rel="stylesheet" href="resources/css/pivvy.css">
+<!--[if IE]>
+  <link rel="stylesheet" type="text/css" href="resources/css/pivvy-ie.css">
+<![endif]-->
+<style>
+body {
+  font-family: 'Open Sans', Tahoma, Arial, sans-serif;
+  margin: 0;
+}
+#topBar {
+  z-index: -1;
+  margin: 0;
+  top: 0;
+  width: 100%;
+  height: 80px;
+  position: absolute;
+  background-color: #f7f7f7;
+}
+#container {
+  max-width: 48em;
+  margin: 26px auto;
+  line-height: 1.6em;
+  color: #666;
+}
+h1, h2 {
+  color: #222;
+  font-size: 1.7em;
+  padding-bottom: 1.2em;
+  text-align: center;
+}
+.intro {
+  padding: 80px 0 30px 0;
+  text-align: center;
+}
+.intro .h2 {
+  text-align: center;
+}
+.logo {
+  width: 150px;
+  margin-left: 15px;
+  float: left;
+  margin-right: 20px;
+  margin-top: -10px;
+}
+a {
+  text-decoration: none;
+  color: #0053AF;
+}
+@media (max-width:770px) {
+  #container {
+    max-width: 100%;
+    width: auto;
+    margin-left: 6px;
+    margin-right: 6px;
+  }
+}
+</style>
+</head>
+<body>
+<div id="topBar"></div>
+<img src="resources/dhis2-logo-rgb-positive.png" class="logo">
+<div id="container">
+
+<div class="intro">
+
+<h1>bad request</h1>
+
+<div class="pivvy">
+  <img class="body" src="resources/images/dhis2-logo.png">
+  <div class="eye-lid left-eye-lid">
+    <div class="eyes left-eye">
+      <div class="eye stare"></div>
+    </div>
+  </div>
+  <div class="eye-lid right-eye-lid">
+    <div class="eyes right-eye">
+      <div class="eye stare"></div>
+    </div>
+  </div>
+  <img class="eyebrow left-eyebrow" src="resources/images/eyebrow.png">
+  <img class="eyebrow right-eyebrow" src="resources/images/eyebrow.png">
+  <img class="mouth open" src="resources/images/mouth-open.png">
+  <img class="mouth closed hidden" src="resources/images/mouth-slight-smile.png">
+</div>
+
+<p style="margin:20px;">Hi, I'm <a href="https://www.youtube.com/watch?v=ntRvdCcJGaQ">Pivvy</a>! Unfortunately, the page you asked for isn't working right now.</p>
+
+<p>Maybe try going back to the <a href="https://{{ inventory_hostname }}/">{{ inventory_hostname }} home page</a>?</p>
+</div>
+
+
+</div>
+
+</body>
+<script type="text/javascript" src="resources/js/pivvy.js"></script>
+</html>
