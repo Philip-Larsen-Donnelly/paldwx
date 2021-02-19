@@ -25,6 +25,10 @@
       setup: ~
     - debug:
         msg: "{{ ansible_local.dhis2 }}"
+    - name: Ensure PostgreSQL Python libraries are installed.
+      apt:
+        name: python-psycopg2
+        state: present
 
   vars:
     dhis2_instances:
