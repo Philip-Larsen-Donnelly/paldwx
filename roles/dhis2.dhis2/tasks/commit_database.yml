@@ -19,11 +19,12 @@
     name: "{{ instance.db_name }}"
     state: dump
     target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
-    target_opts: "-T analytics* -T _*"
+    target_opts: "{{ dump_options }}"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
+    dump_options: "{{ '-Fc -Z 9 -T analytics* -T _*' if (commit_dump_format == 'pgc') else '-T analytics* -T _*' }}"
   when: instance.db_demo is defined and instance.db_demo|length
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
