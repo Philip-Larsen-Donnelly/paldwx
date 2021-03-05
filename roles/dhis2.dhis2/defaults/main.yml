@@ -8,7 +8,7 @@ dhis2_project_database_bucket: dhis2-database-development
 # - sql.gz is the classic dump format used by DHIS2
 # - pgc is the custom format option for greater dump/restore efficiency
 db_dump_format: "sql.gz"
-db_restore_threads: 4
+db_restore_threads: "{{ ansible_facts['processor_count'] *ansible_facts['processor_cores'] }}"
 
 postgresql_version: "10"
 postgresql_packages:
