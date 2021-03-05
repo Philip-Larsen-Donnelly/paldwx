@@ -20,7 +20,7 @@
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
-    dump_options: "{{ '-Fc -Z 9 -T analytics* -T _*' if db_dump_format == 'pgc' else '-T analytics* -T _*' }}"
+    dump_options: "{{ '-Fc -Z 9 -T analytics* -T _*' if (db_dump_format == 'pgc') else '-T analytics* -T _*' }}"
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
 # - set_fact: save_suffix="{{ db_save_suffix | default('') }}"
