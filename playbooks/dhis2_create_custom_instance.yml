@@ -22,6 +22,10 @@
     - debug:
         msg: "{{ ansible_local.dhis2 }}"
 
+    # ensure we have the necessary version of postgres available
+    - include_vars: vars/postgresql.yml
+    - include: shared/postgresql_multi.yml
+
   vars:
     dhis2_instances:
       - name: "{{ instance_name }}"
@@ -33,6 +37,7 @@
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         artemis_port: "{{ ansible_local.dhis2.artemis.next_port }}"
+        postgresql_version: "{{ postgresql_version }}"
         glowroot_port: "{{ ansible_local.glowroot }}"
         # set monitoring to true to generate metrics for prometheus/grafana
         monitoring: "{{ monitoring | default('NO') }}"

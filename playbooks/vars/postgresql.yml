@@ -2,32 +2,47 @@
 # vars file for dhis2.dhis2
 postgresql_version: "10"
 postgresql_packages:
+  - postgresql-client-common
   - postgresql-{{ postgresql_version }}
   - postgresql-contrib
   - libpq-dev
-  - postgis
+  - postgresql-10-postgis-2.4
+  - postgresql-{{ postgresql_version }}-postgis-3
 
 postgresql_user: postgres
 postgresql_group: postgres
-
 postgresql_daemon: "postgresql"
+#postgresql_daemon: "postgresql@{{ postgresql_version }}-main"
 postgresql_restarted_state: "restarted"
 
 postgresql_unix_socket_directories:
   - '/var/run/postgresql'
 
-postgresql_data_dir: "{{ storage_path }}/postgresql/{{ __postgresql_version }}/main"
+postgresql_data_dir: "{{ storage_path }}/postgresql/{{ postgresql_version }}/main"
+postgresql_port_map:
+  '10': '5432'
+  '11': '5433'
+  '12': '5434'
+  '13': '5435'
+postgresql_port: "{{ postgresql_port_map[postgresql_version] }}"
+
+postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
+postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
 
 # DHIS 2 global configuration options that will be set in postgresql.conf.
 postgresql_global_config_options:
   - option: unix_socket_directories
     value: '{{ postgresql_unix_socket_directories | join(",") }}'
+  - option: data_directory
+    value: "{{ postgresql_data_dir }}"
+  - option: port
+    value: "{{ postgresql_port }}"
   - option: max_locks_per_transaction
     value: 200
   - option: max_connections
     value: 700
   - option: shared_buffers
-    value: 2000MB
+    value: 1000MB
   - option: work_mem
     value: 12MB
   - option: maintenance_work_mem
@@ -42,8 +57,9 @@ postgresql_global_config_options:
     value: 10000ms
   - option: checkpoint_completion_target
     value: 0.8
-  - option: data_directory
-    value: "{{ postgresql_data_dir }}"
+
+postgresql_version_config_options: []
+
 
 postgresql_databases: []
 postgresql_users: []

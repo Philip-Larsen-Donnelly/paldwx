@@ -58,13 +58,7 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance:
-          name: "{{ single_instance.name }}"
-          state: 'absent'
-          war_file: "{{ single_instance.war_file}}"
-          db_name: "{{ single_instance.db_name }}"
-          db_demo: "{{ single_instance.db_demo }}"
-          tomcat_port: "{{ single_instance.tomcat_port }}"
+        instance: "{{ single_instance|combine({ 'state': 'absent'}) }}"
       when:
         - single_instance.name is regex(instance_name, match_type='fullmatch')
         - instance_action == 'remove'

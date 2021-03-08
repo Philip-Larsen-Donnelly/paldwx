@@ -22,8 +22,9 @@
 
 # Adds postgis to the database
 - name: add postgres extensions
-  postgresql_ext:
+  community.postgresql.postgresql_ext:
     name: postgis
+    port: "{{ item.port }}"
     db: "{{ item.name }}"
     state: "{{ item.state }}"
   with_items: "{{ postgresql_databases }}"

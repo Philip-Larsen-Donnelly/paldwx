@@ -9,7 +9,7 @@ connection.dialect = org.hibernate.dialect.PostgreSQLDialect
 connection.driver_class = org.postgresql.Driver
 
 # JDBC driver connection URL
-connection.url = jdbc:postgresql:{{ instance.db_name }}
+connection.url = jdbc:postgresql://localhost:{{ postgresql_port }}/{{ instance.db_name }}
 
 # Database username
 connection.username = {{ instance.db_owner | default(dhis2_db_owner_default) }}

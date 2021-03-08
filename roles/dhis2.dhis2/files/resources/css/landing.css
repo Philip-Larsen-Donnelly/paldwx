@@ -72,7 +72,7 @@ a {
 
 .tabulator-col-content{
   border-left:1px solid #eee;
-  text-align:center;
+  text-align:left;
   background:#f7f7f7 !important;
   padding-top:7px !important;
 }
@@ -163,7 +163,7 @@ a {
   overflow:hidden;
   text-overflow: ellipsis;
   _border-right:1px solid #666;
-  white-space:pre-wrap
+  white-space:pre-wrap;
 }
 
 .agel{
@@ -185,7 +185,7 @@ a {
 
 .details {
   display: none;
-  height:110px;
+  height:135px;
   background:#fff;
   _border:1px solid #999;
   width:920px;
@@ -204,7 +204,7 @@ a {
   _background:#f7f7f7;
   _color: #aaa;
   _margin:5px;
-  height:109px;
+  height:134px;
   overflow:hidden;
 }
 
@@ -217,21 +217,23 @@ a {
 }
 
 .attributes{
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 2;
+  grid-column-start: 4;
+  grid-column-end: 6;
+  grid-row-start: 4;
   grid-row-end: 5;
   word-wrap:initial;
-  display:none;
+  /*! display:none; */
+  /*! text-align: right; */
 }
 .attribute{
-  border-radius: 5px;
-  border:1px solid #ccc;
-  _color:#666;
+  border-radius: 3px;
+  background-color: #008bb9;
+  color:white;
   text-decoration:none;
   padding:2px 5px;
-  margin:2px
-  display:none;
+  margin:2px;
+  font-size: 12px;
+  font-weight: bold;
 }
 .installer{
     grid-row-start: 1;
@@ -241,7 +243,7 @@ a {
 
 .log{
   border-radius: 5px;
-  border:1px solid #ccc;
+  _border:1px solid #ccc;
   _color:#1053af7d;
   background:#fff;
   text-decoration:none;
@@ -259,7 +261,7 @@ a {
   _color: #666;
   padding-right:5px;
   text-align: right;
-   font-size:14px;
+  font-size:14px;
   font-weight:bold;
 }
 .file{
@@ -290,6 +292,6 @@ a {
     grid-row-end: 3;
 }
 .logs{
-    grid-row-start: 4;
-    grid-row-end: 4;
+    grid-row-start: 5;
+    grid-row-end: 5;
 }

@@ -9,10 +9,7 @@
 
 - name: add maintenance pages
   copy:
-    src: "{{ item }}"
-    dest: "/usr/share/nginx/html/{{ item }}"
+    src: resources
+    dest: "/usr/share/nginx/html/"
     mode: 0644
     force: yes
-  with_items:
-    - resources/css/landing.css
-    - resources/css/landing_taller.css

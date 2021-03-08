@@ -16,6 +16,7 @@ postgresql_packages:
   - postgresql-contrib
   - libpq-dev
   - postgis
+  - postgresql-client-common
 
 postgresql_user: postgres
 postgresql_group: postgres
@@ -25,7 +26,13 @@ postgresql_restarted_state: "restarted"
 postgresql_unix_socket_directories:
   - '/var/run/postgresql'
 
-postgresql_data_dir: "{{ storage_path }}/postgresql/{{ __postgresql_version }}/main"
+postgresql_data_dir: "{{ storage_path }}/postgresql/{{ postgresql_version }}/main"
+postgresql_port_map:
+  '10': '5432'
+  '11': '5433'
+  '12': '5434'
+  '13': '5435'
+postgresql_port: "{{ postgresql_port_map[postgresql_version] }}"
 
 # DHIS 2 global configuration options that will be set in postgresql.conf.
 postgresql_global_config_options:
@@ -53,6 +60,8 @@ postgresql_global_config_options:
     value: 0.8
   - option: data_directory
     value: "{{ postgresql_data_dir }}"
+  - option: port
+    value: "{{ postgresql_port }}"
 
 postgresql_databases: []
 postgresql_users: []

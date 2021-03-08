@@ -1,10 +1,10 @@
 ---
-- name: Set PostgreSQL environment variables.
-  template:
-    src: postgres.sh.j2
-    dest: /etc/profile.d/postgres.sh
-    mode: 0644
-  notify: restart postgresql
+# - name: Set PostgreSQL environment variables.
+#   template:
+#     src: postgres.sh.j2
+#     dest: "/etc/profile.d/postgres.sh"
+#     mode: 0644
+#   notify: restart postgresql
 
 - name: Ensure PostgreSQL data directory exists.
   file:

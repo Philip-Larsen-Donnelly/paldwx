@@ -23,6 +23,11 @@
     - debug:
         msg: "{{ ansible_local.dhis2 }}"
 
+    # ensure we have the necessary version of postgres available
+    - include_vars: vars/postgresql.yml
+    - include: shared/postgresql_multi.yml
+
+
   vars:
     use_demo: "{{ instance_use_demo_db if inventory_hostname != 'empty.dhis2.org' else '' }}"
     dhis2_instances:
@@ -35,6 +40,7 @@
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         artemis_port: "{{ ansible_local.dhis2.artemis.next_port }}"
+        postgresql_version: "{{ postgresql_version }}"
         # set monitoring to true to generate metrics for prometheus/grafana
         monitoring: "{{ monitoring | default('NO') }}"
         hibernate_monitoring: "{{ hibernate_monitoring | default('NO') }}"

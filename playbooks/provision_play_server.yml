@@ -6,7 +6,7 @@
     # include the standard dhis2 beats config for logging to the ELK server
     - vars/logging.yml
     # include postgres config
-    - vars/postgresql.yml
+    # - vars/postgresql.yml
 
   pre_tasks:
     # Create a new primary partition
@@ -65,6 +65,8 @@
   - name: docker
     include_role:
       name: geerlingguy.docker
+
+
   # - name: filebeat
   #   include_role:
   #     name: geerlingguy.filebeat
@@ -74,9 +76,9 @@
   - name: certbot
     include_role:
       name: geerlingguy.certbot
-  - name: postgres
-    include_role:
-      name: geerlingguy.postgresql
+  # - name: postgres  - PostgreSQL is now deployed on an as-needed basis!
+  #   include_role:
+  #     name: geerlingguy.postgresql
   # prometheus and grafana for metrics
   # - name: prometheus
   #   include_role:

@@ -16,6 +16,6 @@
 
 - name: Force-restart PostgreSQL after new locales are generated.
   service:
-    name: "{{ postgresql_daemon }}"
+    name: "{{ postgresql_daemon }}@{{postgresql_version}}-main"
     state: restarted
   when: locale_gen_result.changed

@@ -1,0 +1,37 @@
+# ensure we have the necessary version of postgres available
+# get the status of postgresql_data_dir
+- name: Get stats of the postgresql_data_dir
+  stat:
+    path: "{{ postgresql_data_dir }}"
+  register: p
+
+- name: Provision postgresql
+  block:
+  - name: Add key
+    apt_key:
+      url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+      state: present
+  - name: Add postgres-ppa into sources list
+    apt_repository:
+      repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_facts['lsb']['codename'] }}-pgdg main"
+      state: present
+  - name: Install postgresql
+    include_role:
+      name: geerlingguy.postgresql
+  when: not p.stat.exists
+
+- name: reconfigure PostgreSQL
+  block:
+  - name: "Update global config for PostgreSQL version {{postgresql_version}}"
+    lineinfile:
+      dest: "{{ postgresql_config_path }}/postgresql.conf"
+      regexp: "^#?{{ item.option }}.+$"
+      line: "{{ item.option }} = '{{ item.value }}'"
+      state: "{{ item.state | default('present') }}"
+    with_items: "{{ postgresql_version_config_options }}"
+  when: postgresql_version_config_options != []
+
+- name: Ensure postgresql is running
+  service:
+    name: "{{ postgresql_daemon }}@{{postgresql_version}}-main"
+    state: "reloaded"
