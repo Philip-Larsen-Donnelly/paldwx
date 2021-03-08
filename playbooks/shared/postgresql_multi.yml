@@ -5,7 +5,7 @@
     path: "{{ postgresql_data_dir }}"
   register: p
 
-- name: Provision postgresql
+- name: Provision PostgreSQL
   block:
   - name: Add key
     apt_key:
@@ -20,7 +20,7 @@
       name: geerlingguy.postgresql
   when: not p.stat.exists
 
-- name: Ensure postgresql is running
+- name: Ensure PostgreSQL is running
   service:
     name: "{{ postgresql_daemon }}@{{postgresql_version}}-main"
     state: "started"
@@ -35,7 +35,7 @@
       state: "{{ item.state | default('present') }}"
     with_items: "{{ postgresql_version_config_options }}"
 
-  - name: Ensure postgresql is running
+  - name: Reload PostgreSQL
     service:
       name: "{{ postgresql_daemon }}@{{postgresql_version}}-main"
       state: "reloaded"
