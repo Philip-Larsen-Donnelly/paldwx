@@ -38,5 +38,5 @@
   - name: Reload PostgreSQL
     service:
       name: "{{ postgresql_daemon }}@{{postgresql_version}}-main"
-      state: "restarted"
+      state: "reloaded"
   when: postgresql_version_config_options != []
