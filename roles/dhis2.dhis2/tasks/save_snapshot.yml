@@ -13,7 +13,7 @@
 - name: Dump database snapshot (without analytics) to a file (with compression)
   postgresql_db:
     name: "{{ instance.db_name }}"
-    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+    port: "{{ postgresql_port_map[instance.postgresql_version] if instance.postgresql_version else omit }}"
     state: dump
     target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ db_dump_format }}"
     target_opts: "{{ dump_options }}"
