@@ -52,7 +52,7 @@
     postgresql_databases:
       - name: "{{ instance.db_name }}"
         owner: "{{ instance.db_owner | default('dhis') }}"
-        port: "{{ postgresql_port_map[instance.postgresql_version] if instance.postgresql_version else omit }}"
+        port: "{{ postgresql_port_map[instance.postgresql_version] if postgresql_version in instance else omit}}"
         state: absent
 # =========================
 
