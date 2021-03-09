@@ -6,6 +6,7 @@
   vars_files:
     # include the vars mapping dhis2 war to demo db version
     - vars/demomap.yml
+    - vars/postgresql.yml
 
   pre_tasks:
     # create custom fact file if not existing
@@ -58,7 +59,8 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance|combine({ 'state': 'absent'}) }}"
+        pgv: "{{ single_instance.postgresql_version if single_instance.postgresql_version is defined else postgresql_version }}"
+        instance: "{{ single_instance|combine({ 'state': 'absent','postgresql_version': pgv}) }}"
       when:
         - single_instance.name is regex(instance_name, match_type='fullmatch')
         - instance_action == 'remove'
@@ -92,7 +94,8 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance | combine({'war_file': new_war_file}) }}"
+        pgv: "{{ single_instance.postgresql_version if single_instance.postgresql_version is defined else postgresql_version }}"
+        instance: "{{ single_instance | combine({'war_file': new_war_file,'postgresql_version': pgv}) }}"
       when:
         - single_instance.name is regex(instance_name, match_type='fullmatch')
         - instance_action  != 'remove'
@@ -107,7 +110,8 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance }}"
+        pgv: "{{ single_instance.postgresql_version if single_instance.postgresql_version is defined else postgresql_version }}"
+        instance: "{{ single_instance | combine({'postgresql_version': pgv}) }}"
       when:
         - single_instance.name is regex(instance_name, match_type='fullmatch')
         - instance_action  != 'remove'
