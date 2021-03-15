@@ -6,6 +6,7 @@
   vars_files:
     # include the vars mapping dhis2 war to demo db version
     - vars/demomap.yml
+    - vars/postgresql.yml
 
   pre_tasks:
     # create custom fact file if not existing

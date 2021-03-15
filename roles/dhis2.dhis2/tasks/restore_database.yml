@@ -106,7 +106,7 @@
     postgresql_databases:
       - name: "{{ instance.db_name }}"
         owner: "{{ instance.db_owner | default('dhis') }}"
-        port: "{{ postgresql_port_map[instance.postgresql_version] if (postgresql_version in instance) else omit }}"
+        port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
         state: absent
 
 - name: create db {{ instance.name }}
@@ -115,13 +115,13 @@
     postgresql_databases:
       - name: "{{ instance.db_name }}"
         owner: "{{ instance.db_owner | default('dhis') }}"
-        port: "{{ postgresql_port_map[instance.postgresql_version] if (postgresql_version in instance) else omit }}"
+        port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
         state: "{{ instance.state | default('present')  }}"
 
 - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
   community.postgresql.postgresql_db:
     name: "{{ instance.db_name }}"
-    port: "{{ postgresql_port_map[instance.postgresql_version] if (postgresql_version in instance) else omit }}"
+    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
     state: restore
     target: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
     target_opts: "{{ restore_options }}"
@@ -135,7 +135,7 @@
 
 - name: Execute SQL - force admin password
   postgresql_query:
-    port: "{{ postgresql_port_map[instance.postgresql_version] if (postgresql_version in instance) else omit }}"
+    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
     db: "{{ instance.db_name }}"
     query: UPDATE users SET password = %s WHERE username = %s
     positional_args:
@@ -149,7 +149,7 @@
 
 - name: Execute SQL - fix sharing for COs
   postgresql_query:
-    port: "{{ postgresql_port_map[instance.postgresql_version] if (postgresql_version in instance) else omit }}"
+    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
     db: "{{ instance.db_name }}"
     query: UPDATE dataelementcategoryoption SET publicaccess = 'rwrw----'
   become: true

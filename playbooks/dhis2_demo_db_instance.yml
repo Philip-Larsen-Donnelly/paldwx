@@ -6,6 +6,7 @@
   vars_files:
     # include the vars mapping dhis2 war to demo db version
     - vars/demomap.yml
+    - vars/postgresql.yml
 
   pre_tasks:
     # create custom fact file if not existing
@@ -30,7 +31,6 @@
       when: ansible_local.dhis2public is defined
 
     # ensure we have the necessary version of postgres available
-    - include_vars: vars/postgresql.yml
     - include: shared/postgresql_multi.yml
 
     - name: Ensure Pip is installed.
