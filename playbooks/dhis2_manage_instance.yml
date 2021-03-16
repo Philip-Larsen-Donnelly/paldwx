@@ -59,7 +59,8 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance|combine({ 'state': 'absent'}) }}"
+        pgv: "{{ single_instance.postgresql_version if single_instance.postgresql_version is defined else postgresql_version }}"
+        instance: "{{ single_instance|combine({ 'state': 'absent','postgresql_version': pgv}) }}"
       when:
         - single_instance.name == instance_name
         - instance_action == 'remove'
@@ -93,7 +94,8 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance | combine({'war_file': new_war_file}) }}"
+        pgv: "{{ single_instance.postgresql_version if single_instance.postgresql_version is defined else postgresql_version }}"
+        instance: "{{ single_instance | combine({'war_file': new_war_file,'postgresql_version': pgv}) }}"
       when:
         - single_instance.name == instance_name
         - instance_action  != 'remove'
@@ -108,7 +110,8 @@
       loop_control:
         loop_var: single_instance
       vars:
-        instance: "{{ single_instance }}"
+        pgv: "{{ single_instance.postgresql_version if single_instance.postgresql_version is defined else postgresql_version }}"
+        instance: "{{ single_instance | combine({'postgresql_version': pgv}) }}"
       when:
         - single_instance.name == instance_name
         - instance_action  != 'remove'
