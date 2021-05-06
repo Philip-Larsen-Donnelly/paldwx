@@ -105,7 +105,7 @@
     status_code: 200
   register: result
   until: result.status in [200, 401]
-  retries: 90
+  retries: 30
   delay: 10
   when: (project is not defined and instance.db_demo is defined and instance.db_demo|length != 0) or (project == "sierra-leone")
   ignore_errors: yes
