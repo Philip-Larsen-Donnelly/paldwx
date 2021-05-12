@@ -63,7 +63,7 @@ dhis2_demo_map:
   # 2.35 patches
   '2.35/2.35.0-rc': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.0': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
-  '2.35/2.35.4-rc': 'https://databases.dhis2.org/sierra-leone/2.35.4/dhis2-db-sierra-leone.sql.gz'
+  '2.35/2.35.4-rc': 'https://databases.dhis2.org/sierra-leone/2.35.3/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.4': 'https://databases.dhis2.org/sierra-leone/2.35.4/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.3-rc': 'https://databases.dhis2.org/sierra-leone/2.35.2/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.3': 'https://databases.dhis2.org/sierra-leone/2.35.3/dhis2-db-sierra-leone.sql.gz'
