@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#clean up unused agents (temporary fix)
+for a in  {{ glowroot_home_dir }}/agent*; do inst=$(echo $a | sed 's/.*-//') ; if [ ! -d "{{ storage_path }}/instances/$inst" ]; then rm -rf $a; fi ; done
+
 for i in {4000..4050}
 do
 	if [ "`grep $i {{ glowroot_home_dir }}/*/admin.json`" == "" ];then
