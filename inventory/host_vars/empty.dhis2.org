@@ -29,3 +29,17 @@ old_dhis2_instances:
 
 # storage_path is where the instances will be installed
 storage_path: "/var/opt"
+
+
+API_REQUESTS:
+  developer CORS whitelist:
+    body:
+      - http://localhost:*
+      - https://*.dhis2.nu
+      - https://*.netlify.app
+    body_format: json
+    method: POST
+    path: api/configuration/corsWhitelist
+
+dhis2_api_requests:
+  - developer CORS whitelist

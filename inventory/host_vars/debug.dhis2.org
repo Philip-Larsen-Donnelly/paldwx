@@ -7,14 +7,14 @@ storage_path: "/mnt/sdb"
 storage_device: "/dev/sdb"
 
 API_REQUESTS:
-  set CORS whitelist:
+  developer CORS whitelist:
     body:
-      - 'http://localhost:*'
-      - 'https://localhost:*'
-      - 'https://*.dhis2.nu'
+      - http://localhost:*
+      - https://*.dhis2.nu
+      - https://*.netlify.app
     body_format: json
     method: POST
     path: api/configuration/corsWhitelist
 
 dhis2_api_requests:
-  - set CORS whitelist
+  - developer CORS whitelist
