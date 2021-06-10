@@ -105,12 +105,12 @@ location /2.34 {
 
 
 location /2.33/ {
-  rewrite ^/2.33/(.*)$ $scheme://$host/2.33.8/$1 redirect;
+  rewrite ^/2.33/(.*)$ $scheme://$host/2.33.9/$1 redirect;
   break;
 }
 
 location /2.33 {
-  rewrite ^/2.33[\d\./]*(.*)$ $scheme://$host/2.33.8/$1 redirect;
+  rewrite ^/2.33[\d\./]*(.*)$ $scheme://$host/2.33.9/$1 redirect;
   break;
 }
 
