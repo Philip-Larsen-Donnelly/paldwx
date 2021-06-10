@@ -10,6 +10,7 @@ API_REQUESTS:
   developer CORS whitelist:
     body:
       - http://localhost:*
+      - https://localhost:*
       - https://*.dhis2.nu
       - https://*.netlify.app
     body_format: json
