@@ -86,7 +86,6 @@ academy.aggregate.dhis2.org
 academy.events.dhis2.org
 academy.dq.dhis2.org
 academy.demos.dhis2.org
-academy.gf.dhis2.org
 
 # Logistics (LMIS)
 [lmis]
@@ -99,6 +98,7 @@ emis.dhis2.org
 # development servers
 [devteam]
 debug.dhis2.org
+test.e2e.dhis2.org
 
 [qareal]
 test.performance.dhis2.org
