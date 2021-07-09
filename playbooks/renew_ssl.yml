@@ -5,5 +5,8 @@
 
 
   tasks:
-  - name: Renew ssl certificate if necessary (including stopping and starting nginx)
-    shell: certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
+    - name: make sure Certbot is up to date.
+      package: "name=certbot state=present"
+
+    - name: Renew ssl certificate if necessary (including stopping and starting nginx)
+      shell: certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
