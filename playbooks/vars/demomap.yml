@@ -83,6 +83,8 @@ dhis2_demo_map:
   # 2.35 patches
   '2.35/2.35.0-rc': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.0': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
+  '2.35/2.35.7-rc': 'https://databases.dhis2.org/sierra-leone/2.35.6/dhis2-db-sierra-leone.sql.gz'
+  '2.35/2.35.7': 'https://databases.dhis2.org/sierra-leone/2.35.7/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.6-rc': 'https://databases.dhis2.org/sierra-leone/2.35.5/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.6': 'https://databases.dhis2.org/sierra-leone/2.35.6/dhis2-db-sierra-leone.sql.gz'
   '2.35/2.35.5-rc': 'https://databases.dhis2.org/sierra-leone/2.35.4/dhis2-db-sierra-leone.sql.gz'
@@ -194,6 +196,7 @@ dhis2_demo_map:
   '2.35/dhis2-stable-2.35.4.war': 'https://databases.dhis2.org/sierra-leone/2.35.4/dhis2-db-sierra-leone.sql.gz'
   '2.35/dhis2-stable-2.35.5.war': 'https://databases.dhis2.org/sierra-leone/2.35.5/dhis2-db-sierra-leone.sql.gz'
   '2.35/dhis2-stable-2.35.6.war': 'https://databases.dhis2.org/sierra-leone/2.35.6/dhis2-db-sierra-leone.sql.gz'
+  '2.35/dhis2-stable-2.35.7.war': 'https://databases.dhis2.org/sierra-leone/2.35.7/dhis2-db-sierra-leone.sql.gz'
   # 2.35 canary
   '2.35/canary/dhis2-canary-2.35.war': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
   '2.35/dhis2-stable-2.35.0-rc.war': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
@@ -203,6 +206,7 @@ dhis2_demo_map:
   '2.35/dhis2-stable-2.35.4-rc.war': 'https://databases.dhis2.org/sierra-leone/2.35.3/dhis2-db-sierra-leone.sql.gz'
   '2.35/dhis2-stable-2.35.5-rc.war': 'https://databases.dhis2.org/sierra-leone/2.35.4/dhis2-db-sierra-leone.sql.gz'
   '2.35/dhis2-stable-2.35.6-rc.war': 'https://databases.dhis2.org/sierra-leone/2.35.5/dhis2-db-sierra-leone.sql.gz'
+  '2.35/dhis2-stable-2.35.7-rc.war': 'https://databases.dhis2.org/sierra-leone/2.35.6/dhis2-db-sierra-leone.sql.gz'
   # 2.34 development
   '2.34/dev/dhis2-dev-2.34.war': 'https://databases.dhis2.org/sierra-leone/2.34/dhis2-db-sierra-leone.sql.gz'
   # 2.34 canary
