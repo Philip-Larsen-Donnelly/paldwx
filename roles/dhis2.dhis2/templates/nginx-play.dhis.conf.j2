@@ -40,7 +40,8 @@ server {
 
     # play.dhis2.org
 
-    # Rate limit for analytics on dev
+    # Rate limit for scripts on play
+    limit_req                 zone=script_zone;
 
     # location ~ ^/dev/api/(\d+/)?analytics(.*)$ {
     #     limit_req                 zone=dhis_limit burst=20;
@@ -83,12 +84,12 @@ location /2.36 {
 }
 
 location /2.35/ {
-  rewrite ^/2.35/(.*)$ $scheme://$host/2.35.6/$1 redirect;
+  rewrite ^/2.35/(.*)$ $scheme://$host/2.35.7/$1 redirect;
   break;
 }
 
 location /2.35 {
-  rewrite ^/2.35[\d\./]*(.*)$ $scheme://$host/2.35.6/$1 redirect;
+  rewrite ^/2.35[\d\./]*(.*)$ $scheme://$host/2.35.7/$1 redirect;
   break;
 }
 
