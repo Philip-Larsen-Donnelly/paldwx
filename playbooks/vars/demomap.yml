@@ -70,6 +70,8 @@ dhis2_demo_map:
   # 2.36 development
   '2.36': 'https://databases.dhis2.org/sierra-leone/2.36/dhis2-db-sierra-leone.sql.gz'
   # 2.36 patches
+  '2.36/2.36.4-rc': 'https://databases.dhis2.org/sierra-leone/2.36.3/dhis2-db-sierra-leone.sql.gz'
+  '2.36/2.36.4-EMBARGOED': 'https://databases.dhis2.org/sierra-leone/2.36.4/dhis2-db-sierra-leone.sql.gz'
   '2.36/2.36.3-rc': 'https://databases.dhis2.org/sierra-leone/2.36.2/dhis2-db-sierra-leone.sql.gz'
   '2.36/2.36.3': 'https://databases.dhis2.org/sierra-leone/2.36.3/dhis2-db-sierra-leone.sql.gz'
   '2.36/2.36.2-rc': 'https://databases.dhis2.org/sierra-leone/2.36.1/dhis2-db-sierra-leone.sql.gz'
@@ -181,12 +183,14 @@ dhis2_demo_map:
   '2.36/dhis2-stable-2.36.1.war': 'https://databases.dhis2.org/sierra-leone/2.36.1/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.2.war': 'https://databases.dhis2.org/sierra-leone/2.36.2/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.3.war': 'https://databases.dhis2.org/sierra-leone/2.36.3/dhis2-db-sierra-leone.sql.gz'
+  '2.36/dhis2-stable-2.36.4-EMBARGOED.war': 'https://databases.dhis2.org/sierra-leone/2.36.4/dhis2-db-sierra-leone.sql.gz'
   # 2.36 canary
   '2.36/canary/dhis2-canary-2.36.war': 'https://databases.dhis2.org/sierra-leone/2.36/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.0-rc.war': 'https://databases.dhis2.org/sierra-leone/2.36.0/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.1-rc.war': 'https://databases.dhis2.org/sierra-leone/2.36.0/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.2-rc.war': 'https://databases.dhis2.org/sierra-leone/2.36.1/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.3-rc.war': 'https://databases.dhis2.org/sierra-leone/2.36.2/dhis2-db-sierra-leone.sql.gz'
+  '2.36/dhis2-stable-2.36.4-rc.war': 'https://databases.dhis2.org/sierra-leone/2.36.3/dhis2-db-sierra-leone.sql.gz'
   # 2.35 development
   '2.35/dev/dhis2-dev-2.35.war': 'https://databases.dhis2.org/sierra-leone/2.35/dhis2-db-sierra-leone.sql.gz'
   '2.35/dhis2-stable-2.35.0.war': 'https://databases.dhis2.org/sierra-leone/2.35.0/dhis2-db-sierra-leone.sql.gz'
