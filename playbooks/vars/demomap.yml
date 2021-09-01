@@ -3,6 +3,7 @@
 dhis2_demo_to_war:
   'dev': 'master/dev/dhis2-dev-master.war'
   'dev-temp': 'master/dev/dhis2-dev-master.war'
+  '2.37': '2.37/dev/dhis2-dev-2.37.war'
   '2.36.3': '2.36/dhis2-stable-2.36.3.war'
   '2.36.2': '2.36/dhis2-stable-2.36.2.war'
   '2.36.1': '2.36/dhis2-stable-2.36.1.war'
@@ -39,6 +40,7 @@ dhis2_demo_db_map:
 dhis2_demo_to_dev:
   'dev': 'dev'
   '2.36': 'dev'
+  '2.37': 'dev'
   '2.36.3': '2.36'
   '2.36.2': '2.36'
   '2.36.1': '2.36'
@@ -67,6 +69,8 @@ dhis2_demo_map:
   # development
   'POST_EVENT_PERFORMANCE': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   'GET_TEI_USE_FIXED_POOL': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
+  # 2.37 development
+  '2.37': 'https://databases.dhis2.org/sierra-leone/2.37/dhis2-db-sierra-leone.sql.gz'
   # 2.36 development
   '2.36': 'https://databases.dhis2.org/sierra-leone/2.36/dhis2-db-sierra-leone.sql.gz'
   # 2.36 patches
@@ -177,6 +181,8 @@ dhis2_demo_map:
   # =========================
 
   # development
+  # 2.37 development
+  '2.37/dev/dhis2-dev-2.37.war': 'https://databases.dhis2.org/sierra-leone/2.37/dhis2-db-sierra-leone.sql.gz'
   # 2.36 development
   '2.36/dev/dhis2-dev-2.36.war': 'https://databases.dhis2.org/sierra-leone/2.36/dhis2-db-sierra-leone.sql.gz'
   '2.36/dhis2-stable-2.36.0.war': 'https://databases.dhis2.org/sierra-leone/2.36.0/dhis2-db-sierra-leone.sql.gz'
