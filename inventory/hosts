@@ -123,7 +123,8 @@ ansible_ssh_user=philld
 who-dev.dhis2.org
 who-demos.dhis2.org
 who.sandbox.dhis2.org
-covid19.dhis2.org
+metadata.dev.dhis2.org
+demos.dhis2.org
 
 # Unicef Data eXchange Platform
 [unicef]
