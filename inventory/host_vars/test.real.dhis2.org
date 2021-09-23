@@ -1,0 +1,6 @@
+---
+# storage_path is where the instances will be installed
+storage_path: "/ebs1/home"
+ansible_ssh_user: root
+
+project: "lao-demo"

@@ -110,6 +110,7 @@ verify.dhis2.org
 empty.dhis2.org
 test.performance32.dhis2.org
 test.databases.dhis2.org
+test.real.dhis2.org
 smoke.dhis2.org
 
 [metaoriginal]
