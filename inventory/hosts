@@ -155,7 +155,6 @@ postgresql_python_library=python3-psycopg2
 
 [certbot:children]
 coreteam
-elk
 
 
 #=============================================================================
