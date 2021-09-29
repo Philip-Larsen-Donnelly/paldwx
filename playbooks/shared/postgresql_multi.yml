@@ -40,3 +40,19 @@
       name: "{{ postgresql_daemon }}@{{postgresql_version}}-main"
       state: "restarted"
   when: postgresql_version_config_options != []
+
+- name: set log rotation for PostgreSQL logs
+  blockinfile:
+    path: /etc/logrotate.d/postgres-{{postgresql_version}}
+    block: |
+      {{ storage }}/postgresql/{{postgresql_version}}/main/log/postgresql.log {
+       daily
+       rotate 10
+       copytruncate
+       delaycompress
+       compress
+       notifempty
+       missingok
+       su root root
+      }
+    create: yes

@@ -57,6 +57,16 @@ postgresql_global_config_options:
     value: 10000ms
   - option: checkpoint_completion_target
     value: 0.8
+  - option: logging_collector
+    value: on
+  - option: log_directory
+    value: 'log'
+  - option: log_filename
+    value: 'postgresql.log'
+  - option: log_truncate_on_rotation
+    value: on
+
+
 
 postgresql_version_config_options: []
 

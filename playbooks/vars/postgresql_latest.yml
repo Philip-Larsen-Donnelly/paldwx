@@ -44,6 +44,14 @@ postgresql_global_config_options:
     value: 0.8
   - option: data_directory
     value: "{{ postgresql_data_dir }}"
+  - option: logging_collector
+    value: on
+  - option: log_directory
+    value: 'log'
+  - option: log_filename
+    value: 'postgresql.log'
+  - option: log_truncate_on_rotation
+    value: on
 
 postgresql_databases: []
 postgresql_users: []
