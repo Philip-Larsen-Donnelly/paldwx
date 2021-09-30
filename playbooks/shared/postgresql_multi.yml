@@ -45,7 +45,7 @@
   blockinfile:
     path: /etc/logrotate.d/postgres-{{postgresql_version}}
     block: |
-      {{ storage }}/postgresql/{{postgresql_version}}/main/log/postgresql.log {
+      {{ storage_path }}/postgresql/{{postgresql_version}}/main/log/postgresql.log {
        daily
        rotate 10
        copytruncate
