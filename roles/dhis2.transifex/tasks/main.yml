@@ -13,3 +13,4 @@
   loop: "{{ meta_packages }}"
   loop_control:
     loop_var: meta_package
+  when: meta_packages is defined and meta_package_root is defined
