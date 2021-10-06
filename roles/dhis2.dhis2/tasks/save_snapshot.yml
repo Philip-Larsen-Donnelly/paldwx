@@ -22,7 +22,7 @@
   vars:
     ansible_ssh_pipelining: true
     dump_options: "{{ '-Fc -Z 9  --no-owner --no-privileges -T analytics* -T _*' if (db_dump_format == 'pgc') else ' --no-owner --no-privileges -T analytics* -T _*' }}"
-    dump_cluster: "--cluster {{instance.postgresql_version | default(10)}}/main"
+    dump_cluster: "--cluster {{instance.postgresql_version | default(postgresql_version)}}/main"
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
 # - set_fact: save_suffix="{{ db_save_suffix | default('') }}"
