@@ -20,7 +20,7 @@
     port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
     state: dump
     target: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
-    target_opts: "{{ dump_cluster }}{{ dump_options }}"
+    target_opts: "{{ dump_cluster }} {{ dump_options }}"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:
