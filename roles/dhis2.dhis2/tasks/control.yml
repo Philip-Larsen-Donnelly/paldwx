@@ -55,7 +55,7 @@
     state: stopped
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
-  when: instance_action == "stop"
+  when: instance_action in ["stop", "develop_mode_on", "develop_mode_off"]
 
 - name: add redirect to nginx config
   blockinfile:
@@ -72,6 +72,33 @@
     state: "{{ instance.state }}"
   notify: reload nginx
   when: instance_action == "stop"
+
+- name: add dev redirect to nginx config
+  blockinfile:
+    path: "/etc/nginx/dhis2_instances"
+    block: |
+        location /{{ instance.name }} {
+            alias /usr/share/nginx/html;
+            index under_development.html break;
+        }
+        location /dev/{{ instance.name }} {
+            proxy_pass                http://127.0.0.1:{{ instance.tomcat_port }}/dev/{{ instance.name }};
+            proxy_redirect            off;
+            proxy_set_header          Host               $host;
+            proxy_set_header          X-Real-IP          $remote_addr;
+            proxy_set_header          X-Forwarded-For    $proxy_add_x_forwarded_for;
+            proxy_set_header          X-Forwarded-Proto  https;
+            #proxy_cache               dhis;
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
+    state: "{{ instance.state }}"
+  notify: reload nginx
+  when: instance_action == "develop_mode_on"
+
+# ===  Move WAR
+- name: move the war file
+  include: dev_mode.yml
+  when: instance_action in ["develop_mode_on", "develop_mode_off"]
 
 # ===  Reset WAR
 - name: re-deploy the war file
@@ -107,7 +134,7 @@
     state: started
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
-  when: instance_action in ["start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]
+  when: instance_action in ["start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_on", "develop_mode_off"]
 
 
 # === Restart instance ==========
@@ -137,7 +164,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     state: "{{ instance.state }}"
   notify: reload nginx
-  when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]
+  when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_off"]
 
 - name: reload nginx
   systemd:
@@ -180,7 +207,7 @@
   until: result.status in [200, 401]
   retries: 30
   delay: 10
-  when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db"]
+  when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_on", "develop_mode_off"]
 
 
 # === repair flyway if necessary  (flyway.repair_before_migration=true)

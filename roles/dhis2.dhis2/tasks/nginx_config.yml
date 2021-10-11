@@ -79,6 +79,7 @@
     - restore_db.html
     - deploy_war.html
     - stopped.html
+    - under_development.html
     - resources
 
 - name: add error pages

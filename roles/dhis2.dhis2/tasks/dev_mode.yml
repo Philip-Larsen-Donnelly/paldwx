@@ -1,0 +1,29 @@
+---
+
+
+- name: Change {{ instance.name }} to dev mode
+  command: creates="{{ base_path }}dev/{{ item }}" mv "{{ base_path }}{{ item }}" "{{ base_path }}dev/{{ item }}"
+  vars:
+    base_path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/"
+  with_items:
+    - "{{ instance.name }}.war"
+    - "{{ instance.name }}"
+  when: instance_action == "develop_mode_on"
+
+- name: add under_development page
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/share/nginx/html/"
+    mode: 0644
+  with_items:
+    - under_development.html
+  when: instance_action == "develop_mode_on"
+
+- name: Change {{ instance.name }} back from dev mode
+  command: creates="{{ base_path }}{{ item }}" mv "{{ base_path }}dev/{{ item }}" "{{ base_path }}{{ item }}"
+  vars:
+    base_path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/"
+  with_items:
+    - "{{ instance.name }}.war"
+    - "{{ instance.name }}"
+  when: instance_action == "develop_mode_off"
