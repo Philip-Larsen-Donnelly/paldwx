@@ -2,7 +2,7 @@
 
 
 - name: Change {{ instance.name }} to dev mode
-  command: creates="{{ base_path }}dev/{{ item }}" mv "{{ base_path }}{{ item }}" "{{ base_path }}dev/{{ item }}"
+  command: creates="{{ base_path }}dev#{{ item }}" mv "{{ base_path }}{{ item }}" "{{ base_path }}dev#{{ item }}"
   vars:
     base_path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/"
   with_items:
@@ -20,7 +20,7 @@
   when: instance_action == "develop_mode_on"
 
 - name: Change {{ instance.name }} back from dev mode
-  command: creates="{{ base_path }}{{ item }}" mv "{{ base_path }}dev/{{ item }}" "{{ base_path }}{{ item }}"
+  command: creates="{{ base_path }}{{ item }}" mv "{{ base_path }}dev#{{ item }}" "{{ base_path }}{{ item }}"
   vars:
     base_path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/"
   with_items:
