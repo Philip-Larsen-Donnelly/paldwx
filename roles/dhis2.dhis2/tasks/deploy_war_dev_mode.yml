@@ -1,0 +1,88 @@
+---
+# Deploy in parallel on tomcat - not entirely sure we want to do this as it could cause corruption due to flyway changes?!
+
+# - name: get next version for war file
+#   shell: "version=`find {{ storage }}/instances/{{ instance.name }}/tomcat/webapps/ -maxdepth 1 -name '{{ instance.name }}##*.war' | sort | tail -n1 | sed -n 's/.*##0*\\(.*\\)\\.war/\\1/p'` ;   printf %04d $((version+1))"
+#   register: next_instance_version
+#
+# - name: deploy war file as next version
+#   get_url:
+#     url: "{{ instance.war_file }}"
+#     dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}##{{ next_instance_version.stdout }}.war"
+#     mode: 0644
+
+# check if we need to do anything:
+# make a temporary file for the war:
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: war
+  register: temp_war
+
+- name: get the current date time
+  set_fact: war_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M:%S.%3N\"')}}"
+
+- name: download the latest war file to temporary file
+  get_url:
+    url: "{{ instance.war_file }}"
+    dest: "{{ temp_war.path }}"
+    mode: 0644
+    force: yes
+
+# get checksum of new war file
+- name: get checksum of new war file
+  stat:
+    path: "{{ temp_war.path }}"
+    get_checksum: yes
+  register: new_war
+
+# get checksum of current war file
+- name: get checksum of current war file
+  stat:
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
+    get_checksum: yes
+  register: current_war
+
+- name: The war needs an update
+  block:
+  - name: stop the instance
+    systemd:
+      state: stopped
+      name: dhis2-{{ instance.name }}
+
+  - name: deploy the war file
+    copy:
+      src: "{{ temp_war.path }}"
+      dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
+      remote_src: yes
+
+  - name: update the facts with the install datetime
+    lineinfile:
+      dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
+      regexp: "^war_date=.+$"
+      line: "war_date={{ war_date }}"
+
+  # - name: update the json facts with the install datetime
+  #   lineinfile:
+  #     dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact.json"
+  #     regexp: "^  \"war_date\":.+$"
+  #     line: "  \"war_date\": {{ war_date }},"
+
+
+
+  - name: update the facts
+    set_fact:
+      instance_update: "{{ instance_update | default(instance) | combine({item.name: item.value}) }}"
+    with_items:
+      - { name: war_date , value: "{{ war_date | default('') }}" }
+      - { name: installed_by , value: "{{ awx_user_name | default('unknown') }}" }
+
+  - name: update displayed facts
+    include: factualise_instance.yml
+
+  when: new_war.stat.checksum != current_war.stat.checksum|d('')
+
+- name: delete the temp file
+  file:
+    path: "{{ temp_war.path }}"
+    state: absent
