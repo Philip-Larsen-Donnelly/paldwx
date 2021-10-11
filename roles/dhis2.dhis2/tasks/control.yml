@@ -93,7 +93,7 @@
     state: "{{ instance.state }}"
   notify: reload nginx
   when: instance_action == "stop" and
-        not dev_mode_check.stat.exists
+        dev_mode_check.stat.islnk is not defined
 
 - name: add dev redirect to nginx config
   blockinfile:
@@ -121,12 +121,12 @@
 - name: re-deploy the war file
   include: deploy_war.yml
   when: instance_action in ["reset_war", "reset_war_and_db"] and
-        not dev_mode_check.stat.exists
+        dev_mode_check.stat.islnk is not defined
 
 - name: re-deploy the war file (dev_mode)
   include: deploy_war_dev_mode.yml
   when: instance_action in ["reset_war", "reset_war_and_db"] and
-        dev_mode_check.stat.exists
+        dev_mode_check.stat.islnk is defined
 
 # ===  Save a DB snapshot to s3
 - name: save a DB snapshot to s3
@@ -197,7 +197,7 @@
 # === Run analytics if we have reset the DB
 - name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
   uri:
-    url: https://{{ inventory_hostname }}/{{ 'dev/' if dev_mode_check.stat.exists else '' }}{{ instance.name }}/api/resourceTables/analytics
+    url: https://{{ inventory_hostname }}/{{ 'dev/' if dev_mode_check.stat.islnk is defined else '' }}{{ instance.name }}/api/resourceTables/analytics
     method: POST
     user: "{{ dhis2_admin_user }}"
     password: "{{ dhis2_admin_user_password }}"
@@ -223,7 +223,7 @@
 # === Wait until we can reach the instance before finishing the job
 - name: ensure instance {{ inventory_hostname }}/{{ instance.name }}/api is up before finishing job
   uri:
-    url: https://{{ inventory_hostname }}/{{ 'dev/' if dev_mode_check.stat.exists else '' }}{{ instance.name }}/dhis-web-commons/security/login.action
+    url: https://{{ inventory_hostname }}/{{ 'dev/' if dev_mode_check.stat.islnk is defined else '' }}{{ instance.name }}/dhis-web-commons/security/login.action
     method: GET
     status_code: 200
   register: result
