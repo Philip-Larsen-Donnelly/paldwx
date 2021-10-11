@@ -92,7 +92,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     state: "{{ instance.state }}"
   notify: reload nginx
-  when: instance_action == "stop"
+  when: instance_action == "stop" and
         not dev_mode_check.stat.exists
 
 - name: add dev redirect to nginx config
@@ -120,12 +120,12 @@
 # ===  Reset WAR
 - name: re-deploy the war file
   include: deploy_war.yml
-  when: instance_action in ["reset_war", "reset_war_and_db"]
+  when: instance_action in ["reset_war", "reset_war_and_db"] and
         not dev_mode_check.stat.exists
 
 - name: re-deploy the war file (dev_mode)
   include: deploy_war_dev_mode.yml
-  when: instance_action in ["reset_war", "reset_war_and_db"]
+  when: instance_action in ["reset_war", "reset_war_and_db"] and
         dev_mode_check.stat.exists
 
 # ===  Save a DB snapshot to s3
