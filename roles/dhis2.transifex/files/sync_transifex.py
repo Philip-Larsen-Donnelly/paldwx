@@ -295,6 +295,12 @@ def json_to_transifex():
         )
         print(r.status_code,": POST ",url)
 
+        if r.status_code > 204:
+            print("===== RESPONSE HEADERS:")
+            print(r.headers)
+            print("===== REQUEST PAYLOAD:")
+            print(json.dumps(data))
+
 
 
 def transifex_to_json():
