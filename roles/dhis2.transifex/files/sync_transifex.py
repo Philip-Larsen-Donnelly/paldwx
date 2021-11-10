@@ -296,10 +296,10 @@ def json_to_transifex():
         print(r.status_code,": POST ",url)
 
         if r.status_code > 204:
-            print("===== RESPONSE HEADERS:")
+            print("===== REQUEST HEADERS:")
             print(r.headers)
-            print("===== REQUEST PAYLOAD:")
-            print(json.dumps(data))
+            print("===== RESPONSE:")
+            print(r.text)
 
 
 
