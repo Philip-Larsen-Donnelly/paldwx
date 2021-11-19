@@ -37,6 +37,14 @@
     - dhis2_user is defined
 
 # === install rate limiter config if defined
+# create a directory if it doesn't exist
+- file:
+    path: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter"
+    state: directory
+    mode: 0755
+  when:
+    - rate_limiter_config is defined
+
 - name: install the rate limiter config
   template:
     src: "rate-limiter-config.j2"
