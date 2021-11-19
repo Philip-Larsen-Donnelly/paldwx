@@ -36,6 +36,24 @@
     - instance.glowroot_port is defined
     - dhis2_user is defined
 
+# === install rate limiter config if defined
+- name: install the rate limiter config
+  template:
+    src: "rate-limiter-config.j2"
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter/config.yml"
+    mode: 0644
+  when:
+    - rate_limiter_config is defined
+
+- name: add the rate limiter to tomcat startup
+  lineinfile:
+    path: /etc/services
+    regexp: '^(cd .*'
+    insertbefore: '^exec .*'
+    line: "(cd {{ storage }}/instances/{{ instance.name }}/home/rate-limiter; go-rate-limit)&"
+  when:
+    - rate_limiter_config is defined
+
 
 # === repair flyway if necessary  (flyway.repair_before_migration=true)
 - name: set flyway repair flag
@@ -176,7 +194,7 @@
     path: "/etc/nginx/dhis2_instances"
     block: |
         location /{{ instance.name }} {
-            proxy_pass                http://127.0.0.1:{{ instance.tomcat_port }}/{{ instance.name }};
+            proxy_pass                http://127.0.0.1:{{ iport }}/{{ instance.name }};
             proxy_redirect            off;
             proxy_set_header          Host               $host;
             proxy_set_header          X-Real-IP          $remote_addr;
@@ -186,6 +204,8 @@
         }
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     state: "{{ instance.state }}"
+  vars:
+    iport: "{{ instance.tomcat_port if rate_limiter_config not defined else instance.tomcat_port|int + 200 }}"
   notify: reload nginx
   when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_off"]
 
