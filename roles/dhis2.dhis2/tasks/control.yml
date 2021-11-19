@@ -56,7 +56,7 @@
 - name: add the rate limiter to tomcat startup
   lineinfile:
     path: /etc/services
-    regexp: '^(cd .*'
+    regexp: '^.*rate-limiter.*'
     insertbefore: '^exec .*'
     line: "(cd {{ storage }}/instances/{{ instance.name }}/home/rate-limiter; go-rate-limit)&"
   when:
