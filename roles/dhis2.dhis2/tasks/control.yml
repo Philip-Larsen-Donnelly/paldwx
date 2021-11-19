@@ -213,7 +213,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     state: "{{ instance.state }}"
   vars:
-    iport: "{{ instance.tomcat_port if rate_limiter_config not defined else instance.tomcat_port|int + 200 }}"
+    iport: "{{ instance.tomcat_port|int + 200 if rate_limiter_config is defined else instance.tomcat_port }}"
   notify: reload nginx
   when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_off"]
 
