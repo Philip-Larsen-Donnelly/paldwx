@@ -38,7 +38,7 @@
 
 # === install rate limiter config if defined
 # create a directory if it doesn't exist
-block:
+- block:
   - file:
       path: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter"
       state: directory
@@ -66,7 +66,7 @@ block:
       state: absent
     when: rate_limiter_config == "OFF"
 
-when: rate_limiter_config is defined
+  when: rate_limiter_config is defined
 
 - name: Set rate limiting flag
   stat:
