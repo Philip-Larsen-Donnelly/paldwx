@@ -38,29 +38,40 @@
 
 # === install rate limiter config if defined
 # create a directory if it doesn't exist
-- file:
-    path: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter"
-    state: directory
-    mode: 0755
-  when:
-    - rate_limiter_config is defined
+block:
+  - file:
+      path: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter"
+      state: directory
+      mode: 0755
 
-- name: install the rate limiter config
-  template:
-    src: "rate-limiter-config.j2"
-    dest: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter/config.yml"
-    mode: 0644
-  when:
-    - rate_limiter_config is defined
+  - name: install the rate limiter config
+    template:
+      src: "rate-limiter-config.j2"
+      dest: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter/config.yml"
+      mode: 0644
 
-- name: add the rate limiter to tomcat startup
-  lineinfile:
-    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/startup.sh"
-    regexp: '.*rate-limiter.*'
-    insertbefore: '^exec.*'
-    line: "(cd {{ storage }}/instances/{{ instance.name }}/home/rate-limiter; go-rate-limit)&"
-  when:
-    - rate_limiter_config is defined
+  - name: add the rate limiter to tomcat startup
+    lineinfile:
+      path: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/startup.sh"
+      regexp: '.*rate-limiter.*'
+      insertbefore: '^exec.*'
+      line: "(cd {{ storage }}/instances/{{ instance.name }}/home/rate-limiter; go-rate-limit)&"
+      state: set_state
+    vars:
+      - set_state: 'absent' if rate_limiter_config == "OFF" else 'present'
+
+  - name:
+    file:
+      path: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter/config.yml"
+      state: absent
+    when: rate_limiter_config == "OFF"
+
+when: rate_limiter_config is defined
+
+- name: Set rate limiting flag
+  stat:
+    path: "{{ storage }}/instances/{{ instance.name }}/home/rate-limiter/config.yml"
+  register: rate_limit_check
 
 
 # === repair flyway if necessary  (flyway.repair_before_migration=true)
@@ -213,7 +224,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ instance.name }}"
     state: "{{ instance.state }}"
   vars:
-    iport: "{{ instance.tomcat_port|int + 200 if rate_limiter_config is defined else instance.tomcat_port }}"
+    iport: "{{ instance.tomcat_port|int + 200 if rate_limit_check.stat.exists else instance.tomcat_port }}"
   notify: reload nginx
   when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_off"]
 
