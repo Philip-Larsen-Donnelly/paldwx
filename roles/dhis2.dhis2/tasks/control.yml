@@ -66,7 +66,7 @@
       state: absent
     when: rate_limiter_config == 'OFF'
 
-  when: rate_limiter_config is defined
+  when: rate_limiter_config is defined and rate_limiter_config|length != 0
 
 - name: Set rate limiting flag
   stat:
