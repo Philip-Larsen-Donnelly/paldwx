@@ -56,7 +56,7 @@
       regexp: '.*rate-limiter.*'
       insertbefore: '^exec.*'
       line: "(cd {{ storage }}/instances/{{ instance.name }}/home/rate-limiter; go-rate-limit)&"
-      state: set_state
+      state: "{{ set_state }}"
     vars:
       set_state: "{{ 'absent' if rate_limiter_config == 'OFF' else 'present' }}"
 
