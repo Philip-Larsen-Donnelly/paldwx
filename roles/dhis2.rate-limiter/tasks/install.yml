@@ -1,0 +1,20 @@
+---
+# tasks file for dhis2.rate-limiter
+
+
+- git:
+    repo: https://github.com/{{ rl_repo_name }}.git
+    dest: "{{ rl_repo_folder }}"
+    update: yes
+    version: proxy
+    force: yes
+
+- name: Build project
+  command: /usr/local/go/bin/go build -o go-rate-limit -ldflags "-s -w" ./cmd/serve
+  args:
+    chdir: "{{ rl_repo_folder }}"
+
+- name: Copy build to bin directory
+  command: cp go-rate-limit {{ rl_bin_folder }}
+  args:
+    chdir: "{{ rl_repo_folder }}"

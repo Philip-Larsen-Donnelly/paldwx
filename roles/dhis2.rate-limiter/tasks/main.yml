@@ -1,0 +1,3 @@
+---
+# tasks file for dhis2.rate-limiter
+- include: install.yml

@@ -1,0 +1,5 @@
+---
+# defaults file for dhis2.rate-limiter
+rl_repo_name: "dhis2-sre/go-rate-limiter"
+rl_repo_folder: "/src/rate-limiter"
+rl_bin_folder: "/usr/bin/"

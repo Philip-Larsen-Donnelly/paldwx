@@ -1,0 +1,6 @@
+---
+# tasks file for dhis2.rate-limiter
+- name: replace the signup server config
+  copy:
+    content: "{{ rate-limiter_signup_config | to_nice_json }}"
+    dest: "/home/{{ rate-limiter_bot }}/rate-limiter-account-signup/conf/configuration.json"
