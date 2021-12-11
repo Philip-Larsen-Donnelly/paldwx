@@ -74,43 +74,43 @@ location /demo {
 # redirect version to the latest stable patches
 
 location /2.37/ {
-  rewrite ^/2.37/(.*)$ $scheme://$host/2.37.0/$1 redirect;
+  rewrite ^/2.37/(.*)$ $scheme://$host/2.37.1/$1 redirect;
   break;
 }
 
 location /2.37 {
-  rewrite ^/2.37[\d\./]*(.*)$ $scheme://$host/2.37.0/$1 redirect;
+  rewrite ^/2.37[\d\./]*(.*)$ $scheme://$host/2.37.1/$1 redirect;
   break;
 }
 
 location /2.36/ {
-  rewrite ^/2.36/(.*)$ $scheme://$host/2.36.4/$1 redirect;
+  rewrite ^/2.36/(.*)$ $scheme://$host/2.36.5/$1 redirect;
   break;
 }
 
 location /2.36 {
-  rewrite ^/2.36[\d\./]*(.*)$ $scheme://$host/2.36.4/$1 redirect;
+  rewrite ^/2.36[\d\./]*(.*)$ $scheme://$host/2.36.5/$1 redirect;
   break;
 }
 
 location /2.35/ {
-  rewrite ^/2.35/(.*)$ $scheme://$host/2.35.8/$1 redirect;
+  rewrite ^/2.35/(.*)$ $scheme://$host/2.35.9/$1 redirect;
   break;
 }
 
 location /2.35 {
-  rewrite ^/2.35[\d\./]*(.*)$ $scheme://$host/2.35.8/$1 redirect;
+  rewrite ^/2.35[\d\./]*(.*)$ $scheme://$host/2.35.9/$1 redirect;
   break;
 }
 
 
 location /2.34/ {
-  rewrite ^/2.34/(.*)$ $scheme://$host/2.34.7/$1 redirect;
+  rewrite ^/2.34/(.*)$ $scheme://$host/2.34.8/$1 redirect;
   break;
 }
 
 location /2.34 {
-  rewrite ^/2.34[\d\./]*(.*)$ $scheme://$host/2.34.7/$1 redirect;
+  rewrite ^/2.34[\d\./]*(.*)$ $scheme://$host/2.34.8/$1 redirect;
   break;
 }
 

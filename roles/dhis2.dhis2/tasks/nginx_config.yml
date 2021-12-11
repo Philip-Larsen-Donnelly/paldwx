@@ -57,18 +57,21 @@
     url: "https://github.com/dhis2/dhis2-identity/raw/master/web/favicon_package/favicon.ico"
     dest: "/usr/share/nginx/html/resources/favicon.ico"
     mode: 0644
+  ignore_errors: yes
 
 - name: get icon
   get_url:
     url: "https://github.com/dhis2/dhis2-identity/raw/master/web/Icon%20only/Default/dhis2-icon-rgb-positive.png"
     dest: "/usr/share/nginx/html/resources/dhis2-icon-rgb-positive.png"
     mode: 0644
+  ignore_errors: yes
 
 - name: get master logo
   get_url:
     url: "https://github.com/dhis2/dhis2-identity/raw/master/web/Logo/Default/dhis2-logo-rgb-positive.png"
     dest: "/usr/share/nginx/html/resources/dhis2-logo-rgb-positive.png"
     mode: 0644
+  ignore_errors: yes
 
 - name: add maintenance pages
   copy:
