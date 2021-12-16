@@ -55,14 +55,14 @@
         object: "{{ instance.db_demo }}"
         dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: get
-      when: project is defined and instance.db_demo is defined and instance.db_demo|length
+      when: (project is defined) and (project|length > 0) and instance.db_demo is defined and instance.db_demo|length
 
     - name: fetch demo db file for {{ instance.name }}
       get_url:
         url: "{{ instance.db_demo }}"
         dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: 0644
-      when: project is not defined and instance.db_demo is defined and instance.db_demo|length
+      when: (not project) and instance.db_demo is defined and instance.db_demo|length
   when: s3_snapshot is not defined
   rescue:
     - set_fact: db_empty=true
