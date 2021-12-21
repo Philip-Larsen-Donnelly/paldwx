@@ -4,6 +4,8 @@ dhis2_nginx: "-dev"
 
 dhis2_project_database_bucket: dhis2-database-development
 
+project: ''
+
 # db_dump_format is either "sql.gz" or "pgc"
 # - sql.gz is the classic dump format used by DHIS2
 # - pgc is the custom format option for greater dump/restore efficiency
