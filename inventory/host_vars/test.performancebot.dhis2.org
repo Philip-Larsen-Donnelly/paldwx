@@ -1,0 +1,6 @@
+---
+# storage_path is where the instances will be installed
+storage_path: "/var/opt"
+project: "performance"
+
+dhis2_lander: "-perf"
