@@ -199,7 +199,7 @@
   - assert:
       that:
       - result is changed
-      - result.queries == ["ALTER EXTENSION \"{{ test_ext }}\" UPDATE TO '3.0'"]
+      - result.queries == ["ALTER EXTENSION \"{{ test_ext }}\" UPDATE"]
 
   - name: postgresql_ext_version - check
     <<: *task_parameters
@@ -211,7 +211,7 @@
       that:
       - result.rowcount == 1
 
-  - name: postgresql_ext_version - try to update the extension to the latest version again
+  - name: postgresql_ext_version - try to update the extension to the latest version again which always runs an update.
     <<: *task_parameters
     postgresql_ext:
       <<: *pg_parameters
@@ -222,7 +222,17 @@
 
   - assert:
       that:
-      - result is not changed
+      - result is changed
+
+  - name: postgresql_ext_version - check that version number did not change even though update ran
+    <<: *task_parameters
+    postgresql_query:
+      <<: *pg_parameters
+      query: "SELECT 1 FROM pg_extension WHERE extname = '{{ test_ext }}' AND extversion = '3.0'"
+
+  - assert:
+      that:
+      - result.rowcount == 1
 
   - name: postgresql_ext_version - try to downgrade the extension version, must fail
     <<: *task_parameters
@@ -317,7 +327,7 @@
       that:
       - result.rowcount == 1
 
-  - name: postgresql_ext_version - try to install non-existent version
+  - name: postgresql_ext_version - try to install non-existent extension
     <<: *task_parameters
     postgresql_ext:
       <<: *pg_parameters
@@ -328,13 +338,13 @@
   - assert:
       that:
       - result.failed == true
-      - result.msg == "Extension non_existent is not installed"
+      - result.msg == "Extension non_existent is not available"
 
   ######################################################################
   # https://github.com/ansible-collections/community.general/issues/1095
   - name: Install postgis
     package:
-      name: postgis
+      name: '{{ postgis }}'
 
   - name: Create postgis extension
     <<: *task_parameters
@@ -346,6 +356,53 @@
   - assert:
       that:
       - result is changed
+
+  # https://github.com/ansible-collections/community.postgresql/issues/137
+  - name: Drop extension
+    <<: *task_parameters
+    postgresql_ext:
+      <<: *pg_parameters
+      name: '{{ test_ext }}'
+      schema: '{{ test_schema }}'
+      state: absent
+
+  - name: Non standard version
+    <<: *task_parameters
+    postgresql_ext:
+      <<: *pg_parameters
+      name: '{{ test_ext }}'
+      schema: '{{ test_schema }}'
+      version: 0
+
+  - name: Test
+    <<: *task_parameters
+    postgresql_info:
+      <<: *pg_parameters
+
+  - assert:
+      that:
+      - result['databases']['postgres']['extensions']['dummy']['extversion']['major'] == 0
+      - result['databases']['postgres']['extensions']['dummy']['extversion']['minor'] == None
+      - result['databases']['postgres']['extensions']['dummy']['extversion']['raw'] == '0'
+
+  - name: Upgrade extension to the latest
+    <<: *task_parameters
+    postgresql_ext:
+      <<: *pg_parameters
+      name: '{{ test_ext }}'
+      schema: '{{ test_schema }}'
+      version: latest
+
+  - name: Test
+    <<: *task_parameters
+    postgresql_info:
+      <<: *pg_parameters
+
+  - assert:
+      that:
+      - result['databases']['postgres']['extensions']['dummy']['extversion']['major'] == 3
+      - result['databases']['postgres']['extensions']['dummy']['extversion']['minor'] == 0
+      - result['databases']['postgres']['extensions']['dummy']['extversion']['raw'] == '3.0'
 
   # Cleanup:
   - name: postgresql_ext_version - drop the extension

@@ -54,6 +54,8 @@ author:
 extends_documentation_fragment:
 - community.postgresql.postgres
 
+notes:
+- Supports C(check_mode).
 '''
 
 EXAMPLES = r'''
@@ -117,6 +119,24 @@ version:
       returned: always
       type: int
       sample: 1
+    patch:
+      description: Patch server version.
+      returned: if supported
+      type: int
+      sample: 5
+      version_added: '1.2.0'
+    full:
+      description: Full server version.
+      returned: always
+      type: str
+      sample: '13.2'
+      version_added: '1.2.0'
+    raw:
+      description: Full output returned by ``SELECT version()``.
+      returned: always
+      type: str
+      sample: 'PostgreSQL 13.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20201125 (Red Hat 10.2.1-9), 64-bit'
+      version_added: '1.2.0'
 in_recovery:
   description: Indicates if the service is in recovery mode or not.
   returned: always
@@ -177,7 +197,7 @@ databases:
           type: dict
           sample:
           - { "plpgsql": { "description": "PL/pgSQL procedural language",
-            "extversion": { "major": 1, "minor": 0 } } }
+            "extversion": { "major": 1, "minor": 0, "raw": '1.0' } } }
           contains:
             extdescription:
               description: Extension description.
@@ -199,6 +219,11 @@ databases:
                   returned: always
                   type: int
                   sample: 0
+                raw:
+                  description: Extension full version.
+                  returned: always
+                  type: str
+                  sample: '1.0'
             nspname:
               description: Namespace where the extension is.
               returned: always
@@ -726,12 +751,17 @@ class PgClusterInfo(object):
         res = self.__exec_sql(query)
         ext_dict = {}
         for i in res:
+            ext_ver_raw = i[1]
             ext_ver = i[1].split('.')
+
+            if len(ext_ver) < 2:
+                ext_ver.append(None)
 
             ext_dict[i[0]] = dict(
                 extversion=dict(
                     major=int(ext_ver[0]),
-                    minor=int(ext_ver[1]),
+                    minor=int(ext_ver[1]) if ext_ver[1] else None,
+                    raw=ext_ver_raw,
                 ),
                 nspname=i[2],
                 description=i[3],
@@ -857,7 +887,7 @@ class PgClusterInfo(object):
         self.pg_info["settings"] = set_dict
 
     def get_repl_info(self):
-        """Get information about replication if the server is a master."""
+        """Get information about replication if the server is a primary."""
         # Check that pg_replication_slots exists:
         res = self.__exec_sql("SELECT EXISTS (SELECT 1 FROM "
                               "information_schema.tables "
@@ -923,11 +953,24 @@ class PgClusterInfo(object):
         """Get major and minor PostgreSQL server version."""
         query = "SELECT version()"
         raw = self.__exec_sql(query)[0][0]
-        raw = raw.split()[1].split('.')
+        full = raw.split()[1]
+        tmp = full.split('.')
+
+        major = int(tmp[0])
+        minor = int(tmp[1].rstrip(','))
+        patch = None
+        if len(tmp) >= 3:
+            patch = int(tmp[2].rstrip(','))
+
         self.pg_info["version"] = dict(
-            major=int(raw[0]),
-            minor=int(raw[1]),
+            major=major,
+            minor=minor,
+            full=full,
+            raw=raw,
         )
+
+        if patch is not None:
+            self.pg_info["version"]["patch"] = patch
 
     def get_recovery_state(self):
         """Get if the service is in recovery mode."""

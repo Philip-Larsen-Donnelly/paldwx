@@ -95,6 +95,7 @@ options:
 
 notes:
 - PostgreSQL version must be 10 or greater.
+- Supports C(check_mode).
 
 seealso:
 - module: community.postgresql.postgresql_publication
@@ -341,7 +342,7 @@ class PgSubscription():
 
         Args:
             connparams (str): Connection string in libpq style.
-            publications (list): Publications on the master to use.
+            publications (list): Publications on the primary to use.
             subsparams (str): Parameters string in WITH () clause style.
 
         Kwargs:
@@ -367,7 +368,7 @@ class PgSubscription():
 
         Args:
             connparams (str): Connection string in libpq style.
-            publications (list): Publications on the master to use.
+            publications (list): Publications on the primary to use.
             subsparams (dict): Dictionary of optional parameters.
 
         Kwargs:
@@ -503,7 +504,7 @@ class PgSubscription():
         """Update publications.
 
         Args:
-            publications (list): Publications on the master to use.
+            publications (list): Publications on the primary to use.
 
         Kwargs:
             check_mode (bool): If True, don't actually change anything,

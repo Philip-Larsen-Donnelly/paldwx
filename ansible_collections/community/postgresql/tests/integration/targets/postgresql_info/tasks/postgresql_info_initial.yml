@@ -23,7 +23,7 @@
       publications: '{{ test_pub }}'
       connparams:
         host: 127.0.0.1
-        port: '{{ master_port }}'
+        port: '{{ primary_port }}'
         user: '{{ replication_role }}'
         password: '{{ replication_pass }}'
         dbname: '{{ test_db }}'
@@ -39,7 +39,7 @@
       publications: '{{ test_pub2 }}'
       connparams:
         host: 127.0.0.1
-        port: '{{ master_port }}'
+        port: '{{ primary_port }}'
         user: '{{ replication_role }}'
         password: '{{ replication_pass }}'
         dbname: '{{ test_db }}'
@@ -63,6 +63,7 @@
   - assert:
       that:
       - result.version != {}
+      - result.version.raw is search('PostgreSQL')
       - result.in_recovery == false
       - result.databases.{{ db_default }}.collate
       - result.databases.{{ db_default }}.languages
@@ -73,6 +74,17 @@
       - result.settings
       - result.tablespaces
       - result.roles
+
+  - assert:
+      that:
+      - result.version.patch != {}
+      - result.version.full == '{{ result.version.major }}.{{ result.version.minor }}.{{ result.version.patch }}'
+    when: result.version.major == 9
+
+  - assert:
+      that:
+      - result.version.full == '{{ result.version.major }}.{{ result.version.minor }}'
+    when: result.version.major >= 10
 
   - name: postgresql_info - check filter param passed by list
     <<: *task_parameters
@@ -143,7 +155,7 @@
     postgresql_info:
       <<: *pg_parameters
       login_db: '{{ test_db }}'
-      login_port: '{{ master_port }}'
+      login_port: '{{ primary_port }}'
       trust_input: yes
 
   - assert:
@@ -165,7 +177,7 @@
     postgresql_info:
       <<: *pg_parameters
       login_db: '{{ test_db }}'
-      login_port: '{{ master_port }}'
+      login_port: '{{ primary_port }}'
       trust_input: no
       session_role: 'curious.anonymous"; SELECT * FROM information_schema.tables; --'
     register: result

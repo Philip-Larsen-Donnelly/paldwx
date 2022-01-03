@@ -65,15 +65,17 @@ options:
       'TRUNCATE', 'REFERENCES', 'TRIGGER', 'ALL'. For example
       C(table:SELECT) ). Mixed example of this string:
       C(CONNECT/CREATE/table1:SELECT/table2:INSERT)."
+    - When I(priv) contains tables, the module uses the schema C(public) by default.
+      If you need to specify a different schema, use the C(schema_name.table_name) notation,
+      for example, C(pg_catalog.pg_stat_database:SELECT).
     type: str
   role_attr_flags:
     description:
     - "PostgreSQL user attributes string in the format: CREATEDB,CREATEROLE,SUPERUSER."
     - Note that '[NO]CREATEUSER' is deprecated.
     - To create a simple role for using it like a group, use C(NOLOGIN) flag.
+    - See the full list of supported flags in documentation for your PostgreSQL version.
     type: str
-    choices: [ '[NO]SUPERUSER', '[NO]CREATEROLE', '[NO]CREATEDB',
-               '[NO]INHERIT', '[NO]LOGIN', '[NO]REPLICATION', '[NO]BYPASSRLS' ]
   session_role:
     description:
     - Switch to session role after connecting.
@@ -107,6 +109,7 @@ options:
   no_password_changes:
     description:
     - If C(yes), does not inspect the database for password changes.
+      If the user already exists, skips all password related checks.
       Useful when C(pg_authid) is not accessible (such as in AWS RDS).
       Otherwise, makes password changes as necessary.
     default: no
@@ -156,6 +159,10 @@ notes:
   On the previous versions the whole hashed string is used as a password.
 - 'Working with SCRAM-SHA-256-hashed passwords, be sure you use the I(environment:) variable
   C(PGOPTIONS: "-c password_encryption=scram-sha-256") (see the provided example).'
+- On some systems (such as AWS RDS), C(pg_authid) is not accessible, thus, the module cannot compare
+  the current and desired C(password). In this case, the module assumes that the passwords are
+  different and changes it reporting that the state has been changed.
+  To skip all password related checks for existing users, use I(no_password_changes=yes).
 - Supports ``check_mode``.
 seealso:
 - module: community.postgresql.postgresql_privs
@@ -244,6 +251,11 @@ EXAMPLES = r'''
     password: "secret123"
   environment:
     PGOPTIONS: "-c password_encryption=scram-sha-256"
+
+- name: Create a user, grant SELECT on pg_catalog.pg_stat_database
+  community.postgresql.postgresql_user:
+    name: monitoring
+    priv: 'pg_catalog.pg_stat_database:SELECT'
 '''
 
 RETURN = r'''
@@ -283,7 +295,7 @@ from ansible_collections.community.postgresql.plugins.module_utils.postgres impo
 )
 from ansible.module_utils._text import to_bytes, to_native, to_text
 from ansible.module_utils.six import iteritems
-import ansible_collections.community.postgresql.plugins.module_utils.saslprep as saslprep
+from ansible_collections.community.postgresql.plugins.module_utils import saslprep
 
 try:
     # pbkdf2_hmac is missing on python 2.6, we can safely assume,
@@ -310,6 +322,14 @@ PRIV_TO_AUTHID_COLUMN = dict(SUPERUSER='rolsuper', CREATEROLE='rolcreaterole',
                              REPLICATION='rolreplication', BYPASSRLS='rolbypassrls')
 
 executed_queries = []
+
+# This is a special list for debugging.
+# If you need to fetch information (e.g. results of cursor.fetchall(),
+# queries built with cursor.mogrify(), vars values, etc.):
+# 1. Put debug_info.append(<information_you_need>) as many times as you need.
+# 2. Run integration tests or you playbook with -vvv
+# 3. If it's not empty, you'll see the list in the returned json.
+debug_info = []
 
 
 class InvalidFlagsError(Exception):
@@ -986,6 +1006,8 @@ def main():
 
     kw['changed'] = changed
     kw['queries'] = executed_queries
+    if debug_info:
+        kw['debug_info'] = debug_info
     module.exit_json(**kw)
 
 

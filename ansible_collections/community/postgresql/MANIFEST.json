@@ -2,9 +2,9 @@
  "collection_info": {
   "namespace": "community",
   "name": "postgresql",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "authors": [
-   "PostgreSQL Working Group (https://github.com/ansible/community/wiki/PostgreSQL)"
+   "Ansible PostgreSQL community"
   ],
   "readme": "README.md",
   "tags": [
@@ -25,7 +25,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "a847be536168a3f52ba694b2764d8e430fc17c50f0142c4081ab84755d973342",
+  "chksum_sha256": "4b42db6e8f8c19b8fec58728cfde95728e413544a302ebc8293e8f84c490a4b6",
   "format": 1
  },
  "format": 1

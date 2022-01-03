@@ -53,14 +53,14 @@ options:
     description:
     - Comma separated list of database objects to set privileges on.
     - If I(type) is C(table), C(partition table), C(sequence), C(function) or C(procedure),
-      the special valueC(ALL_IN_SCHEMA) can be provided instead to specify all
-      database objects of type I(type) in the schema specified via I(schema).
+      the special value C(ALL_IN_SCHEMA) can be provided instead to specify all
+      database objects of I(type) in the schema specified via I(schema).
       (This also works with PostgreSQL < 9.0.) (C(ALL_IN_SCHEMA) is available
-       for C(function) and C(partition table) since Ansible 2.8)
-    - C(procedure) is supported since PostgreSQL 11 and M(community.postgresql) collection 1.3.0.
+       for C(function) and C(partition table) since Ansible 2.8).
+    - C(procedure) is supported since PostgreSQL 11 and community.postgresql collection 1.3.0.
     - If I(type) is C(database), this parameter can be omitted, in which case
       privileges are set for the database specified via I(database).
-    - If I(type) is I(function) or I(procedure), colons (":") in object names will be
+    - If I(type) is C(function) or C(procedure), colons (":") in object names will be
       replaced with commas (needed to specify signatures, see examples).
     type: str
     aliases:
@@ -174,6 +174,7 @@ options:
     version_added: '1.2.0'
 
 notes:
+- Supports C(check_mode).
 - Parameters that accept comma separated lists (I(privs), I(objs), I(roles))
   have singular alias names (I(priv), I(obj), I(role)).
 - To revoke only C(GRANT OPTION) for a specific object, set I(state) to
@@ -1120,13 +1121,11 @@ def main():
             roles = p.roles.split(',')
 
             if len(roles) == 1 and not role_exists(module, conn.cursor, roles[0]):
-                module.exit_json(changed=False)
-
                 if fail_on_role:
                     module.fail_json(msg="Role '%s' does not exist" % roles[0].strip())
-
                 else:
                     module.warn("Role '%s' does not exist, nothing to do" % roles[0].strip())
+                module.exit_json(changed=False, queries=executed_queries)
 
         # check if target_roles is set with type: default_privs
         if p.target_roles and not p.type == 'default_privs':

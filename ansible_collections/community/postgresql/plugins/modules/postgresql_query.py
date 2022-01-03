@@ -40,6 +40,10 @@ options:
     description:
     - Path to a SQL script on the target machine.
     - If the script contains several queries, they must be semicolon-separated.
+    - To run scripts containing objects with semicolons
+      (for example, function and procedure definitions), use I(as_single_query=yes).
+    - To upload dumps or to execute other complex scripts, the preferable way
+      is to use the M(community.postgresql.postgresql_db) module with I(state=restore).
     - Mutually exclusive with I(query).
     type: path
   session_role:
@@ -81,6 +85,20 @@ options:
     type: list
     elements: str
     version_added: '1.0.0'
+  as_single_query:
+    description:
+    - If C(yes), when reading from the I(path_to_script) file,
+      executes its whole content in a single query.
+    - When C(yes), the C(query_all_results) return value
+      contains only the result of the last statement.
+    - Whether the state is reported as changed or not
+      is determined by the last statement of the file.
+    - Used only when I(path_to_script) is specified, otherwise ignored.
+    - If set to C(no), the script can contain only semicolon-separated queries.
+      (see the I(path_to_script) option documentation).
+    - The default value is C(no).
+    type: bool
+    version_added: '1.1.0'
 seealso:
 - module: community.postgresql.postgresql_db
 - name: PostgreSQL Schema reference
@@ -92,7 +110,8 @@ author:
 - Will Rouesnel (@wrouesnel)
 extends_documentation_fragment:
 - community.postgresql.postgres
-
+notes:
+- Supports C(check_mode).
 '''
 
 EXAMPLES = r'''
@@ -124,6 +143,8 @@ EXAMPLES = r'''
     db: test_db
     query: INSERT INTO test_table (id, story) VALUES (2, 'my_long_story')
 
+# If your script contains semicolons as parts of separate objects
+# like functions, procedures, and so on, use "as_single_query: yes"
 - name: Run queries from SQL script using UTF-8 client encoding for session
   community.postgresql.postgresql_query:
     db: test_db
@@ -171,6 +192,28 @@ EXAMPLES = r'''
     search_path:
     - app1
     - public
+
+# If you use a variable in positional_args / named_args that can
+# be undefined and you wish to set it as NULL, the constructions like
+# "{{ my_var if (my_var is defined) else none | default(none) }}"
+# will not work as expected substituting an empty string instead of NULL.
+# If possible, we suggest to use Ansible's DEFAULT_JINJA2_NATIVE configuration
+# (https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-jinja2-native).
+# Enabling it fixes this problem. If you cannot enable it, the following workaround
+# can be used.
+# You should precheck such a value and define it as NULL when undefined.
+# For example:
+- name: When undefined, set to NULL
+  set_fact:
+    my_var: NULL
+  when: my_var is undefined
+
+# Then:
+- name: Insert a value using positional arguments
+  community.postgresql.postgresql_query:
+    query: INSERT INTO test_table (col1) VALUES (%s)
+    positional_args:
+    - '{{ my_var }}'
 '''
 
 RETURN = r'''
@@ -230,6 +273,10 @@ except ImportError:
     # psycopg2 availability will be checked by connect_to_db() into
     # ansible.module_utils.postgres
     pass
+
+import datetime
+import decimal
+import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.community.postgresql.plugins.module_utils.database import (
@@ -309,6 +356,7 @@ def main():
         encoding=dict(type='str'),
         trust_input=dict(type='bool', default=True),
         search_path=dict(type='list', elements='str'),
+        as_single_query=dict(type='bool'),
     )
 
     module = AnsibleModule(
@@ -326,6 +374,14 @@ def main():
     session_role = module.params["session_role"]
     trust_input = module.params["trust_input"]
     search_path = module.params["search_path"]
+    as_single_query = module.params["as_single_query"]
+
+    if path_to_script and as_single_query is None:
+        module.warn('You use the "path_to_script" option with the "as_single_query" '
+                    'option unset. The default is False and will be changed to True '
+                    'in community.postgresql release 2.0.0. '
+                    'To avoid crashes, please read the documentation '
+                    'and define the "as_single_query" option explicitly.')
 
     if not trust_input:
         # Check input for potentially dangerous elements:
@@ -337,21 +393,20 @@ def main():
     if path_to_script and query:
         module.fail_json(msg="path_to_script is mutually exclusive with query")
 
-    if positional_args:
-        positional_args = convert_elements_to_pg_arrays(positional_args)
-
-    elif named_args:
-        named_args = convert_elements_to_pg_arrays(named_args)
-
     query_list = []
     if path_to_script:
         try:
             with open(path_to_script, 'rb') as f:
                 query = to_native(f.read())
-                if ';' in query:
-                    query_list = [q for q in query.split(';') if q != '\n']
+
+                if not as_single_query:
+                    if ';' in query:
+                        query_list = [q for q in query.split(';') if q != '\n']
+                    else:
+                        query_list.append(query)
                 else:
                     query_list.append(query)
+
         except Exception as e:
             module.fail_json(msg="Cannot read file '%s' : %s" % (path_to_script, to_native(e)))
     else:
@@ -367,12 +422,17 @@ def main():
         set_search_path(cursor, '%s' % ','.join([x.strip(' ') for x in search_path]))
 
     # Prepare args:
-    if module.params.get("positional_args"):
-        arguments = module.params["positional_args"]
-    elif module.params.get("named_args"):
-        arguments = module.params["named_args"]
+    if positional_args:
+        args = positional_args
+    elif named_args:
+        args = named_args
     else:
-        arguments = None
+        args = None
+
+    # Convert elements of type list to strings
+    # representing PG arrays
+    if args:
+        args = convert_elements_to_pg_arrays(args)
 
     # Set defaults:
     changed = False
@@ -384,13 +444,25 @@ def main():
     # Execute query:
     for query in query_list:
         try:
-            cursor.execute(query, arguments)
+            cursor.execute(query, args)
             statusmessage = cursor.statusmessage
             if cursor.rowcount > 0:
                 rowcount += cursor.rowcount
 
+            query_result = []
             try:
-                query_result = [dict(row) for row in cursor.fetchall()]
+                for row in cursor.fetchall():
+                    # Ansible engine does not support decimals.
+                    # An explicit conversion is required on the module's side
+                    row = dict(row)
+                    for (key, val) in iteritems(row):
+                        if isinstance(val, decimal.Decimal):
+                            row[key] = float(val)
+
+                        elif isinstance(val, datetime.timedelta):
+                            row[key] = str(val)
+
+                    query_result.append(row)
 
             except Psycopg2ProgrammingError as e:
                 if to_native(e) == 'no results to fetch':
@@ -402,7 +474,7 @@ def main():
             query_all_results.append(query_result)
 
             if 'SELECT' not in statusmessage:
-                if 'UPDATE' in statusmessage or 'INSERT' in statusmessage or 'DELETE' in statusmessage:
+                if re.search(re.compile(r'(UPDATE|INSERT|DELETE)'), statusmessage):
                     s = statusmessage.split()
                     if len(s) == 3:
                         if s[2] != '0':
@@ -424,7 +496,7 @@ def main():
 
             cursor.close()
             db_connection.close()
-            module.fail_json(msg="Cannot execute SQL '%s' %s: %s, query list: %s" % (query, arguments, to_native(e), query_list))
+            module.fail_json(msg="Cannot execute SQL '%s' %s: %s, query list: %s" % (query, args, to_native(e), query_list))
 
     if module.check_mode:
         db_connection.rollback()

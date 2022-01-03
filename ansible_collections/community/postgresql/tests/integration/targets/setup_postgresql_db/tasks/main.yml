@@ -3,14 +3,6 @@
 # and should not be used as examples of how to write Ansible roles #
 ####################################################################
 
-# Exit when Suse because it causes CI problems
-- meta: end_play
-  when: ansible_os_family == 'Suse'
-
-# To avoid hangings on service start/stop postgres during CI runs:
-- meta: end_play
-  when: ansible_facts.distribution == 'CentOS' and ansible_facts.distribution_major_version == '8'
-
 - name: python 2
   set_fact:
     python_suffix: ''
@@ -33,7 +25,12 @@
       paths:
       - '{{ role_path }}/vars'
 
-- name: make sure the dbus service is started under systemd
+- name: Make sure the dbus service is enabled under systemd
+  shell: systemctl enable dbus || systemctl enable dbus-broker
+  ignore_errors: yes
+  when: ansible_service_mgr == 'systemd' and ansible_distribution == 'Fedora'
+
+- name: Make sure the dbus service is started under systemd
   systemd:
     name: dbus
     state: started
@@ -49,19 +46,12 @@
   service: name={{ postgresql_service }} state=stopped
   ignore_errors: true
 
-- name: remove old db (RedHat or Suse)
+- name: remove old db (RedHat)
   file:
     path: '{{ pg_dir }}'
     state: absent
   ignore_errors: true
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Suse"
-
-- name: remove old db (FreeBSD)
-  file:
-    path: '{{ pg_dir }}'
-    state: absent
-  ignore_errors: true
-  when: ansible_os_family == "FreeBSD"
+  when: ansible_os_family == "RedHat"
 
 - name: remove old db config and files (debian)
   file:
@@ -75,6 +65,38 @@
   loop_control:
     loop_var: loop_item
 
+#
+# Install PostgreSQL 14 on Ubuntu 20.04
+- name: Install wget
+  package:
+    name: wget
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20'
+
+- name: Add a repository
+  shell: echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20'
+
+- name: Add a repository
+  shell: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20'
+
+- name: Add a repository
+  shell: apt -y update
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20'
+
+- name: Install locale needed
+  shell: 'locale-gen {{ item }}'
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20'
+  loop:
+  - es_ES
+  - pt_BR
+
+- name: Update locale
+  shell: 'update-locale'
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20'
+##
+#
+
 - name: install dependencies for postgresql test
   package:
     name: '{{ postgresql_package_item }}'
@@ -82,10 +104,6 @@
   with_items: '{{ postgresql_packages }}'
   loop_control:
     loop_var: postgresql_package_item
-
-- name: initialize postgres (FreeBSD)
-  command: /usr/local/etc/rc.d/postgresql oneinitdb
-  when: ansible_os_family == "FreeBSD"
 
 - name: Initialize postgres (RedHat systemd)
   command: postgresql-setup initdb
@@ -100,19 +118,6 @@
   args:
     creates: /etc/postgresql/{{ pg_ver }}/
   when: ansible_os_family == 'Debian'
-
-- name: Initialize postgres (Suse)
-  service: name=postgresql state=stopped
-  when: ansible_os_family == 'Suse'
-
-- name: Pause between stop and start postgresql
-  pause:
-    seconds: 5
-  when: ansible_os_family == 'Suse'
-
-- name: Initialize postgres (Suse)
-  service: name=postgresql state=started
-  when: ansible_os_family == 'Suse'
 
 - name: Copy pg_hba into place
   template:
@@ -172,12 +177,6 @@
   - glibc-langpack-pt
   when: ansible_distribution == 'Fedora' and ansible_distribution_major_version is version('24', '>=')
 
-- name: enable postgresql service (FreeBSD)
-  lineinfile:
-    path: /etc/rc.conf
-    line: postgresql_enable="YES"
-  when: ansible_os_family == "FreeBSD"
-
 - name: start postgresql service
   service: name={{ postgresql_service }} state=started
 
@@ -216,6 +215,7 @@
     dest: /usr/share/postgresql/{{ pg_ver }}/extension/{{ item }}
     mode: '0444'
   with_items:
+  - dummy--0.sql
   - dummy--1.0.sql
   - dummy--2.0.sql
   - dummy--3.0.sql
@@ -227,6 +227,7 @@
     mode: '0444'
     state: touch
   with_items:
+  - dummy--0--1.0.sql
   - dummy--1.0--2.0.sql
   - dummy--2.0--3.0.sql
   when: ansible_os_family == 'Debian'

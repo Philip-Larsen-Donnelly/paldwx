@@ -18,7 +18,8 @@ short_description: Add, remove or modify a rule in a pg_hba file
 description:
    - The fundamental function of the module is to create, or delete lines in pg_hba files.
    - The lines in the file should be in a typical pg_hba form and lines should be unique per key (type, databases, users, source).
-     If they are not unique and the SID is 'the one to change', only one for C(state=present) or none for C(state=absent) of the SID's will remain.
+     If they are not unique and the SID is 'the one to change', only one for I(state=present) or
+     none for I(state=absent) of the SID's will remain.
 extends_documentation_fragment: files
 options:
   address:
@@ -50,6 +51,11 @@ options:
       - Type of the rule. If not set, C(postgresql_pg_hba) will only return contents.
     type: str
     choices: [ local, host, hostnossl, hostssl ]
+  comment:
+    description:
+      - A comment that will be placed in the same line behind the rule. See also the I(keep_comments_at_rules) parameter.
+    type: str
+    version_added: '1.5.0'
   databases:
     description:
       - Databases this line applies to.
@@ -84,6 +90,13 @@ options:
     type: str
     default: sdu
     choices: [ sdu, sud, dsu, dus, usd, uds ]
+  keep_comments_at_rules:
+    description:
+      - If C(true), comments that stand together with a rule in one line are kept behind that line.
+      - If C(false), such comments are moved to the beginning of the file, like all other comments.
+    type: bool
+    default: false
+    version_added: '1.5.0'
   state:
     description:
       - The lines will be added/modified when C(state=present) and removed when C(state=absent).
@@ -118,11 +131,13 @@ seealso:
 requirements:
     - ipaddress
 
-author: Sebastiaan Mannem (@sebasmannem)
+author:
+- Sebastiaan Mannem (@sebasmannem)
+- Felix Hamme (@betanummeric)
 '''
 
 EXAMPLES = '''
-- name: Grant users joe and simon access to databases sales and logistics from ipv6 localhost ::1/128 using peer authentication.
+- name: Grant users joe and simon access to databases sales and logistics from ipv6 localhost ::1/128 using peer authentication
   community.postgresql.postgresql_pg_hba:
     dest: /var/lib/postgres/data/pg_hba.conf
     contype: host
@@ -132,7 +147,7 @@ EXAMPLES = '''
     method: peer
     create: true
 
-- name: Grant user replication from network 192.168.0.100/24 access for replication with client cert authentication.
+- name: Grant user replication from network 192.168.0.100/24 access for replication with client cert authentication
   community.postgresql.postgresql_pg_hba:
     dest: /var/lib/postgres/data/pg_hba.conf
     contype: host
@@ -141,18 +156,29 @@ EXAMPLES = '''
     databases: replication
     method: cert
 
-- name: Revoke access from local user mary on database mydb.
+- name: Revoke access from local user mary on database mydb
   community.postgresql.postgresql_pg_hba:
     dest: /var/lib/postgres/data/pg_hba.conf
     contype: local
     users: mary
     databases: mydb
     state: absent
+
+- name: Grant some_user access to some_db, comment that and keep other rule-specific comments attached to their rules
+  community.postgresql.postgresql_pg_hba:
+    dest: /var/lib/postgres/data/pg_hba.conf
+    contype: host
+    users: some_user
+    databases: some_db
+    method: md5
+    source: ::/0
+    keep_comments_at_rules: true
+    comment: "this rule is an example"
 '''
 
 RETURN = r'''
 msgs:
-    description: List of textual messages what was done
+    description: List of textual messages what was done.
     returned: always
     type: list
     sample:
@@ -162,12 +188,12 @@ msgs:
           "Writing"
         ]
 backup_file:
-    description: File that the original pg_hba file was backed up to
+    description: File that the original pg_hba file was backed up to.
     returned: changed
     type: str
     sample: /tmp/pg_hba_jxobj_p
 pg_hba:
-    description: List of the pg_hba rules as they are configured in the specified hba file
+    description: List of the pg_hba rules as they are configured in the specified hba file.
     returned: always
     type: list
     sample:
@@ -241,7 +267,7 @@ class PgHba(object):
     PgHba object to read/write entries to/from.
     pg_hba_file - the pg_hba file almost always /etc/pg_hba
     """
-    def __init__(self, pg_hba_file=None, order="sdu", backup=False, create=False):
+    def __init__(self, pg_hba_file=None, order="sdu", backup=False, create=False, keep_comments_at_rules=False):
         if order not in PG_HBA_ORDERS:
             msg = "invalid order setting {0} (should be one of '{1}')."
             raise PgHbaError(msg.format(order, "', '".join(PG_HBA_ORDERS)))
@@ -252,6 +278,7 @@ class PgHba(object):
         self.backup = backup
         self.last_backup = None
         self.create = create
+        self.keep_comments_at_rules = keep_comments_at_rules
         self.unchanged()
         # self.databases will be update by add_rule and gives some idea of the number of databases
         # (at least that are handled by this pg_hba)
@@ -281,15 +308,27 @@ class PgHba(object):
         try:
             with open(self.pg_hba_file, 'r') as file:
                 for line in file:
+                    # split into line and comment
                     line = line.strip()
-                    # uncomment
+                    comment = None
                     if '#' in line:
                         line, comment = line.split('#', 1)
-                        self.comment.append('#' + comment)
-                    try:
-                        self.add_rule(PgHbaRule(line=line))
-                    except PgHbaRuleError:
-                        pass
+                        if comment == '':
+                            comment = None
+
+                    # if there is just a comment, save it
+                    if line == '':
+                        if comment is not None:
+                            self.comment.append('#' + comment)
+                    else:
+                        if comment is not None and not self.keep_comments_at_rules:
+                            # save the comment independent of the line
+                            self.comment.append('#' + comment)
+                            comment = None
+                        try:
+                            self.add_rule(PgHbaRule(line=line, comment=comment))
+                        except PgHbaRuleError:
+                            pass
             self.unchanged()
         except IOError:
             pass
@@ -310,11 +349,11 @@ class PgHba(object):
                 if backup_file:
                     self.last_backup = backup_file
                 else:
-                    __backup_file_h, self.last_backup = tempfile.mkstemp(prefix='pg_hba')
+                    _backup_file_h, self.last_backup = tempfile.mkstemp(prefix='pg_hba')
                 shutil.copy(self.pg_hba_file, self.last_backup)
             fileh = open(self.pg_hba_file, 'w')
         else:
-            filed, __path = tempfile.mkstemp(prefix='pg_hba')
+            filed, _path = tempfile.mkstemp(prefix='pg_hba')
             fileh = os.fdopen(filed, 'w')
 
         fileh.write(contents)
@@ -384,8 +423,13 @@ class PgHba(object):
         The returning value can be used directly to write to a new file.
         '''
         comment = '\n'.join(self.comment)
-        rule_lines = '\n'.join([rule['line'] for rule in self.get_rules(with_lines=True)])
-        result = comment + '\n' + rule_lines
+        rule_lines = []
+        for rule in self.get_rules(with_lines=True):
+            if 'comment' in rule:
+                rule_lines.append(rule['line'] + '\t#' + rule['comment'])
+            else:
+                rule_lines.append(rule['line'])
+        result = comment + '\n' + '\n'.join(rule_lines)
         # End it properly with a linefeed (if not already).
         if result and result[-1] not in ['\n', '\r']:
             result += '\n'
@@ -404,7 +448,7 @@ class PgHbaRule(dict):
     '''
 
     def __init__(self, contype=None, databases=None, users=None, source=None, netmask=None,
-                 method=None, options=None, line=None):
+                 method=None, options=None, line=None, comment=None):
         '''
         This function can be called with a comma seperated list of databases and a comma seperated
         list of users and it will act as a generator that returns a expanded list of rules one by
@@ -416,6 +460,9 @@ class PgHbaRule(dict):
         if line:
             # Read values from line if parsed
             self.fromline(line)
+
+        if comment:
+            self['comment'] = comment
 
         # read rule cols from parsed items
         rule = dict(zip(PG_HBA_HDR, [contype, databases, users, source, netmask, method, options]))
@@ -664,6 +711,7 @@ def main():
         backup=dict(type='bool', default=False),
         backup_file=dict(type='str'),
         contype=dict(type='str', default=None, choices=PG_HBA_TYPES),
+        comment=dict(type='str', default=None),
         create=dict(type='bool', default=False),
         databases=dict(type='str', default='all'),
         dest=dict(type='path', required=True),
@@ -672,6 +720,7 @@ def main():
         options=dict(type='str'),
         order=dict(type='str', default="sdu", choices=PG_HBA_ORDERS,
                    removed_in_version='3.0.0', removed_from_collection='community.postgresql'),
+        keep_comments_at_rules=dict(type='bool', default=False),
         state=dict(type='str', default="present", choices=["absent", "present"]),
         users=dict(type='str', default='all')
     )
@@ -700,10 +749,12 @@ def main():
     source = module.params["address"]
     state = module.params["state"]
     users = module.params["users"]
+    keep_comments_at_rules = module.params["keep_comments_at_rules"]
+    comment = module.params["comment"]
 
     ret = {'msgs': []}
     try:
-        pg_hba = PgHba(dest, order, backup=backup, create=create)
+        pg_hba = PgHba(dest, order, backup=backup, create=create, keep_comments_at_rules=keep_comments_at_rules)
     except PgHbaError as error:
         module.fail_json(msg='Error reading file:\n{0}'.format(error))
 
@@ -711,7 +762,7 @@ def main():
         try:
             for database in databases.split(','):
                 for user in users.split(','):
-                    rule = PgHbaRule(contype, database, user, source, netmask, method, options)
+                    rule = PgHbaRule(contype, database, user, source, netmask, method, options, comment=comment)
                     if state == "present":
                         ret['msgs'].append('Adding')
                         pg_hba.add_rule(rule)
