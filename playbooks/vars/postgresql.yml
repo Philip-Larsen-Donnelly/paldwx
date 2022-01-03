@@ -1,13 +1,19 @@
 ---
 # vars file for dhis2.dhis2
 postgresql_version: "10"
+# postgresql_packages:
+#   - postgresql-client-common
+#   - postgresql-{{ postgresql_version }}
+#   - postgresql-contrib
+#   - libpq-dev
+#   - postgresql-10-postgis-2.4
+#   - postgresql-{{ postgresql_version }}-postgis-3
 postgresql_packages:
-  - postgresql-client-common
   - postgresql-{{ postgresql_version }}
   - postgresql-contrib
   - libpq-dev
-  - postgresql-10-postgis-2.4
-  - postgresql-{{ postgresql_version }}-postgis-3
+  - postgis
+  - postgresql-client-common
 
 postgresql_user: postgres
 postgresql_group: postgres
