@@ -35,19 +35,19 @@ for i in instances:
         pass
 
 
-for t in xrange(tomcat_start_port, tomcat_start_port + len(t_ports) + 1):
+for t in range(tomcat_start_port, tomcat_start_port + len(t_ports) + 1):
     use = '{}'.format(t)
     if not use in t_ports:
         tomcat["next_port"] = t
         break
 
-for a in xrange(activemq_start_port, activemq_start_port + len(a_ports) + 1):
+for a in range(activemq_start_port, activemq_start_port + len(a_ports) + 1):
     use = '{}'.format(a)
     if not use in a_ports:
         activemq["next_port"] = a
         break
 
-for r in xrange(artemis_start_port, artemis_start_port + len(art_ports) + 1):
+for r in range(artemis_start_port, artemis_start_port + len(art_ports) + 1):
     use = '{}'.format(r)
     if not use in art_ports:
         artemis["next_port"] = r
@@ -59,4 +59,4 @@ fact["activemq"]=activemq
 fact["artemis"]=artemis
 
 # output the facts
-print json.dumps(fact)
+print(json.dumps(fact))
