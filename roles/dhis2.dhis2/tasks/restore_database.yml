@@ -43,23 +43,75 @@
 
 - name: fetch the baseline db
   block:
-    - name: store db fetch format
+
+# -- if "favour_pgc_format" is chosen, then make sure that format is available before forcing
+    - name: favour pgc format if selected
+      block:
+      - name: for projects
+        block:
+        - name: check for pgc format
+          aws_s3:
+            aws_access_key: "{{ aws_access_key }}"
+            aws_secret_key: "{{ aws_secret_key }}"
+            bucket: dhis2-database-development
+            object: "{{ instance.db_demo | replace('.sql.gz','.pgc') }}"
+            expiration: 86400
+            mode: geturl
+          register: pgc_link
+          ignore_errors: yes
+
+        - name: passed
+          set_fact:
+            force_pgc: True
+          when: not pgc_link.failed
+
+        when:
+          - (project is defined)
+
+      - name: for non projects
+        block:
+        - name: check for pgc format
+          uri:
+            url: "{{ instance.db_demo | replace('.sql.gz','.pgc') }}"
+            method: HEAD
+          register: pgc_link
+          ignore_errors: yes
+
+        - name: passed
+          set_fact:
+            force_pgc: True
+          when: not pgc_link.failed
+
+        when:
+          - (project is not defined) or project == ''
+
+      when:
+        - favour_pgc_format|default(false)|bool
+# -- end pgc format check
+
+    - name: force pgc fetch format
+      set_fact:
+        this_fetch_format: "pgc"
+      when: force_pgc|default(false)|bool
+
+    - name: store db fetch format based on extension
       set_fact:
         this_fetch_format: "{{ 'pgc' if instance.db_demo is regex('.*pgc') else 'sql.gz' }}"
+      when: force_pgc|default(false)|bool == false
 
     - name: fetch demo db file for project
       aws_s3:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
         bucket: "{{ dhis2_project_database_bucket }}"
-        object: "{{ instance.db_demo }}"
+        object: "{{ instance.db_demo | replace('sql.gz',this_fetch_format) }}"
         dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: get
       when: (project is defined) and (project|length > 0) and instance.db_demo is defined and instance.db_demo|length
 
     - name: fetch demo db file for {{ instance.name }}
       get_url:
-        url: "{{ instance.db_demo }}"
+        url: "{{ instance.db_demo | replace('sql.gz',this_fetch_format) }}"
         dest: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
         mode: 0644
       when: (not project) and instance.db_demo is defined and instance.db_demo|length
@@ -182,6 +234,13 @@
     regexp: "^db_date=.+$"
     line: "db_date={{ db_date }}"
 
+- name: update the facts with correct DB format (if necessary)
+  lineinfile:
+    dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
+    regexp: "^db_demo=.+$"
+    line: "db_demo={{ instance.db_demo | replace('sql.gz',this_fetch_format) }}"
+  when: (instance.db_demo | replace('sql.gz',this_fetch_format)) != instance.db_demo
+
 #
 # - name: update the json facts with the install datetime
 #   lineinfile:
@@ -198,6 +257,7 @@
   with_items:
     - { name: db_date , value: "{{ db_date | default('') }}" }
     - { name: db_owner , value: "{{ instance.db_owner | default('dhis') }}" }
+    - { name: db_demo , value: "{{ instance.db_demo | replace('sql.gz',this_fetch_format) }}" }
 
 - name: update displayed facts
   include: factualise_instance.yml

@@ -13,6 +13,14 @@
 - name: store db commit format
   set_fact:
     commit_dump_format: "{{ 'pgc' if instance.db_demo is regex('.*pgc') else 'sql.gz' }}"
+  when:
+    - favour_pgc_format|default(false)|bool == false
+
+- name: force db commit format to pgc
+  set_fact:
+    commit_dump_format: "pgc"
+  when:
+    - favour_pgc_format|default(false)|bool
 
 - name: Dump database snapshot (without analytics) to a file (with compression)
   postgresql_db:
@@ -35,7 +43,7 @@
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: "{{ dhis2_project_database_bucket }}"
-    object: "{{ instance.db_demo }}"
+    object: "{{ instance.db_demo | replace('sql.gz', commit_dump_format) }}"
     src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     mode: put
     metadata:
@@ -67,3 +75,23 @@
   file:
     path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     state: absent
+
+- name: update the facts if format was forced
+  block:
+
+  - name: update the facts with correct DB format (if necessary)
+    lineinfile:
+      dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
+      regexp: "^db_demo=.+$"
+      line: "db_demo={{ instance.db_demo | replace('sql.gz',commit_dump_format) }}"
+
+  - name: update the facts
+    set_fact:
+      instance_update: "{{ instance_update | default(instance) | combine({item.name: item.value}) }}"
+    with_items:
+      - { name: db_demo , value: "{{ instance.db_demo | replace('sql.gz',commit_dump_format) }}" }
+
+  - name: update displayed facts
+    include: factualise_instance.yml
+
+  when: (instance.db_demo | replace('sql.gz',commit_dump_format) ) != instance.db_demo
