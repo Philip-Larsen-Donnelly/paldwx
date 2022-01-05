@@ -181,7 +181,7 @@
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
-    multithread: "-j {{ db_restore_threads }} --create "
+    multithread: "-j {{ db_restore_threads }} --clean "
     restore_options: "{{ multithread if (this_fetch_format == 'pgc') else '' }}"
   when: (instance.db_demo is defined and instance.db_demo|length and db_empty is not defined) or
         (s3_snapshot is defined)
