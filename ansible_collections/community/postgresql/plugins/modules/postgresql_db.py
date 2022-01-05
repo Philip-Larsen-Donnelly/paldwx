@@ -534,7 +534,7 @@ def db_restore(module, target, target_opts="",
         if '--format=Directory' in cmd:
             cmd = '{0} {1}'.format(cmd, shlex_quote(target))
         else:
-            cmd = '{0} < {1}'.format(cmd, shlex_quote(target))
+            cmd = '{0} -f {1}'.format(cmd, shlex_quote(target))
 
     return do_with_password(module, cmd, password)
 
