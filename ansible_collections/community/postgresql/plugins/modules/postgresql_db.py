@@ -487,6 +487,7 @@ def db_restore(module, target, target_opts="",
     flags = login_flags(db, host, port, user)
     comp_prog_path = None
     cmd = module.get_bin_path('psql', True)
+    input = '<'
 
     if os.path.splitext(target)[-1] == '.sql':
         flags.append(' --file={0}'.format(target))
@@ -494,14 +495,17 @@ def db_restore(module, target, target_opts="",
     elif os.path.splitext(target)[-1] == '.tar':
         flags.append(' --format=Tar')
         cmd = module.get_bin_path('pg_restore', True)
+        input = ''
 
     elif os.path.splitext(target)[-1] == '.pgc':
         flags.append(' --format=Custom')
         cmd = module.get_bin_path('pg_restore', True)
+        input = ''
 
     elif os.path.splitext(target)[-1] == '.dir':
         flags.append(' --format=Directory')
         cmd = module.get_bin_path('pg_restore', True)
+        input = ''
 
     elif os.path.splitext(target)[-1] == '.gz':
         comp_prog_path = module.get_bin_path('zcat', True)
@@ -534,7 +538,7 @@ def db_restore(module, target, target_opts="",
         if '--format=Directory' in cmd:
             cmd = '{0} {1}'.format(cmd, shlex_quote(target))
         else:
-            cmd = '{0} -f {1}'.format(cmd, shlex_quote(target))
+            cmd = '{0} {1} {2}'.format(cmd, input, shlex_quote(target))
 
     return do_with_password(module, cmd, password)
 
