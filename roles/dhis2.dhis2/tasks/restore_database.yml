@@ -175,6 +175,7 @@
     db: "{{ instance.db_name }}"
     name: public
     state: absent
+    cascade_drop: yes
     port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
   become: true
   become_user: "{{ postgresql_user }}"
