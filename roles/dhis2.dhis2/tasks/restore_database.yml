@@ -170,6 +170,16 @@
         port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
         state: "{{ instance.state | default('present')  }}"
 
+- name: Drop schema "public" if importing from pgc
+  community.postgresql.postgresql_schema:
+    db: "{{ instance.db_name }}"
+    name: public
+    state: absent
+    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  when: this_fetch_format == 'pgc'
+
 - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
   community.postgresql.postgresql_db:
     name: "{{ instance.db_name }}"
@@ -181,7 +191,7 @@
   become_user: "{{ postgresql_user }}"
   vars:
     ansible_ssh_pipelining: true
-    multithread: "-j {{ db_restore_threads }} --clean "
+    multithread: "-j {{ db_restore_threads }} "
     restore_options: "{{ multithread if (this_fetch_format == 'pgc') else '' }}"
   when: (instance.db_demo is defined and instance.db_demo|length and db_empty is not defined) or
         (s3_snapshot is defined)
