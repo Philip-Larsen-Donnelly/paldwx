@@ -1,5 +1,9 @@
 serverPort: {{ instance.tomcat_port|int + 200 }}
 basePath: /{{ instance.name }}
-backend: http://127.0.0.1:{{ instance.tomcat_port }}/{{ instance.name }}
+defaultBackend: backend
+
+backends:
+  - name: backend
+    url: http://127.0.0.1:{{ instance.tomcat_port }}
 
 {{ rate_limiter_config }}

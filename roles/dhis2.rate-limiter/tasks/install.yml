@@ -6,7 +6,7 @@
     repo: https://github.com/{{ rl_repo_name }}.git
     dest: "{{ rl_repo_folder }}"
     update: yes
-    version: proxy
+    version: master
     force: yes
 
 - name: Build project
