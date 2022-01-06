@@ -4,3 +4,4 @@ storage_path: "/var/opt"
 project: "performance"
 
 dhis2_lander: "-perf"
+db_dump_format: "pgc"

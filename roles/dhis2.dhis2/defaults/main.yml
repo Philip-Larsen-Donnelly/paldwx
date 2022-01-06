@@ -9,7 +9,7 @@ project: ''
 # db_dump_format is either "sql.gz" or "pgc"
 # - sql.gz is the classic dump format used by DHIS2
 # - pgc is the custom format option for greater dump/restore efficiency
-db_dump_format: "pgc"
+db_dump_format: "sql.gz"
 db_restore_threads: "{{ ansible_facts['processor_count'] *ansible_facts['processor_cores'] }}"
 
 postgresql_version: "10"
