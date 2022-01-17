@@ -181,7 +181,7 @@
   become_user: "{{ postgresql_user }}"
   when:
     - this_fetch_format == 'pgc'
-    - postgresql_version != '10'
+    - postgresql_version == '13'
 
 - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
   community.postgresql.postgresql_db:
