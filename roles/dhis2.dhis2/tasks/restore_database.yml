@@ -170,34 +170,53 @@
         port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
         state: "{{ instance.state | default('present')  }}"
 
-- name: Drop schema "public" if importing from pgc
-  community.postgresql.postgresql_schema:
-    db: "{{ instance.db_name }}"
-    name: public
-    state: absent
-    cascade_drop: yes
-    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
-  become: true
-  become_user: "{{ postgresql_user }}"
-  when:
-    - this_fetch_format == 'pgc'
-    - postgresql_version == '13'
+- name: Try to restore DB
+  block:
+    - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
+      community.postgresql.postgresql_db:
+        name: "{{ instance.db_name }}"
+        owner: "{{ instance.db_owner | default('dhis') }}"
+        port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+        state: restore
+        target: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
+        target_opts: "{{ restore_options }}"
+      become: true
+      become_user: "{{ postgresql_user }}"
+      vars:
+        ansible_ssh_pipelining: true
+        multithread: "-j {{ db_restore_threads }} "
+        restore_options: "{{ multithread if (this_fetch_format == 'pgc') else '' }}"
+      when: (instance.db_demo is defined and instance.db_demo|length and db_empty is not defined) or
+            (s3_snapshot is defined)
+  rescue:
+    - name: Drop schema "public" if importing from pgc
+      community.postgresql.postgresql_schema:
+        db: "{{ instance.db_name }}"
+        name: public
+        state: absent
+        cascade_drop: yes
+        port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+      become: true
+      become_user: "{{ postgresql_user }}"
+      when:
+        - this_fetch_format == 'pgc'
 
-- name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
-  community.postgresql.postgresql_db:
-    name: "{{ instance.db_name }}"
-    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
-    state: restore
-    target: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
-    target_opts: "{{ restore_options }}"
-  become: true
-  become_user: "{{ postgresql_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-    multithread: "-j {{ db_restore_threads }} "
-    restore_options: "{{ multithread if (this_fetch_format == 'pgc') else '' }}"
-  when: (instance.db_demo is defined and instance.db_demo|length and db_empty is not defined) or
-        (s3_snapshot is defined)
+    - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
+      community.postgresql.postgresql_db:
+        name: "{{ instance.db_name }}"
+        owner: "{{ instance.db_owner | default('dhis') }}"
+        port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+        state: restore
+        target: "{{ storage }}/instances/{{ instance.name }}/temp_db.{{ this_fetch_format }}"
+        target_opts: "{{ restore_options }}"
+      become: true
+      become_user: "{{ postgresql_user }}"
+      vars:
+        ansible_ssh_pipelining: true
+        multithread: "-j {{ db_restore_threads }} "
+        restore_options: "{{ multithread if (this_fetch_format == 'pgc') else '' }}"
+      when: (instance.db_demo is defined and instance.db_demo|length and db_empty is not defined) or
+            (s3_snapshot is defined)
 
 - name: Execute SQL - force admin password
   postgresql_query:
