@@ -87,6 +87,10 @@ academy.events.dhis2.org
 academy.dq.dhis2.org
 academy.demos.dhis2.org
 
+# UiO Research (students)
+[research]
+data.research.dhis2.org
+
 # Logistics (LMIS)
 [lmis]
 lmis.integration.dhis2.org
@@ -145,6 +149,7 @@ emis
 lmis
 metapack
 hispapps
+research
 
 [coreteam:vars]
 ansible_ssh_user=ubuntu
