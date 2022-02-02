@@ -12,7 +12,7 @@ postgresql_packages:
   - postgresql-{{ postgresql_version }}
   - postgresql-contrib
   - libpq-dev
-  - postgresql-{ postgresql_version }}-postgis-{{ '2.4' if postgresql_version == '10' else '2.5' }}
+  - postgresql-{{ postgresql_version }}-postgis-2.5
   - postgresql-client-common
 
 postgresql_user: postgres
