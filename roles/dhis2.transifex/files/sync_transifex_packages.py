@@ -119,6 +119,7 @@ def metadata_to_json():
                         else:
                             fromDHIS2[resource][element['id']]['translations'] += translations
                         # print(resource, element['id'], translations)
+                        print(resource, element['id'])
 
                     for transField in translatable_fields[resource]:
                         transFieldKey = translatable_fields[resource][transField]
