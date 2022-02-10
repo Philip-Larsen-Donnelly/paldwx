@@ -244,11 +244,12 @@
     status_code: 200
   register: result
   until: result.status in [200, 401]
-  retries: 30
+  retries: 12
   delay: 10
   when: (instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]) and
         (((not project) and instance.db_demo is defined and instance.db_demo|length != 0) or
-        (project == "sierra-leone"))
+        (project in ["sierra-leone","who-metadata"]))
+  ignore_errors: yes
 
 
 # === Run API requests if we have reset the DB ==============
