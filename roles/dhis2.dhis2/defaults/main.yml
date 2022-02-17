@@ -12,6 +12,8 @@ project: ''
 db_dump_format: "sql.gz"
 db_restore_threads: "{{ ansible_facts['processor_count'] *ansible_facts['processor_cores'] }}"
 
+snapshot_date:''
+
 postgresql_version: "10"
 postgresql_packages:
   - postgresql-{{ postgresql_version }}

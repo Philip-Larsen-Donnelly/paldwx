@@ -12,7 +12,7 @@
         aws_secret_key: "{{ aws_secret_key }}"
         bucket: dhis2-database-backups
         mode: list
-        prefix: "{{ ansible_host }}/{{ instance_name }}/"
+        prefix: "{{ ansible_host }}/{{ instance_name }}/{{ snapshot_date }}"
       register: s3_list
 
     - name: Get most recent snapshot
