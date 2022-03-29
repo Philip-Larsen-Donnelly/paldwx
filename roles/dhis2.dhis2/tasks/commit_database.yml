@@ -57,7 +57,7 @@
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     bucket: "{{ dhis2_project_database_bucket }}"
-    object: "{{ db_dev_demo }}"
+    object: "{{ (project+'/'+item+'/dhis2-db-sierra-leone.sql.gz') }}"
     src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
     mode: put
     metadata:
@@ -67,8 +67,10 @@
       war_file: "{{ instance.war_file }}"
   when:
     - project == "sierra-leone"
-    - db_dev_demo is defined
-    - db_dev_demo != instance.db_demo
+    - item is defined
+    - (project+'/'+item+'/dhis2-db-sierra-leone.sql.gz') != instance.db_demo
+  with_items:
+    - "{{ dhis2_demo_to_dev[instance.name] }}"
 
 
 - name: remove local dump file

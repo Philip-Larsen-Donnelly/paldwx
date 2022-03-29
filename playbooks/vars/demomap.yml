@@ -43,8 +43,7 @@ dhis2_demo_db_map:
 # the following maps the name of the "demo DB update instance" to development demo db
 dhis2_demo_to_dev:
   'dev': 'dev'
-  '2.38': 'dev'
-  '2.38.0': '2.38'
+  '2.38.0': ['2.38','dev']
   '2.37.4': '2.37'
   '2.37.3': '2.37'
   '2.37.2': '2.37'

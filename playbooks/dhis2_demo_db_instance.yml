@@ -58,7 +58,7 @@
         hibernate_monitoring: "NO"
         # choose whether to have master control of the database (permission to save over it)
         master_control: "{{ master_control | default('false') }}"
-    db_dev_demo: "{{ (project+'/'+dhis2_demo_to_dev[instance_name]+'/dhis2-db-sierra-leone.sql.gz') if instance_name in dhis2_demo_to_dev else '' }}"
+    # db_dev_demo: "{{ (project+'/'+dhis2_demo_to_dev[instance_name]+'/dhis2-db-sierra-leone.sql.gz') if instance_name in dhis2_demo_to_dev else '' }}"
 
 
   tasks:
