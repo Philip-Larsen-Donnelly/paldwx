@@ -56,6 +56,26 @@
       dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
       remote_src: yes
 
+
+  - name: create the directory to extract war file to
+    ansible.builtin.file:
+      path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}"
+      state: directory
+
+  - name: Ensure unzip is installed.
+    package: name="unzip" state=present
+
+  - name: Extract war flle
+    ansible.builtin.unarchive:
+      src: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
+      dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}"
+      remote_src: yes
+
+  - name: delete the war file
+    file:
+      path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
+      state: absent
+
   - name: update the facts with the install datetime
     lineinfile:
       dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
@@ -86,3 +106,12 @@
   file:
     path: "{{ temp_war.path }}"
     state: absent
+
+- name: Change file ownership, group and permissions
+  ansible.builtin.file:
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps"
+    state: directory
+    recurse: yes
+    owner: root
+    group: "{{ dhis2_user }}"
+    mode: '0650'
