@@ -113,5 +113,5 @@
     state: directory
     recurse: yes
     owner: root
-    group: "{{ dhis2_user }}"
+    group: "{{ dhis2_user | default('dhis') }}"
     mode: '0650'
