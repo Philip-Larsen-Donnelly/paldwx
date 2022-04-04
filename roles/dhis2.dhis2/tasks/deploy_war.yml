@@ -107,6 +107,11 @@
     path: "{{ temp_war.path }}"
     state: absent
 
+- name: clear the directory to extract war file to
+  ansible.builtin.file:
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}"
+    state: absent
+
 - name: create the directory to extract war file to
   ansible.builtin.file:
     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}"
