@@ -126,10 +126,10 @@
     dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}"
     remote_src: yes
 
-- name: delete the war file
-  file:
-    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
-    state: absent
+# - name: delete the war file
+#   file:
+#     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+#     state: absent
 
 - name: Change file ownership, group and permissions
   ansible.builtin.file:
