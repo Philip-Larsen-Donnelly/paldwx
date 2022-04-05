@@ -75,10 +75,10 @@
       dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}"
       remote_src: yes
 
-  # - name: delete the war file
-  #   file:
-  #     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
-  #     state: absent
+  - name: delete the war file
+    file:
+      path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/dev#{{ instance.name }}.war"
+      state: absent
 
   - name: update the facts with the install datetime
     lineinfile:
