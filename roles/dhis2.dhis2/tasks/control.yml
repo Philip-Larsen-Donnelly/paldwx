@@ -248,7 +248,7 @@
   delay: 10
   when: (instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]) and
         (((not project) and instance.db_demo is defined and instance.db_demo|length != 0) or
-        (project in ["sierra-leone","who-metadata"]))
+        (project in ["sierra-leone","who-metadata", "lmis"]))
   ignore_errors: yes
 
 
