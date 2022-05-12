@@ -74,7 +74,7 @@ server {
 
     # Return an error code if a single quote was found in parameters
     if ($sqli = 1) {
-        return 403;
+        return 418;
     }
 
     ##### HARDENING CODE ENDS HERE #####
@@ -268,6 +268,7 @@ include dhis2_instances;
     error_page 400 /pivvy/400.html;
     error_page 401 /pivvy/401.html;
     error_page 402 /pivvy/402.html;
+    error_page 403 /pivvy/403.html;
     error_page 404 /pivvy/404.html;
     error_page 405 /pivvy/4xx.html;
     error_page 500 /pivvy/500.html;
