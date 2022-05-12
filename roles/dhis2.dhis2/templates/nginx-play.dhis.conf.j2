@@ -54,6 +54,30 @@ server {
     #     proxy_set_header          X-Forwarded-Proto  https;
     # }
 
+    ##### HARDENING CODE STARTS HERE #####
+
+    # Set an alert flag to zero
+    set $sqli 0;
+
+    # Copy query parameters to a local variable
+    set $my_args $args;
+
+    # If a local copy of query parameters contains FILTER= parameter, exclude it (case insensitive)
+    if ($my_args ~* (.*)&(filter=[^&]*)(?=&|$)(.*)|^(filter=[^&]*)(&|$)(.*)) {
+        set $my_args $1$3$6;
+    }
+
+    # Check that all remaining parameters don't contain a single quote
+    if ( $my_args ~* "('|%27)" ) {
+        set $sqli 1;
+    }
+
+    # Return an error code if a single quote was found in parameters
+    if ($sqli = 1) {
+        return 400;
+    }
+
+    ##### HARDENING CODE ENDS HERE #####
 
 location /prometheus/ {
    proxy_pass http://localhost:9090/prometheus/;
