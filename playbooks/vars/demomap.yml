@@ -7,7 +7,6 @@ dhis2_demo_to_war:
   '2.38.0': '2.38/dhis2-stable-2.38.0.war'
   '2.37.6': '2.37/dhis2-stable-2.37.6.war'
   '2.37.5': '2.37/dhis2-stable-2.37.5.war'
-  '2.37.7': '2.37/dhis2-stable-2.37.7.war'
   '2.37': '2.37/dev/dhis2-dev-2.37.war'
   '2.36.9': '2.36/dhis2-stable-2.36.9.war'
   '2.36.10': '2.36/dhis2-stable-2.36.10.war'
@@ -28,6 +27,9 @@ dhis2_demo_to_war:
 # the following maps the name of the "demo DB update instance" to the db file used
 dhis2_demo_db_map:
   'ANDROID_dev': 'dev/android'
+  'ANDROID_2.38': '2.38/android'
+  'ANDROID_2.37': '2.37/android'
+  'ANDROID_2.36': '2.36/android'
   'ANDROID_2.35': '2.35/android'
   'ANDROID_2.34': '2.34/android'
   'ANDROID_2.33': '2.33/android'
@@ -37,7 +39,6 @@ dhis2_demo_db_map:
 dhis2_demo_to_dev:
   'dev': 'dev'
   '2.38.0': ['2.38','dev']
-  '2.37.7': '2.37'
   '2.37.6': '2.37'
   '2.37.5': '2.37'
   '2.36.9': '2.36'
