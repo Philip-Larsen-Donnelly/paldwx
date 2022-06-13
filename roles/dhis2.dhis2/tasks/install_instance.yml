@@ -17,19 +17,7 @@
   # handler to restart tomcat?
 # =========================
 
-# === PostgreSQL ==========
-- name: Ensure PostgreSQL users are present for {{ inventory_hostname }}/{{ instance.name }}
-  postgresql_user:
-    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
-    name: "{{ instance.db_owner | default(dhis2_db_owner_default) }}"
-    password: "{{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}"
-    role_attr_flags: CREATEDB,SUPERUSER
-    state: present
-  become: true
-  become_user: "{{ postgresql_user }}"
-  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
-  vars:
-    ansible_ssh_pipelining: true
+
 
 
 # === Deploy WAR ==============
@@ -116,3 +104,14 @@
   include: api_prepare_calls.yml
   when: API_REQUESTS is defined and ( API_REQUESTS | length != 0) and
         dhis2_api_requests is defined and ( dhis2_api_requests | length != 0)
+
+
+# # === only root permissions on webapps dir
+# - name: Change file ownership, group and permissions
+#   ansible.builtin.file:
+#     path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps"
+#     state: directory
+#     recurse: yes
+#     owner: root
+#     group: "{{ dhis2_user }}"
+#     mode: '0650'
