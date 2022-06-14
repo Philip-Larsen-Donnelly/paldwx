@@ -6,11 +6,11 @@
     creates: "/etc/ssl/certs/dhparam.pem"
 
 
-# - name: Migrate nginx config
-#   shell: sed -n '/BEGIN DHIS2-INSTANCES/,/END DHIS2-INSTANCES/p' /etc/nginx/conf.d/default.conf > /etc/nginx/dhis2_instances; sed -i '/# .*DHIS2-INSTANCES/d'  /etc/nginx/dhis2_instances
-#   args:
-#     creates: /etc/nginx/dhis2_instances
-#   warn: false
+- name: Migrate nginx config
+  shell: sed -n '/BEGIN DHIS2-INSTANCES/,/END DHIS2-INSTANCES/p' /etc/nginx/conf.d/default.conf > /etc/nginx/dhis2_instances; sed -i '/# .*DHIS2-INSTANCES/d'  /etc/nginx/dhis2_instances
+  args:
+    creates: /etc/nginx/dhis2_instances
+  warn: false
 
 - name: configure nginx
   template:
