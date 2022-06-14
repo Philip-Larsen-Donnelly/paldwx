@@ -5,7 +5,7 @@
     port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
     name: "{{ instance.db_owner | default(dhis2_db_owner_default) }}"
     password: "{{ instance.db_owner_password | default(dhis2_db_owner_password_default) }}"
-    role_attr_flags: NOCREATEDB,NOSUPERUSER
+    role_attr_flags: CREATEDB,SUPERUSER
     state: present
   become: true
   become_user: "{{ postgresql_user }}"
