@@ -83,6 +83,8 @@
       dest: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
       format: gz
       force_archive: true
+    ignore_errors: yes
+
 
   - name: commit the filestore to s3
     aws_s3:
@@ -97,6 +99,7 @@
         comment: "{{ db_commit_comment | default('none') }}"
         original_source: "{{ instance.db_demo }}"
         war_file: "{{ instance.war_file }}"
+    ignore_errors: yes
 
   when: dhis2_filestore.type | default('filesystem') == 'filesystem'
 
