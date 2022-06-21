@@ -213,6 +213,8 @@
     owner: "{{ dhis2_user | default('dhis') }}"
     remote_src: yes
     exclude: "{{ filestore_exclude | default([]) }}"
+    extra_opts:
+      - --absolute-names
   ignore_errors: yes
   become_user: "{{ dhis2_user | default('dhis') }}"
 
