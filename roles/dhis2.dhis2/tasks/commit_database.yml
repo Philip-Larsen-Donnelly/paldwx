@@ -38,6 +38,7 @@
   when: instance.db_demo is defined and instance.db_demo|length
   # not sure I need the "when" above - it might prevent snapshotting an instance started from empty.
 
+
 - name: commit the snapshot to s3
   aws_s3:
     aws_access_key: "{{ aws_access_key }}"
@@ -73,10 +74,38 @@
     - "{{ dhis2_demo_to_dev[instance.name] }}"
 
 
+- name: Create a tar.gz archive of the instance filestore.
+  block:
+
+  - name: create the archive
+    community.general.archive:
+      path: "{{ storage }}/instances/{{ instance.name }}/home/dhis2-{{ instance.db_name|replace('_','-')  }}-store/*"
+      dest: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
+      format: gz
+      force_archive: true
+
+  - name: commit the filestore to s3
+    aws_s3:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      bucket: "{{ dhis2_project_database_bucket }}"
+      object: "{{ instance.db_demo | replace('sql.gz', 'filestore') | replace('.pgc', '.filestore') }}"
+      src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
+      mode: put
+      metadata:
+        saved_by: "{{ awx_user_name | default('unknown') }}"
+        comment: "{{ db_commit_comment | default('none') }}"
+        original_source: "{{ instance.db_demo }}"
+        war_file: "{{ instance.war_file }}"
+
+  when: dhis2_filestore.type | default('filesystem') == 'filesystem'
+
+
 - name: remove local dump file
   file:
-    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
+    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.*"
     state: absent
+
 
 - name: update the facts if format was forced
   block:
@@ -86,6 +115,7 @@
       dest: "{{ storage }}/instances/{{ instance.name }}/home/instance.fact"
       regexp: "^db_demo=.+$"
       line: "db_demo={{ instance.db_demo | replace('sql.gz',commit_dump_format) }}"
+
 
   - name: update the facts
     set_fact:

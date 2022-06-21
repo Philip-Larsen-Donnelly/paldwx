@@ -13,6 +13,7 @@ db_dump_format: "sql.gz"
 db_restore_threads: "{{ ansible_facts['processor_count'] *ansible_facts['processor_cores'] }}"
 
 snapshot_date: ""
+filestore_exclude: []
 
 postgresql_version: "10"
 postgresql_packages:

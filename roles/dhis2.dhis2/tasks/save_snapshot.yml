@@ -43,7 +43,36 @@
   vars:
     save_suffix: "{{ db_save_suffix | default('') }}"
 
+
+- name: Create a tar.gz archive of the instance filestore.
+  block:
+
+  - name: create the archive
+    community.general.archive:
+      path: "{{ storage }}/instances/{{ instance.name }}/home/dhis2-{{ instance.db_name|replace('_', '-')  }}-store/*"
+      dest: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
+      format: gz
+      force_archive: true
+
+  - name: commit the filestore to s3
+    aws_s3:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      bucket: dhis2-database-backups
+      object: "{{ ansible_host }}/{{ instance_name }}/{{ db_snap_date }}_{{ instance.name }}{{ save_suffix }}.filestore"
+      src: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
+      mode: put
+      metadata:
+        saved_by: "{{ awx_user_name | default('unknown') }}"
+        comment: "{{ db_commit_comment | default('none') }}"
+        original_source: "{{ instance.db_demo }}"
+        war_file: "{{ instance.war_file }}"
+    vars:
+      save_suffix: "{{ db_save_suffix | default('') }}"
+
+  when: dhis2_filestore.type | default('filesystem') == 'filesystem'
+
 - name: remove local dump file
   file:
-    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ db_dump_format }}"
+    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.*"
     state: absent
