@@ -217,8 +217,9 @@
       - --absolute-names
   ignore_errors: yes
   become_user: "{{ dhis2_user | default('dhis') }}"
-  when: filestore_deploy is defined
-
+  when:
+    - filestore_deploy is defined
+    - filestore_deploy | bool
 
 - name: Try to restore DB
   block:
