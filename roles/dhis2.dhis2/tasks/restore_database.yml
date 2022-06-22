@@ -212,12 +212,12 @@
     dest: "{{ storage }}/instances/{{ instance.name }}/home/dhis2-{{ instance.db_name | replace('_','-') }}-store"
     owner: "{{ dhis2_user | default('dhis') }}"
     remote_src: yes
-    exclude: "{{ filestore_exclude | default([]) }}"
+    exclude: "{{ filestore_exclude_list | default([]) }}"
     extra_opts:
       - --absolute-names
   ignore_errors: yes
   become_user: "{{ dhis2_user | default('dhis') }}"
-  when: restore_filestore is defined
+  when: filestore_deploy is defined
 
 
 - name: Try to restore DB
