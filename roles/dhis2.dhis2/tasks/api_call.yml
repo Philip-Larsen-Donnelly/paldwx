@@ -1,4 +1,18 @@
 ---
+# simple call with no payload
+- name: "Simple request with no payload: {{ request_name }}"
+  uri:
+    url: https://{{ inventory_hostname }}/{{ instance.name }}/{{ request.path }}
+    method: "{{ request.method }}"
+    user: "{{ dhis2_admin_user }}"
+    password: "{{ dhis2_admin_user_password }}"
+    force_basic_auth: yes
+    status_code: [200,201,202,203,204]
+  register: result
+  ignore_errors: "{{ request.ignore_errors | default('no') }}"
+  when:
+    - request.body is undefined
+    - request.url is undefined
 
 # payload is fully defined in the body, use that
 - name: "Use defined payload for request: {{ request_name }}"
