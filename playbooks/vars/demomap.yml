@@ -5,6 +5,7 @@ dhis2_demo_to_war:
   'dev-temp': 'master/dev/dhis2-dev-master.war'
   '2.38': '2.38/dev/dhis2-dev-2.38.war'
   '2.38.0': '2.38/dhis2-stable-2.38.0.war'
+  '2.38.1': '2.38/dhis2-stable-2.38.1.war'
   '2.37.7': '2.37/dhis2-stable-2.37.7.1.war'
   '2.36.11': '2.36/dhis2-stable-2.36.11.1.war'
   '2.35.14': '2.35/dhis2-stable-2.35.14.war'
@@ -35,6 +36,7 @@ dhis2_demo_db_map:
 dhis2_demo_to_dev:
   'dev': 'dev'
   '2.38.0': ['2.38','dev']
+  '2.38.1': ['2.38','dev']
   '2.37.7': '2.37'
   '2.36.11': '2.36'
   '2.35.14': '2.35'
