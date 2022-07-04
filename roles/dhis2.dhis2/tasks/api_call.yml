@@ -48,6 +48,6 @@
   when: request.url is defined
 
 
-- name: response
-  debug:
-    msg: "{{ result }}"
+# - name: response
+#   debug:
+#     msg: "{{ result }}"
