@@ -6,6 +6,8 @@ storage_path: "/mnt/sdb"
 # The following is needed to set up mount point (for storage_path) on an extrnal volume
 storage_device: "/dev/sdb"
 
+dhis2_nginx: "-samesite"
+
 API_REQUESTS:
   developer CORS whitelist:
     body:
