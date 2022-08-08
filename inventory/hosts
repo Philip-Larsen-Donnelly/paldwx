@@ -138,6 +138,10 @@ demos.dhis2.org
 [hispapps]
 hisp.apps.dhis2.org
 
+# Maturity-profiles
+[maturity]
+maturity-profile.dhis2.org
+
 [coreteam:children]
 liveplay
 academy
@@ -149,6 +153,7 @@ lmis
 metapack
 hispapps
 research
+maturity
 
 [coreteam:vars]
 ansible_ssh_user=ubuntu
