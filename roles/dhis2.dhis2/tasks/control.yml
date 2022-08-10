@@ -92,6 +92,7 @@
 - name: stop the instance
   systemd:
     state: stopped
+    enabled: no
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
   when: instance_action in ["stop", "develop_mode_on", "develop_mode_off"]
@@ -192,6 +193,7 @@
 - name: start the instance
   systemd:
     state: started
+    enabled: yes
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
   when: instance_action in ["start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_on", "develop_mode_off"]
@@ -202,6 +204,7 @@
 - name: restart the instance
   systemd:
     state: restarted
+    enabled: yes
     name: dhis2-{{ instance.name }}
   ignore_errors: yes
   when: instance_action == "restart"

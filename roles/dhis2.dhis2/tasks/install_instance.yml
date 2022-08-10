@@ -34,6 +34,7 @@
 - name: start the {{ inventory_hostname }}/{{ instance.name }} instance
   systemd:
     state: started
+    enabled: yes
     name: dhis2-{{ instance.name }}
 
 
