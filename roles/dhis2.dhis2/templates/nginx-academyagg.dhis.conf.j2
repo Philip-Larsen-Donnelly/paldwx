@@ -44,6 +44,11 @@ server {
         break;
      }
 
+     location ~ ^/validate/dhis-web-user-profile/ {
+         rewrite ^/validate/.* $scheme://$host/validate/profile-access-not-allowed/ redirect;
+         break;
+      }
+
 
     # play.dhis2.org
 
