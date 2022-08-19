@@ -70,6 +70,19 @@ location /signup/ {
    proxy_pass http://localhost:8099/;
    }
 
+    location /maturity_prod {
+        proxy_pass                http://maturity-profile.dhis2.org/prod;
+        proxy_redirect            off;
+        proxy_set_header          Host               $host;
+        proxy_set_header          X-Real-IP          $remote_addr;
+        proxy_set_header          X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header          X-Forwarded-Proto  https;
+
+        proxy_connect_timeout       180;
+        proxy_send_timeout          180;
+        proxy_read_timeout          180;
+        send_timeout                180;
+    }
 
 include dhis2_instances;
 
