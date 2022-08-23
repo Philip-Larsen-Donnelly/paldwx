@@ -180,5 +180,32 @@
         "useAltTransactionNaming": false
       }
     }
+  ],
+  "instrumentation": [
+    {
+      "className": "org.hisp.dhis.tracker.report.DefaultTrackerImportService",
+      "methodName": "importTracker",
+      "methodParameterTypes": [
+        ".."
+      ],
+      "captureKind": "transaction",
+      "transactionType": "Web",
+      "transactionNameTemplate": "/api/tracker: import",
+      "alreadyInTransactionBehavior": "capture-new-transaction",
+      "traceEntryMessageTemplate": "{{0}}",
+      "traceEntryStackThresholdMillis": 1000,
+      "traceEntryCaptureSelfNested": true,
+      "timerName": "Timer"
+    },
+    {
+      "className": "org.hisp.dhis.webapi.controller.event.TrackedEntityInstanceController",
+      "methodName": "getTrackedEntityInstances",
+      "methodParameterTypes": [
+        ".."
+      ],
+      "captureKind": "other",
+      "transactionType": "Web",
+      "transactionNameTemplate": "/api/trackedEntityInstances: GET"
+    }
   ]
 }
