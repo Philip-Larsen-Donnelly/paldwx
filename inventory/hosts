@@ -108,7 +108,7 @@ test.e2e.dhis2.org
 test.performance.dhis2.org
 test.performancebot.dhis2.org
 [qareal:vars]
-ansible_ssh_user=root
+ansible_ssh_user=gintare
 
 [qateam]
 verify.dhis2.org
