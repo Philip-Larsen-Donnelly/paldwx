@@ -257,6 +257,8 @@
       become_user: "{{ instance.db_owner | default('dhis') }}"
       when:
         - this_fetch_format == 'pgc'
+      vars:
+        ansible_ssh_pipelining: true
 
     - name: Restore to DB {{ instance.db_name }} for {{ instance.name }}
       community.postgresql.postgresql_db:
