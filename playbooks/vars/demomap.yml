@@ -32,7 +32,7 @@ dhis2_demo_db_map:
   'ANDROID_2.34': '2.34/android'
   'ANDROID_2.33': '2.33/android'
   'ANDROID_2.32': '2.32/android'
-  `analytics_dev`: 'dev/analytics'
+  'analytics_dev': 'dev/analytics'
 
 # the following maps the name of the "demo DB update instance" to development demo db
 dhis2_demo_to_dev:
