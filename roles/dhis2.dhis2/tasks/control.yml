@@ -255,14 +255,6 @@
   ignore_errors: yes
 
 
-# === Run API requests if we have reset the DB ==============
-- name: Run API requests
-  include: api_prepare_calls.yml
-  when: (instance_action in ["reset_db", "reset_war_and_db"])  and
-        API_REQUESTS is defined and ( API_REQUESTS | length != 0) and
-        dhis2_api_requests is defined and ( dhis2_api_requests | length != 0)
-
-
 # === Wait until we can reach the instance before finishing the job
 - name: ensure instance {{ inventory_hostname }}/{{ instance.name }}/api is up before finishing job
   uri:
@@ -274,6 +266,14 @@
   retries: 30
   delay: 10
   when: instance_action in ["restart", "start", "start", "reset_war", "restore_snapshot", "reset_db", "reset_war_and_db", "develop_mode_on", "develop_mode_off"]
+
+
+# === Run API requests if we have reset the DB ==============
+- name: Run API requests
+  include: api_prepare_calls.yml
+  when: (instance_action in ["reset_db", "reset_war_and_db", "reset_war", "restart", "start"])  and
+        API_REQUESTS is defined and ( API_REQUESTS | length != 0) and
+        dhis2_api_requests is defined and ( dhis2_api_requests | length != 0)
 
 
 # === repair flyway if necessary  (flyway.repair_before_migration=true)
