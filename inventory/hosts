@@ -106,9 +106,14 @@ test.e2e.dhis2.org
 
 [qareal]
 test.performance.dhis2.org
-test.performancebot.dhis2.org
 [qareal:vars]
 ansible_ssh_user=gintare
+
+[perf]
+test.performancebot.dhis2.org
+[perf:vars]
+ansible_ssh_user=root
+
 
 [qateam]
 verify.dhis2.org
@@ -149,6 +154,7 @@ academy
 devteam
 qareal
 qateam
+perf
 emis
 lmis
 metapack
