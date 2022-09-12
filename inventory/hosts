@@ -104,12 +104,9 @@ emis.dhis2.org
 debug.dhis2.org
 test.e2e.dhis2.org
 
-[qareal]
-test.performance.dhis2.org
-[qareal:vars]
-ansible_ssh_user=gintare
 
 [perf]
+test.performance.dhis2.org
 test.performancebot.dhis2.org
 [perf:vars]
 ansible_ssh_user=root
