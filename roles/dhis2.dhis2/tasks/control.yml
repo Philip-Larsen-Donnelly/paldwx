@@ -188,6 +188,15 @@
   when: instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]
 
 
+# make sure there is no war file (should already be expanded and owned by root)
+- name: delete the war file
+  file:
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+    state: absent
+  ignore_errors: yes
+  when: instance_action in ["start", "restart"]
+
+
 # === Start instance ==========
 # start the instance
 - name: start the instance
