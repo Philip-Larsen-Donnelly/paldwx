@@ -3,30 +3,30 @@
 - name: reload nginx
   service: name=nginx state=reloaded
 
-- name: restart filebeat
-  service: name=filebeat state=restarted
+# - name: restart filebeat
+#   service: name=filebeat state=restarted
 
-- name: restart prometheus
-  become: true
-  systemd:
-    daemon_reload: true
-    name: prometheus
-    state: restarted
-
-- name: reload prometheus
-  become: true
-  systemd:
-    name: prometheus
-    state: reloaded
-
-- name: stop prometheus
-  become: true
-  systemd:
-    name: prometheus
-    state: stopped
-
-- name: start prometheus
-  become: true
-  systemd:
-    name: prometheus
-    state: started
+# - name: restart prometheus
+#   become: true
+#   systemd:
+#     daemon_reload: true
+#     name: prometheus
+#     state: restarted
+#
+# - name: reload prometheus
+#   become: true
+#   systemd:
+#     name: prometheus
+#     state: reloaded
+#
+# - name: stop prometheus
+#   become: true
+#   systemd:
+#     name: prometheus
+#     state: stopped
+#
+# - name: start prometheus
+#   become: true
+#   systemd:
+#     name: prometheus
+#     state: started

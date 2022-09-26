@@ -60,14 +60,14 @@
     state: reloaded
     name: nginx
 
-# add to prometheus scrape config if monitoring is on- name: remove redirect from nginx config
-- set_fact:
-    scraper_content: "{{ lookup('template', 'templates/prometheus_scrapers.j2') }}"
-
-- blockinfile:
-    dest: /etc/hosts
-    content: '{{ scraper_content }}'
-    state: present
+# add to prometheus scrape config if monitoring is on
+# - set_fact:
+#     scraper_content: "{{ lookup('template', 'templates/prometheus_scrapers.j2') }}"
+#
+# - blockinfile:
+#     dest: /etc/hosts
+#     content: '{{ scraper_content }}'
+#     state: present
 
 - name: "make sure we have all the facts"
   setup: ~
