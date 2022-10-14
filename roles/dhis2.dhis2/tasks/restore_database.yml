@@ -206,6 +206,14 @@
         port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
         state: "{{ instance.state | default('present')  }}"
 
+# create filestore directory if it doesn't exist
+- name: Ensure filestore directory exists
+  ansible.builtin.file:
+    path: "{{ storage }}/instances/{{ instance.name }}/home/dhis2-{{ instance.db_name | replace('_','-') }}-store"
+    state: directory
+    mode: 0755
+  ignore_errors: yes
+
 - name: Extract filestore archive into home directory
   ansible.builtin.unarchive:
     src: "{{ storage }}/instances/{{ instance.name }}/temp_db.filestore"
