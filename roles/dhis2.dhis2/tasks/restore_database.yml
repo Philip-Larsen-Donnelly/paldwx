@@ -289,30 +289,30 @@
             (s3_snapshot is defined)
 
 
-- name: Execute SQL - force admin password
-  postgresql_query:
-    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
-    db: "{{ instance.db_name }}"
-    query: UPDATE users SET password = %s WHERE username = %s
-    positional_args:
-    - '{{ dhis2_admin_user_password_hash }}'
-    - '{{ dhis2_admin_user }}'
-  become: true
-  become_user: "{{ postgresql_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  when: dhis2_admin_user_password_hash is defined
-
-- name: Execute SQL - fix sharing for COs
-  postgresql_query:
-    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
-    db: "{{ instance.db_name }}"
-    query: UPDATE dataelementcategoryoption SET publicaccess = 'rwrw----'
-  become: true
-  become_user: "{{ postgresql_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  when: co_access_fix is defined
+# - name: Execute SQL - force admin password
+#   postgresql_query:
+#     port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+#     db: "{{ instance.db_name }}"
+#     query: UPDATE users SET password = %s WHERE username = %s
+#     positional_args:
+#     - '{{ dhis2_admin_user_password_hash }}'
+#     - '{{ dhis2_admin_user }}'
+#   become: true
+#   become_user: "{{ postgresql_user }}"
+#   vars:
+#     ansible_ssh_pipelining: true
+#   when: dhis2_admin_user_password_hash is defined
+#
+# - name: Execute SQL - fix sharing for COs
+#   postgresql_query:
+#     port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+#     db: "{{ instance.db_name }}"
+#     query: UPDATE dataelementcategoryoption SET publicaccess = 'rwrw----'
+#   become: true
+#   become_user: "{{ postgresql_user }}"
+#   vars:
+#     ansible_ssh_pipelining: true
+#   when: co_access_fix is defined
 
 
 # - name: Execute SQL - make sure all users have up-to-date password
