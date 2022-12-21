@@ -12,7 +12,7 @@ dhis2_demo_to_war:
   '2.37.7': '2.37/dhis2-stable-2.37.7.1.war'
   '2.37.8': '2.37/dhis2-stable-2.37.8.1.war'
   '2.36.12': '2.36/dhis2-stable-2.36.12.1.war'
-  '2.36.13': '2.36/dhis2-stable-2.36.13.1.war'
+  '2.36.13': '2.36/dhis2-stable-2.36.13.2.war'
   '2.35.14': '2.35/dhis2-stable-2.35.14.war'
   '2.36': '2.36/dev/dhis2-dev-2.36.war'
   '2.34.9': '2.34/dhis2-stable-2.34.9.war'
