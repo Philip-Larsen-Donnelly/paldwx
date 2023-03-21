@@ -54,6 +54,9 @@ server {
     #     proxy_set_header          X-Forwarded-Proto  https;
     # }
 
+location /zabbix/ {
+   proxy_pass http://localhost:8088/;
+   }
 
 location /prometheus/ {
    proxy_pass http://localhost:9090/prometheus/;
