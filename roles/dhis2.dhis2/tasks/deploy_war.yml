@@ -22,6 +22,12 @@
 - name: get the current date time
   set_fact: war_date="{{lookup('pipe','date \"+%Y-%m-%d %H:%M:%S.%3N\"')}}"
 
+- name: set the context name
+  set_fact: context_path="{{ instance.cluster_name if instance.cluster_name is defined else instance.name }}"
+
+# - name: check context_path
+#   debug: msg="context_path is {{ context_path }}"
+
 - name: download the latest war file to temporary file
   get_url:
     url: "{{ instance.war_file }}"
@@ -39,7 +45,7 @@
 # get checksum of current war file
 - name: get checksum of current war file
   stat:
-    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}.war"
     get_checksum: yes
   register: current_war
 
@@ -73,7 +79,7 @@
   - name: deploy the war file
     copy:
       src: "{{ temp_war.path }}"
-      dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+      dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}.war"
       remote_src: yes
 
   - name: update the facts with the install datetime
@@ -109,12 +115,12 @@
 
 - name: clear the directory to extract war file to
   ansible.builtin.file:
-    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}"
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}"
     state: absent
 
 - name: create the directory to extract war file to
   ansible.builtin.file:
-    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}"
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}"
     state: directory
 
 - name: Ensure unzip is installed.
@@ -122,13 +128,13 @@
 
 - name: Extract war flle
   ansible.builtin.unarchive:
-    src: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
-    dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}"
+    src: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}.war"
+    dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}"
     remote_src: yes
 
 - name: delete the war file
   file:
-    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ instance.name }}.war"
+    path: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}.war"
     state: absent
 
 - name: Change file ownership, group and permissions
@@ -139,3 +145,41 @@
     owner: root
     group: "{{ dhis2_user | default('dhis') }}"
     mode: '0650'
+
+# Here we adapt the Java environment
+# If a jdk_version is defined, we will use that
+# If not, we will try to pull the correct version from the META-INF/MANIFEST.MF file in the exploded war
+# If neither of the above we will default back to JDK 11
+- name: Ensure the JAVA_HOME environment is set to the correct Java version for the war file
+  block:
+
+  - name: extract Build-Jdk-Spec from file
+    slurp:
+      src: "{{ storage }}/instances/{{ instance.name }}/tomcat/webapps/{{ context_path }}/META-INF/MANIFEST.MF"
+    register: mymanifest
+    ignore_errors: true
+
+  - name: Set build_jdk_spec
+    set_fact:
+      build_jdk_spec: "{{ mymanifest['content'] | b64decode | regex_findall('Build-Jdk-Spec: *([0-9.]+)') | first | replace('1.','') }}"
+    when: mymanifest.failed == false
+
+  when: jdk_version is not defined
+
+- name: Check if the implied jdk_path exists
+  stat:
+    path: "/usr/lib/jvm/java-{{ jdk_version | default(build_jdk_spec) | default(11) }}-openjdk-amd64"
+  register: jdk_path
+
+- name: Update Java environment to match the implied jdk_path
+  lineinfile:
+    path: "/etc/systemd/system/dhis2-{{ instance.name }}.service"
+    regexp: "Environment='JAVA_HOME="
+    line: "Environment='JAVA_HOME={{ jdk_path.stat.path }}'"
+  register: serviceupdate
+  when: jdk_path.stat.exists
+
+- name: force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  when: serviceupdate.changed
