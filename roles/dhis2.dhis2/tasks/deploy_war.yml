@@ -161,7 +161,7 @@
 
   - name: Set build_jdk_spec
     set_fact:
-      build_jdk_spec: "{{ mymanifest['content'] | b64decode | regex_findall('Build-Jdk-Spec: *([0-9.]+)') | first | replace('1.','') }}"
+      build_jdk_spec: "{{ mymanifest['content'] | b64decode | regex_findall('Build-Jdk.*: *([0-9.]+)') | first | regex_replace('^1\.','') | regex_replace('\..*$','')  }}"
     ignore_errors: true
     when: mymanifest.failed == false
 
