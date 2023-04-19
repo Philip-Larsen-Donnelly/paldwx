@@ -1,4 +1,9 @@
 ---
+- name: make sure glowroot is configured for multiple agents
+  lineinfile:
+    path: "{{ storage }}/glowroot/glowroot.properties"
+    line: multi.dir=true
+    create: yes
 
 - file:
     path: "{{ storage }}/glowroot/agent-{{ instance.name }}/{{ item }}"
