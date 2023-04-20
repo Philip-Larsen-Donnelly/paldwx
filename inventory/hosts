@@ -159,7 +159,7 @@ research
 maturity
 
 [coreteam:vars]
-ansible_ssh_user=ubuntu
+ansible_ssh_user=awxmaster
 ansible_ssh_private_key_file=~/.ssh/id_rsa_awx
 ansible_python_interpreter=/usr/bin/python3
 postgresql_python_library=python3-psycopg2
