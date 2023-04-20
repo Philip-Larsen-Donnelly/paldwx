@@ -85,6 +85,7 @@ academy.dev.dhis2.org
 academy.aggregate.dhis2.org
 academy.events.dhis2.org
 academy.dq.dhis2.org
+academy.dq.dhis2.org
 academy.demos.dhis2.org
 
 # UiO Research (students)
@@ -109,12 +110,11 @@ test.e2e.dhis2.org
 test.performance.dhis2.org
 test.performancebot.dhis2.org
 [perf:vars]
-ansible_ssh_user=root
+ansible_ssh_user=awxmaster
 
 
 [qateam]
 verify.dhis2.org
-empty.dhis2.org
 test.databases.dhis2.org
 test.real.dhis2.org
 test.tools.dhis2.org
