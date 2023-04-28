@@ -5,4 +5,19 @@ storage_path: "/ebs1/home"
 storage_device: "/dev/nvme0n1"
 
 dhis2_lander: "-play"
-dhis2_nginx: "-prep"
+
+dhis2_nginx: "-samesite"
+
+API_REQUESTS:
+  developer CORS whitelist:
+    body:
+      - http://localhost:*
+      - https://localhost:*
+      - https://*.dhis2.nu
+      - https://*.netlify.app
+    body_format: json
+    method: POST
+    path: api/configuration/corsWhitelist
+
+dhis2_api_requests:
+  - developer CORS whitelist
