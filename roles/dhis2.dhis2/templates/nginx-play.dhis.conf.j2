@@ -91,7 +91,7 @@ location /grafana/ {
 # Rewrite /demo to latest stable version
 
 location /demo {
-  rewrite ^/demo(.*)$ $scheme://$host/2.39$1 redirect;
+  rewrite ^/demo(.*)$ $scheme://$host/40$1 redirect;
   break;
 }
 
