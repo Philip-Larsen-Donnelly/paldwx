@@ -25,8 +25,12 @@
     body_format: "{{ request.body_format }}"
     body: "{{ request.body }}"
     status_code: [200,201,202,203,204]
+    headers: "{{ request.headers | default(default_headers) }}"
   register: result
   ignore_errors: "{{ request.ignore_errors | default('no') }}"
+  vars:
+    default_headers:
+      Content-Type: "application/json"
   when: request.body is defined
 
 
@@ -41,10 +45,12 @@
     src: "{{ '/tmp/dhis2-API-'+(request.url | hash('md5'))+'.'+(request.url | splitext | last ) }}"
     remote_src: yes
     status_code: [200,201,202,203,204]
-    headers:
-      Content-Type: application/json
+    headers: "{{ request.headers | default(default_headers) }}"
   register: result
   ignore_errors: "{{ request.ignore_errors | default('no') }}"
+  vars:
+    default_headers:
+      Content-Type: "application/json"
   when: request.url is defined
 
 
