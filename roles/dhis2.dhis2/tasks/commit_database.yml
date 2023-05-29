@@ -106,8 +106,11 @@
 
 - name: remove local dump file
   file:
-    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.*"
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ commit_dump_format }}"
+    - "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
 
 
 - name: update the facts if format was forced

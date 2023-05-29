@@ -74,7 +74,10 @@
 
   when: dhis2_filestore.type | default('filesystem') == 'filesystem'
 
-- name: remove local dump file
+- name: remove local dump files
   file:
-    path: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.*"
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.{{ db_dump_format }}"
+    - "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
