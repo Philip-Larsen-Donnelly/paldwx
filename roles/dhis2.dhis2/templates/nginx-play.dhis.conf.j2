@@ -111,12 +111,12 @@ location /40 {
 # redirect version to the latest stable patches
 
 location /2.39/ {
-  rewrite ^/2.39/(.*)$ $scheme://$host/2.39.1.2/$1 redirect;
+  rewrite ^/2.39/(.*)$ $scheme://$host/2.39.2/$1 redirect;
   break;
 }
 
 location /2.39 {
-  rewrite ^/2.39[\d\./]*(.*)$ $scheme://$host/2.39.1.2/$1 redirect;
+  rewrite ^/2.39[\d\./]*(.*)$ $scheme://$host/2.39.2/$1 redirect;
   break;
 }
 

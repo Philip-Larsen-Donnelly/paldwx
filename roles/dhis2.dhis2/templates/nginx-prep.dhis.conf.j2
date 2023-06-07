@@ -37,6 +37,7 @@ server {
 
     # Set SameSite cookie to Lax
     proxy_cookie_path         ~*^/(.*) "/$1; SameSite=Lax";
+    proxy_cookie_flags ~ secure samesite=none;
 
     # play.dhis2.org
 
