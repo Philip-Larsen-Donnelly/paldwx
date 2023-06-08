@@ -71,6 +71,8 @@ postgresql_global_config_options:
     value: 'postgresql.log'
   - option: log_truncate_on_rotation
     value: on
+  - option: jit
+    value: off
 
 
 
