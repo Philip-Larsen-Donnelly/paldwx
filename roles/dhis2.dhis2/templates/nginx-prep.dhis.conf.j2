@@ -69,7 +69,8 @@ location /grafana/ {
 
 
 
-include dhis2_instances;
+   include im_instance*;
+   include dhis2_instances;
 
     location /world {
         proxy_pass                http://ec2-52-211-49-224.eu-west-1.compute.amazonaws.com:8083/world;

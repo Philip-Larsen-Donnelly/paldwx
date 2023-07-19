@@ -84,6 +84,7 @@ location /signup/ {
         send_timeout                180;
     }
 
+include im_instance*;
 include dhis2_instances;
 
     location / {

@@ -22,6 +22,7 @@
   args:
     creates: /etc/nginx/dhis2_instances
 
+
 - name: configure nginx
   template:
     src: "nginx{{ dhis2_nginx }}.dhis.conf.j2"
@@ -30,6 +31,15 @@
     force: yes
   notify: reload nginx
 
+- name: configure im instances in nginx
+  template:
+    src: "instance_manager_overrides.j2"
+    dest: "/etc/nginx/im_instances"
+    mode: 0644
+    force: yes
+  notify: reload nginx
+
+- include: copy_lander.yml
 
 - include: glowroot.yml
   when:

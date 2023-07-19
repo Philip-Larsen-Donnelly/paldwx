@@ -146,3 +146,5 @@ locust_container_name: locustio
 locust_container_image: dhis2/locustio:latest
 dhis2_locust_web_port: 8089
 dhis2_locust_master_port: 5557
+
+instance_manager_overrides: []

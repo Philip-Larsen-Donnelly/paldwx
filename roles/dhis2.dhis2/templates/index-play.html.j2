@@ -87,6 +87,34 @@ You can click on the links below and log in with user: <code>admin</code> / pass
 </div>
 </body>
 <script>
+function mergeArrays(im_data, response) {
+    const mergedArray = [];
+
+    // Create a map of objects from im_data based on their names
+    const imDataMap = new Map(im_data.map(obj => [obj.name, obj]));
+
+    // Iterate over the response array
+    for (const obj of response) {
+      if (imDataMap.has(obj.name)) {
+        // If the im_data array has an object with the same name, use it
+        mergedArray.push(imDataMap.get(obj.name));
+      } else {
+        // Otherwise, use the object from the response array
+        mergedArray.push(obj);
+      }
+    }
+
+    // Add any remaining objects from im_data that were not present in the response array
+    for (const obj of im_data) {
+      if (!mergedArray.some(item => item.name === obj.name)) {
+        mergedArray.push(obj);
+      }
+    }
+
+    return mergedArray;
+  }
+
+var im_data = {{  instance_manager_overrides | tojson() }};
     var notoggle = true;
     //Build Tabulator
     var cachebust = new Date().getTime();
@@ -96,7 +124,7 @@ You can click on the links below and log in with user: <code>admin</code> / pass
         //url - the URL of the request
         //params - the parameters passed with the request
         //response - the JSON object returned in the body of the response.
-        return Object.values(response); //return the tableData property of a response json object
+        return Object.values(mergeArrays(im_data,response)); //return the tableData property of a response json object
     },
     layout:"fitColumns",
 	  height:"100%",
@@ -118,20 +146,25 @@ You can click on the links below and log in with user: <code>admin</code> / pass
     ],
     groupBy:function(data){
         //data - the data object for the row being grouped
-        if (data.war_file.includes("-stable-")){
-          return "Stable";
-        }
-        else if (data.war_file.includes("-canary-")){
-          return "Canary";
-        }
-        else if (data.war_file.includes("2.30")){
-          return "Deprecated";
-        }
-        else if (data.war_file.includes("2.29")){
-          return "Deprecated";
+        if ("docker_image" in data){
+          return "Under Development";
         }
         else {
-          return "Under Development";
+          if (data.war_file.includes("-stable-")){
+            return "Stable";
+          }
+          else if (data.war_file.includes("-canary-")){
+            return "Canary";
+          }
+          else if (data.war_file.includes("2.30")){
+            return "Deprecated";
+          }
+          else if (data.war_file.includes("2.29")){
+            return "Deprecated";
+          }
+          else {
+            return "Under Development";
+          }
         }
     },
     groupHeader:function(value, count, data, group){
@@ -166,12 +199,20 @@ You can click on the links below and log in with user: <code>admin</code> / pass
 
         cellContents +=  "</div></div><div class=\"details\">"
         cellContents +=  "<div class=\"container_d\">"
-        cellContents += "<div class=\"label war\">war: </div>"
-        cellContents += "<div class=\"file war\">" + data.war_file + "</div>"
-        cellContents += "<div class=\"date war\">" + new Date(data.war_date).toLocaleString() + "</div>"
-        cellContents += "<div class=\"label db\">database: </div>"
-        cellContents += "<div class=\"file db\">" + data.db_demo + "</div>"
-        cellContents += "<div class=\"date db\">" + new Date(data.db_date).toLocaleString() + "</div>"
+        if ("docker_image" in data){
+          cellContents += "<div class=\"label war\">docker image:</div>"
+          cellContents += "<div class=\"file war\">" + data.docker_image + "</div>"
+          cellContents += "<div class=\"label db\">database: </div>"
+          cellContents += "<div class=\"file db\">" + data.db_demo + "</div>"
+        }
+        else{
+          cellContents += "<div class=\"label war\">war: </div>"
+          cellContents += "<div class=\"file war\">" + data.war_file + "</div>"
+          cellContents += "<div class=\"date war\">" + new Date(data.war_date).toLocaleString() + "</div>"
+          cellContents += "<div class=\"label db\">database: </div>"
+          cellContents += "<div class=\"file db\">" + data.db_demo + "</div>"
+          cellContents += "<div class=\"date db\">" + new Date(data.db_date).toLocaleString() + "</div>"
+        }
         cellContents += "<div class=\"label installer\">owner: </div>"
         cellContents += "<div class=\"file installer\">" + data.installed_by + "</div>"
         // cellContents += "<div class=\"label logs\">logs: </div>"
