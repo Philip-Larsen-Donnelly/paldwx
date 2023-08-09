@@ -15,7 +15,7 @@ db_restore_threads: "{{ ansible_facts['processor_count'] *ansible_facts['process
 snapshot_date: ""
 filestore_exclude_list: []
 
-postgresql_version: "10"
+postgresql_version: "13"
 postgresql_packages:
   - postgresql-{{ postgresql_version }}
   - postgresql-contrib
