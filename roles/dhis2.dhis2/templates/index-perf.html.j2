@@ -149,7 +149,7 @@ var im_data = {{  instance_manager_overrides | tojson() }};
         }
         cellContents += "<div class=\"label installer\">owner: </div>"
         cellContents += "<div class=\"file installer\">" + data.installed_by + "</div>"
-        if ("docker_image" not in data){
+        if (!("docker_image" in data)){
           cellContents += "<div class=\"label logs\">monitoring: </div>"
           cellContents += "<div class=\"file logs\">" + glowlink + "</div>"
         }
