@@ -27,30 +27,16 @@
         name: boto3
 
     - name: copy DB from {{ db_from }} to {{ db_to }}
-      block:
-        - name: download {{ db_from }} file S3
-          aws_s3:
-            aws_access_key: "{{ aws_access_key }}"
-            aws_secret_key: "{{ aws_secret_key }}"
+      amazon.aws.s3_object:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        bucket: dhis2-database-development
+        object: "{{ project }}/{{ db_to }}"
+        mode: copy
+        copy_src:
             bucket: dhis2-database-development
             object: "{{ project }}/{{ db_from }}"
-            dest: "/tmp/db_cp.sql.gz"
-            mode: get
 
-        - name: upload {{ db_to }} to s3
-          aws_s3:
-            aws_access_key: "{{ aws_access_key }}"
-            aws_secret_key: "{{ aws_secret_key }}"
-            bucket: dhis2-database-development
-            object: "{{ project }}/{{ db_to }}"
-            src: "/tmp/db_cp.sql.gz"
-            mode: put
-            metadata: "copied_from={{ db_from }}"
-
-        - name: remove local temporary file
-          file:
-            path: "/tmp/db_cp.sql.gz"
-            state: absent
 
       when:
         - project is defined
