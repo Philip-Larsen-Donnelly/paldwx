@@ -118,7 +118,6 @@ verify.dhis2.org
 test.databases.dhis2.org
 test.real.dhis2.org
 test.tools.dhis2.org
-smoke.dhis2.org
 
 [metaoriginal]
 #who.dhis2.org
