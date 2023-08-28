@@ -21,9 +21,6 @@
 #ansible_python_interpreter=/usr/bin/python3
 
 
-
-
-
 #=============================================================================
 # ansible AWX server
 [awx]
@@ -118,6 +115,7 @@ verify.dhis2.org
 test.databases.dhis2.org
 test.real.dhis2.org
 test.tools.dhis2.org
+test.reports.dhis2.org
 
 [metaoriginal]
 #who.dhis2.org
