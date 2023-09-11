@@ -37,6 +37,7 @@ dhis2_demo_to_war:
 # the following maps the name of the "demo DB update instance" to the db file used
 dhis2_demo_db_map:
   '40.0.0': '2.40.0/dhis2-db-sierra-leone.sql.gz'
+  '40.0.1': '2.40.0/dhis2-db-sierra-leone.sql.gz'
   'ANDROID_dev': 'dev/android/dhis2-db-sierra-leone.sql.gz'
   'ANDROID_2.38': '2.38/android/dhis2-db-sierra-leone.sql.gz'
   'ANDROID_2.37': '2.37/android/dhis2-db-sierra-leone.sql.gz'
