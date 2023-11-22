@@ -99,12 +99,12 @@ location /demo {
 # redirect version to the latest stable patches
 
 location /40/ {
-  rewrite ^/40/(.*)$ $scheme://$host/40.1.0/$1 redirect;
+  rewrite ^/40/(.*)$ $scheme://$host/40.2.0/$1 redirect;
   break;
 }
 
 location /40 {
-  rewrite ^/40[\d\./]*(.*)$ $scheme://$host/40.1.0/$1 redirect;
+  rewrite ^/40[\d\./]*(.*)$ $scheme://$host/40.2.0/$1 redirect;
   break;
 }
 
