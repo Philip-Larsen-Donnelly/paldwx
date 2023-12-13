@@ -147,7 +147,7 @@ var im_data = {{  instance_manager_overrides | tojson() }};
     groupBy:function(data){
         //data - the data object for the row being grouped
         if ("docker_image" in data){
-          return "Under Development";
+          return data.type;
         }
         else {
           if (data.war_file.includes("-stable-")){
