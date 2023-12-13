@@ -18,10 +18,26 @@ instance_manager_overrides:
     db_demo: "SL Demo dev"
     postgresql_version: 13
   - name: 2.40dev
-    description: "DHIS 2 version 40 development snapshot (running on Instance Manager)"
+    description: "Build of the DHIS 2 version 2.40 development snapshot (running on Instance Manager)"
     im_url: https://play.im.dhis2.org/dev-2-40
     type: "Under Development"
     installed_by: "instance-manager"
     docker_image: "dhis2/core:2.40"
     db_demo: "SL Demo 2.40"
+    postgresql_version: 13
+  - name: 2.39dev
+    description: "Build of the DHIS 2 version 2.39 development snapshot (running on Instance Manager)"
+    im_url: https://play.im.dhis2.org/dev-2-39
+    type: "Under Development"
+    installed_by: "instance-manager"
+    docker_image: "dhis2/core:2.39"
+    db_demo: "SL Demo 2.39"
+    postgresql_version: 13
+  - name: 2.38dev
+    description: "Build of the DHIS 2 version 2.38 development snapshot (running on Instance Manager)"
+    im_url: https://play.im.dhis2.org/dev-2-38
+    type: "Under Development"
+    installed_by: "instance-manager"
+    docker_image: "dhis2/core:2.38"
+    db_demo: "SL Demo 2.38"
     postgresql_version: 13
