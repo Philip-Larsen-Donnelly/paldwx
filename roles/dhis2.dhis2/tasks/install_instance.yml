@@ -105,6 +105,7 @@
   include: api_prepare_calls.yml
   when: API_REQUESTS is defined and ( API_REQUESTS | length != 0) and
         dhis2_api_requests is defined and ( dhis2_api_requests | length != 0)
+  ignore_errors: yes
 
 
 # # === only root permissions on webapps dir
