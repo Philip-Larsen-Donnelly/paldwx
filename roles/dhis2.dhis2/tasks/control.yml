@@ -255,23 +255,6 @@
     state: reloaded
     name: nginx
 
-# === Run analytics if we have reset the DB
-- name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
-  uri:
-    url: https://{{ inventory_hostname }}/{{ 'dev/' if dev_mode_check.stat.islnk is defined else '' }}{{ instance.name }}/api/resourceTables/analytics
-    method: POST
-    user: "{{ dhis2_admin_user }}"
-    password: "{{ dhis2_admin_user_password }}"
-    force_basic_auth: yes
-    status_code: 200
-  register: result
-  until: result.status in [200, 401]
-  retries: 12
-  delay: 10
-  when: (instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]) and
-        (((not project) and instance.db_demo is defined and instance.db_demo|length != 0) or
-        (project in ["sierra-leone","who-metadata", "lmis"]))
-  ignore_errors: yes
 
 
 # === Wait until we can reach the instance before finishing the job
@@ -293,6 +276,25 @@
   when: (instance_action in ["reset_db", "reset_war_and_db", "reset_war", "restart", "start"])  and
         API_REQUESTS is defined and ( API_REQUESTS | length != 0) and
         dhis2_api_requests is defined and ( dhis2_api_requests | length != 0)
+
+
+# === Run analytics if we have reset the DB
+- name: wait for instance {{ inventory_hostname }}/{{ instance.name }} to start in order to run analytics
+  uri:
+    url: https://{{ inventory_hostname }}/{{ 'dev/' if dev_mode_check.stat.islnk is defined else '' }}{{ instance.name }}/api/resourceTables/analytics
+    method: POST
+    user: "{{ dhis2_admin_user }}"
+    password: "{{ dhis2_admin_user_password }}"
+    force_basic_auth: yes
+    status_code: 200
+  register: result
+  until: result.status in [200, 401]
+  retries: 12
+  delay: 10
+  when: (instance_action in ["restore_snapshot", "reset_db", "reset_war_and_db"]) and
+        (((not project) and instance.db_demo is defined and instance.db_demo|length != 0) or
+        (project in ["sierra-leone","who-metadata", "lmis"]))
+  ignore_errors: yes
 
 
 # === repair flyway if necessary  (flyway.repair_before_migration=true)
