@@ -7,7 +7,7 @@
     dest: "/tmp/dhis2-API-{{ request_body_local }}.{{ request_extension }}"
     mode: 0644
     force: yes
-  loop: "{{ dhis2_api_requests }}"
+  loop: "{{ query('dhis2_api_requests', 'all') }}"
   loop_control:
     loop_var: request
   vars:
@@ -19,7 +19,7 @@
 
 - name: Run commands against the API
   include: api_call.yml
-  loop: "{{ dhis2_api_requests }}"
+  loop: "{{ query('dhis2_api_requests', 'all') }}"
   vars:
     request: "{{ API_REQUESTS[item] }}"
     request_name: "{{ item }}"
@@ -30,7 +30,7 @@
   file:
     path: "/tmp/dhis2-API-{{ request_body_local }}.{{ request_extension }}"
     state: absent
-  loop: "{{ dhis2_api_requests }}"
+  loop: "{{ query('dhis2_api_requests', 'all') }}"
   loop_control:
     loop_var: request
   vars:
