@@ -101,6 +101,7 @@ emis.dhis2.org
 [devteam]
 debug.dhis2.org
 test.e2e.dhis2.org
+bugs.dhis2.org
 
 
 [perf]
