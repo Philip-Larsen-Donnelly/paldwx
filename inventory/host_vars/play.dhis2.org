@@ -10,7 +10,7 @@ dhis2_nginx: "-play"
 
 instance_manager_overrides:
   - name: dev
-    description: "Cutting edge DHIS 2 development snapshot (Instance Manager)"
+    description: "Cutting edge DHIS 2 development snapshot"
     im_url: https://play.im.dhis2.org/dev
     type: "Under Development"
     installed_by: "instance-manager"
@@ -18,7 +18,7 @@ instance_manager_overrides:
     db_demo: "SL Demo dev"
     postgresql_version: 13
   - name: 2.41dev
-    description: "Build of the DHIS 2 version 2.41 development snapshot (Instance Manager)"
+    description: "Build of the DHIS 2 version 2.41 development snapshot"
     im_url: https://play.im.dhis2.org/dev-2-41
     type: "Under Development"
     installed_by: "instance-manager"
@@ -26,7 +26,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.41"
     postgresql_version: 13
   - name: 2.40dev
-    description: "Build of the DHIS 2 version 2.40 development snapshot (Instance Manager)"
+    description: "Build of the DHIS 2 version 2.40 development snapshot"
     im_url: https://play.im.dhis2.org/dev-2-40
     type: "Under Development"
     installed_by: "instance-manager"
@@ -34,7 +34,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.40"
     postgresql_version: 13
   - name: 2.39dev
-    description: "Build of the DHIS 2 version 2.39 development snapshot (Instance Manager)"
+    description: "Build of the DHIS 2 version 2.39 development snapshot"
     im_url: https://play.im.dhis2.org/dev-2-39
     type: "Under Development"
     installed_by: "instance-manager"
@@ -42,7 +42,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.39"
     postgresql_version: 13
   - name: 2.38dev
-    description: "Build of the DHIS 2 version 2.38 development snapshot (Instance Manager)"
+    description: "Build of the DHIS 2 version 2.38 development snapshot"
     im_url: https://play.im.dhis2.org/dev-2-38
     type: "Under Development"
     installed_by: "instance-manager"
@@ -50,7 +50,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.38"
     postgresql_version: 13
   - name: 2.40nightly
-    description: "Demo of DHIS 2 version 40 latest nightly build (Instance Manager)"
+    description: "Demo of DHIS 2 version 40 latest nightly build"
     im_url: https://play.im.dhis2.org/nightly-2-40
     type: "Canary"
     installed_by: "instance-manager"
@@ -58,7 +58,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.40"
     postgresql_version: 13
   - name: 2.39nightly
-    description: "Demo of DHIS 2 version 39 latest nightly build (Instance Manager)"
+    description: "Demo of DHIS 2 version 39 latest nightly build"
     im_url: https://play.im.dhis2.org/nightly-2-39
     type: "Canary"
     installed_by: "instance-manager"
@@ -66,7 +66,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.39"
     postgresql_version: 13
   - name: 2.38nightly
-    description: "Demo of DHIS 2 version 38 latest nightly build (Instance Manager)"
+    description: "Demo of DHIS 2 version 38 latest nightly build"
     im_url: https://play.im.dhis2.org/nightly-2-38
     type: "Canary"
     installed_by: "instance-manager"
@@ -74,7 +74,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.38"
     postgresql_version: 13
   - name: 40.3.1
-    description: "Demo of DHIS 2 version 40 latest stable patch (Instance Manager)"
+    description: "Demo of DHIS 2 version 40 latest stable patch"
     im_url: https://play.im.dhis2.org/stable-2-40-3-1
     type: "Stable"
     installed_by: "instance-manager"
@@ -82,7 +82,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.40.3"
     postgresql_version: 13
   - name: 2.39.5
-    description: "Demo of DHIS 2 version 39 latest stable patch (Instance Manager)"
+    description: "Demo of DHIS 2 version 39 latest stable patch"
     im_url: https://play.im.dhis2.org/stable-2-39-5
     type: "Stable"
     installed_by: "instance-manager"
@@ -90,7 +90,7 @@ instance_manager_overrides:
     db_demo: "SL Demo 2.39.5"
     postgresql_version: 13
   - name: 2.38.6
-    description: "Demo of DHIS 2 version 38 latest stable patch (Instance Manager)"
+    description: "Demo of DHIS 2 version 38 latest stable patch"
     im_url: https://play.im.dhis2.org/stable-2-38-6
     type: "Stable"
     installed_by: "instance-manager"
