@@ -34,6 +34,7 @@
         war_file: '{{ instance_war }}'
         db_name: "{{ instance_name | regex_replace('\\.', '-') }}"
         db_demo: "{{ instance_db | default('') }}"
+        db_owner: "{{ instance_db_owner | default('dhis') }}"
         tomcat_port: "{{ ansible_local.dhis2.tomcat.next_port }}"
         activemq_port: "{{ ansible_local.dhis2.activemq.next_port }}"
         artemis_port: "{{ ansible_local.dhis2.artemis.next_port }}"
