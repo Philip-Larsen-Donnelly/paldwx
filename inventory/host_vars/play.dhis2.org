@@ -73,12 +73,12 @@ instance_manager_overrides:
     docker_image: "dhis2/core-dev:2.38"
     db_demo: "SL Demo 2.38"
     postgresql_version: 13
-  - name: 41.0.0
+  - name: 41.0.1
     description: "Demo of DHIS 2 version 41 latest stable patch"
-    im_url: https://play.im.dhis2.org/stable-2-41-0
+    im_url: https://play.im.dhis2.org/stable-2-41-0-1
     type: "Stable"
     installed_by: "instance-manager"
-    docker_image: "dhis2/core:41.0.0"
+    docker_image: "dhis2/core:41.0.1"
     db_demo: "SL Demo 2.41.0"
     postgresql_version: 13
   - name: 40.3.1
@@ -97,11 +97,11 @@ instance_manager_overrides:
     docker_image: "dhis2/core:2.39.5"
     db_demo: "SL Demo 2.39.5"
     postgresql_version: 13
-  - name: 2.38.6
+  - name: 2.38.7
     description: "Demo of DHIS 2 version 38 latest stable patch"
-    im_url: https://play.im.dhis2.org/stable-2-38-6
+    im_url: https://play.im.dhis2.org/stable-2-38-7
     type: "Stable"
     installed_by: "instance-manager"
-    docker_image: "dhis2/core:2.38.6"
-    db_demo: "SL Demo 2.38.6"
+    docker_image: "dhis2/core:2.38.7"
+    db_demo: "SL Demo 2.38.7"
     postgresql_version: 13

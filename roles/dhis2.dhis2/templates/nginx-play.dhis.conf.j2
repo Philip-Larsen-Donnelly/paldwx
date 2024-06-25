@@ -99,22 +99,22 @@ location /demo {
 # redirect version to the latest stable patches
 
 location /2.41/ {
-  rewrite ^/2.41/(.*)$ $scheme://$host/41.0.0/$1 redirect;
+  rewrite ^/2.41/(.*)$ $scheme://$host/41.0.1/$1 redirect;
   break;
 }
 
 location /2.41 {
-  rewrite ^/2.41[\d\./]*(.*)$ $scheme://$host/41.0.0/$1 redirect;
+  rewrite ^/2.41[\d\./]*(.*)$ $scheme://$host/41.0.1/$1 redirect;
   break;
 }
 
 location /41/ {
-  rewrite ^/41/(.*)$ $scheme://$host/41.0.0/$1 redirect;
+  rewrite ^/41/(.*)$ $scheme://$host/41.0.1/$1 redirect;
   break;
 }
 
 location /41 {
-  rewrite ^/41[\d\./]*(.*)$ $scheme://$host/41.0.0/$1 redirect;
+  rewrite ^/41[\d\./]*(.*)$ $scheme://$host/41.0.1/$1 redirect;
   break;
 }
 location /2.40/ {
@@ -153,12 +153,12 @@ location /2.39 {
 # redirect version to the latest stable patches
 
 location /2.38/ {
-  rewrite ^/2.38/(.*)$ $scheme://$host/2.38.6/$1 redirect;
+  rewrite ^/2.38/(.*)$ $scheme://$host/2.38.7/$1 redirect;
   break;
 }
 
 location /2.38 {
-  rewrite ^/2.38[\d\./]*(.*)$ $scheme://$host/2.38.6/$1 redirect;
+  rewrite ^/2.38[\d\./]*(.*)$ $scheme://$host/2.38.7/$1 redirect;
   break;
 }
 
