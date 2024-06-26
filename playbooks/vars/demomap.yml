@@ -3,7 +3,10 @@
 dhis2_demo_to_war:
   'dev': 'master/dev/dhis2-dev-master.war'
   'dev-temp': 'master/dev/dhis2-dev-master.war'
+  '41.0.1': '40/dhis2-stable-41.0.1.war'
+  '41.0.0': '40/dhis2-stable-41.0.1.war'
   '40.2.2': '40/dhis2-stable-40.2.2.war'
+  '40.3.2': '40/dhis2-stable-40.3.2.war'
   '40.3.0': '40/dhis2-stable-40.3.0.war'
   '40.0.1': '40/dhis2-stable-40.0.1.war'
   '40.0.0': '40/dhis2-stable-40.0.1.war'
@@ -12,6 +15,7 @@ dhis2_demo_to_war:
   '2.39.4': '2.39/dhis2-stable-2.39.4.1.war'
   '2.38': '2.38/dev/dhis2-dev-2.38.war'
   '2.38.6': '2.38/dhis2-stable-2.38.6.war'
+  '2.38.7': '2.38/dhis2-stable-2.38.7.war'
   '2.37.7': '2.37/dhis2-stable-2.37.7.1.war'
   '2.37.9': '2.37/dhis2-stable-2.37.9.1.war'
   '2.37.10': '2.37/dhis2-stable-2.37.10.war'
@@ -35,7 +39,10 @@ dhis2_demo_to_war:
 
 # the following maps the name of the "demo DB update instance" to the db file used
 dhis2_demo_db_map:
+  '41.0.0': '2.41.0/dhis2-db-sierra-leone.sql.gz'
+  '41.0.1': '2.41.0/dhis2-db-sierra-leone.sql.gz'
   '40.2.2': '2.40.2/dhis2-db-sierra-leone.sql.gz'
+  '40.3.2': '2.40.3/dhis2-db-sierra-leone.sql.gz'
   '40.3.0': '2.40.3/dhis2-db-sierra-leone.sql.gz'
   '40.0.0': '2.40.0/dhis2-db-sierra-leone.sql.gz'
   '40.0.1': '2.40.0/dhis2-db-sierra-leone.sql.gz'
@@ -53,15 +60,19 @@ dhis2_demo_db_map:
 # the following maps the name of the "demo DB update instance" to development demo db
 dhis2_demo_to_dev:
   'dev': 'dev'
-  '2.40': ['2.40','dev']
-  '40.2.2': ['2.40','dev']
-  '40.3.0': ['2.40','dev']
-  '40.0.1': ['2.40','dev']
-  '40.0.0': ['2.40','dev']
+  '41.0.1': ['2.41','dev']
+  '41.0.0': ['2.41','dev']
+  '2.40': ['2.40']
+  '40.2.2': ['2.40']
+  '40.3.2': ['2.40']
+  '40.3.0': ['2.40']
+  '40.0.1': ['2.40']
+  '40.0.0': ['2.40']
   '2.39': ['2.39']
   '2.39.5': ['2.39']
   '2.39.4': ['2.39']
   '2.38.6': ['2.38']
+  '2.38.7': ['2.38']
   '2.37.10': '2.37'
   '2.37.9': '2.37'
   '2.37.8': '2.37'
@@ -82,6 +93,7 @@ dhis2_demo_map:
   '40.3.0': 'https://databases.dhis2.org/sierra-leone/2.40.3/dhis2-db-sierra-leone.sql.gz'
   '40.0.0': 'https://databases.dhis2.org/sierra-leone/2.40/dhis2-db-sierra-leone.sql.gz'
   '41.0.0': 'https://databases.dhis2.org/sierra-leone/2.41/dhis2-db-sierra-leone.sql.gz'
+  '41.0.1': 'https://databases.dhis2.org/sierra-leone/2.41/dhis2-db-sierra-leone.sql.gz'
   # development
   'dev': 'https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz'
   'dev__ALT__': 'https://databases.dhis2.org/temp/2020-06-24_121046_dev-android.sql.gz'
