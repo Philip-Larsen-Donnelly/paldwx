@@ -118,22 +118,22 @@ location /41 {
   break;
 }
 location /2.40/ {
-  rewrite ^/2.40/(.*)$ $scheme://$host/40.3.1/$1 redirect;
+  rewrite ^/2.40/(.*)$ $scheme://$host/40.4.0/$1 redirect;
   break;
 }
 
 location /2.40 {
-  rewrite ^/2.40[\d\./]*(.*)$ $scheme://$host/40.3.1/$1 redirect;
+  rewrite ^/2.40[\d\./]*(.*)$ $scheme://$host/40.4.0/$1 redirect;
   break;
 }
 
 location /40/ {
-  rewrite ^/40/(.*)$ $scheme://$host/40.3.1/$1 redirect;
+  rewrite ^/40/(.*)$ $scheme://$host/40.4.0/$1 redirect;
   break;
 }
 
 location /40 {
-  rewrite ^/40[\d\./]*(.*)$ $scheme://$host/40.3.1/$1 redirect;
+  rewrite ^/40[\d\./]*(.*)$ $scheme://$host/40.4.0/$1 redirect;
   break;
 }
 
