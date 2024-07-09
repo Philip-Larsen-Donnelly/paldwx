@@ -55,6 +55,7 @@ dhis2_demo_db_map:
   'ANDROID_2.33': '2.33/android/dhis2-db-sierra-leone.sql.gz'
   'ANDROID_2.32': '2.32/android/dhis2-db-sierra-leone.sql.gz'
   'analytics_dev': 'dev/analytics/dhis2-db-sierra-leone.sql.gz'
+  'analytics_2.39.0.1': '2.39.0.1/analytics_be/dhis2-db-sierra-leone.sql.gz'
   'analytics_2.38': '2.38/analytics/dhis2-db-hmis.sql.gz'
 
 # the following maps the name of the "demo DB update instance" to development demo db
