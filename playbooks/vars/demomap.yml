@@ -35,6 +35,7 @@ dhis2_demo_to_war:
   'ANDROID_2.33': '2.33/dhis2-stable-2.33.0.war'
   'ANDROID_2.32': '2.32/dhis2-stable-2.32.0.war'
   'analytics_dev': 'master/dev/dhis2-dev-master.war'
+  'analytics_2.39.0.1': '2.39/dhis2-stable-2.39.0.1.war'
   'analytics_2.38': '2.38/dhis2-stable-2.38.1.1.war'
 
 # the following maps the name of the "demo DB update instance" to the db file used
@@ -55,6 +56,7 @@ dhis2_demo_db_map:
   'ANDROID_2.33': '2.33/android/dhis2-db-sierra-leone.sql.gz'
   'ANDROID_2.32': '2.32/android/dhis2-db-sierra-leone.sql.gz'
   'analytics_dev': 'dev/analytics/dhis2-db-sierra-leone.sql.gz'
+  'analytics_2.39.0.1': '2.39.0.1/analytics_be/dhis2-db-sierra-leone.sql.gz'
   'analytics_2.38': '2.38/analytics/dhis2-db-hmis.sql.gz'
 
 # the following maps the name of the "demo DB update instance" to development demo db
