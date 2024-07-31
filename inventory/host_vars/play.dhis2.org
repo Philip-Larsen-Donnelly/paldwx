@@ -41,13 +41,13 @@ instance_manager_overrides:
     docker_image: "dhis2/core:2.39"
     db_demo: "SL Demo 2.39"
     postgresql_version: 13
-  - name: 2.38dev
-    description: "Build of the DHIS 2 version 2.38 development snapshot"
-    im_url: https://play.im.dhis2.org/dev-2-38
-    type: "Under Development"
+  - name: 2.41nightly
+    description: "Demo of DHIS 2 version 41 latest nightly build"
+    im_url: https://play.im.dhis2.org/nightly-2-41
+    type: "Canary"
     installed_by: "instance-manager"
-    docker_image: "dhis2/core:2.38"
-    db_demo: "SL Demo 2.38"
+    docker_image: "dhis2/core-dev:2.41"
+    db_demo: "SL Demo 2.41"
     postgresql_version: 13
   - name: 2.40nightly
     description: "Demo of DHIS 2 version 40 latest nightly build"
@@ -64,14 +64,6 @@ instance_manager_overrides:
     installed_by: "instance-manager"
     docker_image: "dhis2/core-dev:2.39"
     db_demo: "SL Demo 2.39"
-    postgresql_version: 13
-  - name: 2.38nightly
-    description: "Demo of DHIS 2 version 38 latest nightly build"
-    im_url: https://play.im.dhis2.org/nightly-2-38
-    type: "Canary"
-    installed_by: "instance-manager"
-    docker_image: "dhis2/core-dev:2.38"
-    db_demo: "SL Demo 2.38"
     postgresql_version: 13
   - name: 41.0.1
     description: "Demo of DHIS 2 version 41 latest stable patch"
@@ -96,12 +88,4 @@ instance_manager_overrides:
     installed_by: "instance-manager"
     docker_image: "dhis2/core:2.39.5"
     db_demo: "SL Demo 2.39.5"
-    postgresql_version: 13
-  - name: 2.38.7
-    description: "Demo of DHIS 2 version 38 latest stable patch"
-    im_url: https://play.im.dhis2.org/stable-2-38-7
-    type: "Stable"
-    installed_by: "instance-manager"
-    docker_image: "dhis2/core:2.38.7"
-    db_demo: "SL Demo 2.38.7"
     postgresql_version: 13
