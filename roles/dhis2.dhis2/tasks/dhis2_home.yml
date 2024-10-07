@@ -33,6 +33,16 @@
     remote_src: yes
   args:
     creates: /tmp/apache-tomcat-8.5.50
+  when: dhis2_tomcat_version == '8'
+
+- name: download tomcat
+  unarchive:
+    src: https://archive.apache.org/dist/tomcat/tomcat-10/v10.0.27/bin/apache-tomcat-10.0.27.tar.gz
+    dest: /tmp
+    remote_src: yes
+  args:
+    creates: /tmp/apache-tomcat-10.0.27
+  when: dhis2_tomcat_version == '10'
 
 # create a directory if it doesn't exist
 - file:
@@ -43,6 +53,12 @@
 - command: cp -r /tmp/apache-tomcat-8.5.50 {{ storage }}/instances/{{ instance.name }}/tomcat
   args:
     creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
+  when: dhis2_tomcat_version == '8'
+
+- command: cp -r /tmp/apache-tomcat-10.0.27 {{ storage }}/instances/{{ instance.name }}/tomcat
+  args:
+    creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
+  when: dhis2_tomcat_version == '10'
 
 # - name: remove temporary tomcat directory
 #   file:
