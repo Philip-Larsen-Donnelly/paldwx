@@ -50,6 +50,12 @@
     state: directory
     mode: 0755
 
+# remove tomcat directory
+- name: clean tomcat directory
+  file: "{{ storage }}/instances/{{ instance.name }}/tomcat"
+  state: absent
+
+
 - command: cp -r /tmp/apache-tomcat-8.5.50 {{ storage }}/instances/{{ instance.name }}/tomcat
   args:
     creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
