@@ -52,9 +52,11 @@
 
 # remove tomcat directory
 - name: clean tomcat directory
-  file: 
+  file:
     path: "{{ storage }}/instances/{{ instance.name }}/tomcat"
     state: absent
+  become: true
+  ignore_errors: yes  
 
 
 - command: cp -r /tmp/apache-tomcat-8.5.50 {{ storage }}/instances/{{ instance.name }}/tomcat
