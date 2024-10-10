@@ -149,4 +149,4 @@ dhis2_locust_master_port: 5557
 
 instance_manager_overrides: []
 
-dhis2_tomcat_version: 8
+dhis2_tomcat_version: '8'
