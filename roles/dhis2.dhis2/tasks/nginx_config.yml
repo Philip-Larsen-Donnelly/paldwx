@@ -6,18 +6,35 @@
     creates: "/etc/ssl/certs/dhparam.pem"
 
 
-- name: Migrate nginx config
-  shell: sed -n '/BEGIN DHIS2-INSTANCES/,/END DHIS2-INSTANCES/p' /etc/nginx/conf.d/default.conf > /etc/nginx/dhis2_instances; sed -i '/# .*DHIS2-INSTANCES/d'  /etc/nginx/dhis2_instances
-  args:
-    creates: /etc/nginx/dhis2_instances
+# - name: Migrate nginx config
+#   shell: sed -n '/BEGIN DHIS2-INSTANCES/,/END DHIS2-INSTANCES/p' /etc/nginx/conf.d/default.conf > /etc/nginx/dhis2_instances; sed -i '/# .*DHIS2-INSTANCES/d'  /etc/nginx/dhis2_instances
+#   args:
+#     creates: /etc/nginx/dhis2_instances
 
-- name: configure nginx
+- name: Check if dhis2.conf exists in sites-enabled
+  stat:
+    path: /etc/nginx/sites-enabled/dhis2.conf
+  register: dhis2_conf_in_sites_enabled
+
+- name: Configure nginx as default if dhis2.conf does not exist in sites-enabled
   template:
     src: "nginx{{ dhis2_nginx }}.dhis.conf.j2"
     dest: "/etc/nginx/conf.d/default.conf"
     mode: 0644
     force: yes
   notify: reload nginx
+  when: dhis2_conf_in_sites_enabled.stat.exists == false
+
+- name: Configure nginx if dhis2.conf exists in sites-enabled
+  template:
+    src: "nginx{{ dhis2_nginx }}.dhis.conf.j2"
+    dest: "/etc/nginx/sites-available/dhis2.conf"
+    mode: 0644
+    force: yes
+  notify: reload nginx
+  when: dhis2_conf_in_sites_enabled.stat.exists
+
+
 
 - name: add DHIS 2 instances to nginx config
   blockinfile:
