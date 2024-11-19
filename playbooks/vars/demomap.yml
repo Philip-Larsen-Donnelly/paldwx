@@ -47,6 +47,7 @@ dhis2_demo_db_map:
   '41.0.0': '2.41.0/dhis2-db-sierra-leone.sql.gz'
   '41.1.0': '2.41.1/dhis2-db-sierra-leone.sql.gz'
   '41.0.1': '2.41.0/dhis2-db-sierra-leone.sql.gz'
+  '40.5.0': '2.40.5/dhis2-db-sierra-leone.sql.gz'
   '40.2.2': '2.40.2/dhis2-db-sierra-leone.sql.gz'
   '40.3.2': '2.40.3/dhis2-db-sierra-leone.sql.gz'
   '40.3.0': '2.40.3/dhis2-db-sierra-leone.sql.gz'
