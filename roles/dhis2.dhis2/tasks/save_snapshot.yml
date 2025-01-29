@@ -6,6 +6,16 @@
     recurse: yes
     state: "directory"
 
+- name: Clean up one-time jobs that never started
+  postgresql_query:
+    db: "{{ instance.db_name }}"
+    port: "{{ postgresql_port_map[instance.postgresql_version] | default(omit) }}"
+    query: delete from jobconfiguration where lastexecutedstatus = 'NOT_STARTED' and schedulingtype = 'ONCE_ASAP';
+  become: true
+  become_user: "{{ postgresql_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+
 # download the demo db (if not empty param)
 - name: get the current date time
   set_fact: db_snap_date="{{lookup('pipe','date \"+%Y-%m-%d_%H%M%S\"')}}"
@@ -49,7 +59,7 @@
 
   - name: create the archive
     community.general.archive:
-      path: "{{ storage }}/instances/{{ instance.name }}/home/dhis2-{{ instance.db_name|replace('_', '-')  }}-store/*"
+      path: "{{ storage }}/instances/{{ instance.name }}/home/dhis2-local-filestore/*"
       dest: "{{ storage }}/tmp/{{ db_snap_date }}_{{ instance.name }}.filestore"
       format: gz
       force_archive: true
