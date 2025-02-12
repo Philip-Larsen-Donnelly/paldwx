@@ -1,0 +1,56 @@
+---
+- name: Check current Tomcat version
+  command: "{{ storage }}/instances/{{ instance.name }}/tomcat/bin/version.sh"
+  register: tomcat_version
+  changed_when: false
+  become: true
+  become_user: "{{ dhis2_user | default('dhis') }}"
+
+- name: Set facts for Tomcat upgrade
+  set_fact:
+    tomcat_old_version: "10.0.27"
+    tomcat_new_version: "10.1.34"
+    tomcat_download_url: "https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz"
+    tomcat_download_path: "/tmp/apache-tomcat-10.1.34.tar.gz"
+    tomcat_extract_path: "/tmp/apache-tomcat-10.1.34"
+
+- block:
+    - name: Download new Tomcat version
+      get_url:
+        url: "{{ tomcat_download_url }}"
+        dest: "{{ tomcat_download_path }}"
+
+    - name: Extract Tomcat archive
+      unarchive:
+        src: "{{ tomcat_download_path }}"
+        dest: "/tmp"
+        remote_src: yes
+
+    - name: Set ownership of extracted Tomcat files
+      file:
+        path: "{{ tomcat_extract_path }}"
+        owner: "{{ dhis2_user | default('dhis') }}"
+        group: "{{ dhis2_user | default('dhis') }}"
+        recurse: yes
+
+    - name: Sync new Tomcat files
+      synchronize:
+        src: "{{ tomcat_extract_path }}/"
+        dest: "{{ storage }}/instances/{{ instance.name }}/tomcat/"
+        rsync_opts:
+          - "--exclude=webapps/"
+          - "--exclude=conf/server.xml"
+          - "--exclude=bin/setclasspath.sh"
+          - "--exclude=bin/startup.sh"
+      delegate_to: "{{ inventory_hostname }}"
+      become: true
+      become_user: "{{ dhis2_user | default('dhis') }}"
+
+    - name: Clean up temporary files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ tomcat_download_path }}"
+        - "{{ tomcat_extract_path }}"
+  when: tomcat_old_version in tomcat_version.stdout

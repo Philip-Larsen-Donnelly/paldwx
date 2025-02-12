@@ -165,6 +165,8 @@
   notify: reload nginx
   when: instance_action == "develop_mode_on"
 
+
+
 # ===  Reset WAR
 - name: re-deploy the war file
   include: deploy_war.yml
@@ -206,6 +208,12 @@
   ignore_errors: yes
   when: instance_action in ["start", "restart"]
 
+
+# ===  Fix Tomcat v10 if applicable
+- name: fix tomcat v10 if applicable
+  include: fix_tomcat.yml
+  when: instance_action in ["restore_snapshot", "reset_db", "reset_war", "reset_war_and_db"]
+  
 
 # === Start instance ==========
 # start the instance
