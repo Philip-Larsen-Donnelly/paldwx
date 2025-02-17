@@ -4,7 +4,6 @@
   register: tomcat_version
   changed_when: false
   become: true
-  become_user: "{{ dhis2_user | default('dhis') }}"
 
 - name: Set facts for Tomcat upgrade
   set_fact:
