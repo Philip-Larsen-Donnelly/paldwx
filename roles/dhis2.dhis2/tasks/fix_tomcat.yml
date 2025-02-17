@@ -32,6 +32,7 @@
         owner: "{{ dhis2_user | default('dhis') }}"
         group: "{{ dhis2_user | default('dhis') }}"
         recurse: yes
+      become_user: true
 
     - name: Sync new Tomcat files
       synchronize:
@@ -53,4 +54,5 @@
       with_items:
         - "{{ tomcat_download_path }}"
         - "{{ tomcat_extract_path }}"
+      become_user: true
   when: tomcat_old_version in tomcat_version.stdout
