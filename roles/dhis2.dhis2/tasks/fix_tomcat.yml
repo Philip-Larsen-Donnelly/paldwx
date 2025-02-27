@@ -43,8 +43,7 @@
           - "--exclude=bin/setclasspath.sh"
           - "--exclude=bin/startup.sh"
       delegate_to: "{{ inventory_hostname }}"
-      become: true
-      become_user: "{{ dhis2_user | default('dhis') }}"
+      become_user: root
 
     - name: Clean up temporary files
       file:
