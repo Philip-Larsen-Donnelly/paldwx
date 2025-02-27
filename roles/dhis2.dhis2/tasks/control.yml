@@ -212,7 +212,9 @@
 # ===  Fix Tomcat v10 if applicable
 - name: fix tomcat v10 if applicable
   include: fix_tomcat.yml
-  when: instance_action in ["restore_snapshot", "reset_db", "reset_war", "reset_war_and_db"] or force_tomcat_10_upgrade
+  when: >
+    instance_action in ["restore_snapshot", "reset_db", "reset_war", "reset_war_and_db"] or 
+    (force_tomcat_10_upgrade | default(false))
   
 
 # === Start instance ==========
