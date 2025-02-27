@@ -54,4 +54,4 @@
         - "{{ tomcat_download_path }}"
         - "{{ tomcat_extract_path }}"
       become_user: true
-  when: tomcat_old_version in tomcat_version.stdout
+  when: tomcat_old_version in tomcat_version.stdout or force_tomcat_10_upgrade
