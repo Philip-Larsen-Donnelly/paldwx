@@ -55,4 +55,4 @@
       become_user: root
   when: >
     tomcat_old_version in tomcat_version.stdout or 
-    (force_tomcat_10_upgrade | default(false))
+    (force_tomcat_10_upgrade | default('') == 'force')
