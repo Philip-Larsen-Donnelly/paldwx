@@ -9,7 +9,7 @@ dhis2_demo_to_war:
   '41.0.1': '41/dhis2-stable-41.0.1.war'
   '41.0.0': '41/dhis2-stable-41.0.1.war'
   '40.6.0': '40/dhis2-stable-40.6.0.war'
-  '40.5.0': '40/dhis2-stable-40.5.0.war'
+  '40.7.0': '40/dhis2-stable-40.7.0.war'
   '40.2.2': '40/dhis2-stable-40.2.2.war'
   '40.3.2': '40/dhis2-stable-40.3.2.war'
   '40.3.0': '40/dhis2-stable-40.3.0.war'
@@ -53,7 +53,7 @@ dhis2_demo_db_map:
   '41.3.0': '2.41.3/dhis2-db-sierra-leone.sql.gz'
   '41.0.1': '2.41.0/dhis2-db-sierra-leone.sql.gz'
   '40.6.0': '2.40.6/dhis2-db-sierra-leone.sql.gz'
-  '40.5.0': '2.40.5/dhis2-db-sierra-leone.sql.gz'
+  '40.7.0': '2.40.7/dhis2-db-sierra-leone.sql.gz'
   '40.2.2': '2.40.2/dhis2-db-sierra-leone.sql.gz'
   '40.3.2': '2.40.3/dhis2-db-sierra-leone.sql.gz'
   '40.3.0': '2.40.3/dhis2-db-sierra-leone.sql.gz'
@@ -80,7 +80,7 @@ dhis2_demo_to_dev:
   '41.0.0': ['2.41','dev']
   '2.40': ['2.40']
   '40.6.0': ['2.40']
-  '40.5.0': ['2.40']
+  '40.7.0': ['2.40']
   '40.2.2': ['2.40']
   '40.3.2': ['2.40']
   '40.3.0': ['2.40']
