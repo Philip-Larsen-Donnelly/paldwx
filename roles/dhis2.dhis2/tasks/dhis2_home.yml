@@ -28,20 +28,20 @@
 
 - name: download tomcat
   unarchive:
-    src: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.tar.gz
+    src: https://archive.apache.org/dist/tomcat/tomcat-8/v{{ tomcat_8_version }}/bin/apache-tomcat-{{ tomcat_8_version }}.tar.gz
     dest: /tmp
     remote_src: yes
   args:
-    creates: /tmp/apache-tomcat-8.5.50
+    creates: /tmp/apache-tomcat-{{ tomcat_8_version }}
   when: dhis2_tomcat_version == '8'
 
 - name: download tomcat
   unarchive:
-    src: https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
+    src: https://archive.apache.org/dist/tomcat/tomcat-10/v{{ tomcat_10_version }}/bin/apache-tomcat-{{ tomcat_10_version }}.tar.gz
     dest: /tmp
     remote_src: yes
   args:
-    creates: /tmp/apache-tomcat-10.1.34
+    creates: /tmp/apache-tomcat-{{ tomcat_10_version }}
   when: dhis2_tomcat_version == '10'
 
 # create a directory if it doesn't exist
@@ -59,12 +59,12 @@
   ignore_errors: yes  
 
 
-- command: cp -r /tmp/apache-tomcat-8.5.50 {{ storage }}/instances/{{ instance.name }}/tomcat
+- command: cp -r /tmp/apache-tomcat-{{ tomcat_8_version }} {{ storage }}/instances/{{ instance.name }}/tomcat
   args:
     creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
   when: dhis2_tomcat_version == '8'
 
-- command: cp -r /tmp/apache-tomcat-10.1.34 {{ storage }}/instances/{{ instance.name }}/tomcat
+- command: cp -r /tmp/apache-tomcat-{{ tomcat_10_version }} {{ storage }}/instances/{{ instance.name }}/tomcat
   args:
     creates: "{{ storage }}/instances/{{ instance.name }}/tomcat"
   when: dhis2_tomcat_version == '10'

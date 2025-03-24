@@ -150,3 +150,5 @@ dhis2_locust_master_port: 5557
 instance_manager_overrides: []
 
 dhis2_tomcat_version: '8'
+tomcat_10_version: '10.1.34'
+tomcat_8_version: '8.5.50'
