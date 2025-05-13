@@ -13,7 +13,12 @@
       state: present
   - name: Add postgres-ppa into sources list
     apt_repository:
-      repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_facts['lsb']['codename'] }}-pgdg main"
+      repo: >-
+        {% if ansible_facts['lsb']['codename'] == 'bionic' %}
+        deb http://apt-archive.postgresql.org/pub/repos/apt/ {{ ansible_facts['lsb']['codename'] }}-pgdg main
+        {% else %}
+        deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_facts['lsb']['codename'] }}-pgdg main
+        {% endif %}
       state: present
   - name: Install postgresql
     include_role:
