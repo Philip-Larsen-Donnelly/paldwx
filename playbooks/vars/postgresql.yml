@@ -1,6 +1,7 @@
 ---
 # vars file for dhis2.dhis2
 postgresql_version: "10"
+postgis_version: "2.5"
 # postgresql_packages:
 #   - postgresql-client-common
 #   - postgresql-{{ postgresql_version }}
@@ -12,7 +13,7 @@ postgresql_packages:
   - postgresql-{{ postgresql_version }}
   - postgresql-contrib
   - libpq-dev
-  - postgresql-{{ postgresql_version }}-postgis-2.5
+  - postgresql-{{ postgresql_version }}-postgis-{{ postgis_version }}
   - postgresql-client-common
 
 postgresql_user: postgres
@@ -30,6 +31,10 @@ postgresql_port_map:
   '11': '5433'
   '12': '5434'
   '13': '5435'
+  '14': '5436'
+  '15': '5437'
+  '16': '5438'
+  '17': '5439'
 postgresql_port: "{{ postgresql_port_map[postgresql_version] }}"
 
 postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
