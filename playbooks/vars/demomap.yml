@@ -3,13 +3,16 @@
 dhis2_demo_to_war:
   'dev': 'master/dev/dhis2-dev-master.war'
   'dev-temp': 'master/dev/dhis2-dev-master.war'
+  '42.4.0': '42/dhis2-stable-42.4.0.war'
   '42.3.0': '42/dhis2-stable-42.3.0.war'
   '41.6.0': '41/dhis2-stable-41.6.0.war'
   '41.7.0': '41/dhis2-stable-41.7.0.war'
+  '41.8.0': '41/dhis2-stable-41.8.0.war'
   '41.0.1': '41/dhis2-stable-41.0.1.war'
   '41.0.0': '41/dhis2-stable-41.0.1.war'
   '40.9.0': '40/dhis2-stable-40.9.0.war'
   '40.10.0': '40/dhis2-stable-40.10.0.war'
+  '40.11.0': '40/dhis2-stable-40.11.0.war'
   '2.39': '2.39/dev/dhis2-dev-2.39.war'
   '2.39.8': '2.39/dhis2-stable-2.39.8.war'
   '2.39.7': '2.39/dhis2-stable-2.39.7.war'
@@ -43,12 +46,15 @@ dhis2_demo_to_war:
 
 # the following maps the name of the "demo DB update instance" to the db file used
 dhis2_demo_db_map:
+  '42.4.0': '2.42.4/dhis2-db-sierra-leone.sql.gz'
   '42.3.0': '2.42.3/dhis2-db-sierra-leone.sql.gz'
   '41.0.0': '2.41.0/dhis2-db-sierra-leone.sql.gz'
+  '41.8.0': '2.41.8/dhis2-db-sierra-leone.sql.gz'
   '41.7.0': '2.41.7/dhis2-db-sierra-leone.sql.gz'
   '41.6.0': '2.41.6/dhis2-db-sierra-leone.sql.gz'
   '41.0.1': '2.41.0/dhis2-db-sierra-leone.sql.gz'
   '40.9.0': '2.40.9/dhis2-db-sierra-leone.sql.gz'
+  '40.11.0': '2.40.11/dhis2-db-sierra-leone.sql.gz'
   '40.10.0': '2.40.10/dhis2-db-sierra-leone.sql.gz'
   '40.2.2': '2.40.2/dhis2-db-sierra-leone.sql.gz'
   '40.3.2': '2.40.3/dhis2-db-sierra-leone.sql.gz'
@@ -70,11 +76,13 @@ dhis2_demo_db_map:
 # the following maps the name of the "demo DB update instance" to development demo db
 dhis2_demo_to_dev:
   'dev': 'dev'
-  '42.3.0': ['2.42','dev']
+  '42.4.0': ['2.42','2.43','dev']
+  '41.8.0': ['2.41']
   '41.7.0': ['2.41']
   '41.6.0': ['2.41']
   '2.40': ['2.40']
   '40.9.0': ['2.40']
+  '40.11.0': ['2.40']
   '40.10.0': ['2.40']
   '2.39': ['2.39']
   '2.39.7': ['2.39']
